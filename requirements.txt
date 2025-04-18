@@ -1,0 +1,6 @@
+ghp-import==2.1.0
+pathspec==0.12.1
+python-dateutil==2.9.0.post0
+PyYAML==6.0.2
+six==1.17.0
+yamllint==1.37.0
