@@ -30,7 +30,7 @@ PYGMENTS_STYLE = 'monokai'
 SITELOGO = '/images/avatar.png'  # Must exist in content/images/
 FAVICON = '/images/favicon.ico'
 EXTRA_PATH_METADATA = {
-    'images/favicon.ico': {'path': 'image/favicon.ico'},
+    'images/favicon.ico': {'path': 'images/favicon.ico'},
     'images/avatar.png': {'path': 'images/avatar.png'},
 }
 
@@ -48,3 +48,4 @@ DEFAULT_PAGINATION = 10
 
 # Development
 RELATIVE_URLS = True
+
