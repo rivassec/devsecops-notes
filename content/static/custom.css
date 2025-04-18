@@ -1,11 +1,80 @@
 /* content/static/custom.css */
 
-/* Override title and link colors */
-a, h1 a, h2 a, h3 a,
-.article h1, .article h2, .article h3 {
-  color: #1E88E5; /* Darker security blue */
+/* Global link color overrides */
+a,
+h1 a, h2 a, h3 a,
+.article h1 a, .article h2 a, .article h3 a {
+  color: #1A2E4F;
 }
 
 a:hover {
-  color: #1565C0;
+  color: #0D47A1;
+}
+
+/* Article "Continue reading" button */
+.read-more {
+  background-color: #1A2E4F;
+  color: #ffffff;
+  border-radius: 4px;
+  padding: 6px 12px;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.read-more:hover {
+  background-color: #0D47A1;
+}
+
+/* Tag cloud styling */
+.tagcloud a {
+  background-color: #1A2E4F;
+  color: #ffffff;
+  padding: 2px 6px;
+  margin: 2px;
+  border-radius: 3px;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.tagcloud a:hover {
+  background-color: #0D47A1;
+}
+
+/* Category and metadata labels */
+.category a,
+article .metadata a {
+  background-color: #1A2E4F;
+  color: #ffffff;
+  padding: 2px 6px;
+  border-radius: 3px;
+  text-decoration: none;
+}
+
+/* Navbar active item or highlight accent */
+.navbar .active a,
+.navbar a:hover {
+  background-color: #1A2E4F;
+  color: #ffffff !important;
+}
+
+/* Footer link hover override */
+footer a:hover {
+  color: #0D47A1;
+}
+
+/* Override default .btn and Isso comment button styles */
+a.btn,
+section#isso-thread section.auth-section p.post-action input {
+  background-color: #1A2E4F !important;
+  color: #ffffff;
+  border-radius: 4px;
+  padding: 6px 12px;
+  text-decoration: none;
+  border: none;
+}
+
+a.btn:hover,
+section#isso-thread section.auth-section p.post-action input:hover {
+  background-color: #0D47A1 !important;
+  color: #ffffff;
 }

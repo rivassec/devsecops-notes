@@ -2,7 +2,7 @@ Title: The Chaos of the Leap Second (2012): When Time Broke Java and the Cloud
 Date: 2025-04-15
 Tags: leap-second, kernel, linux, java, ntp, distributed-systems, devops, sre, incident-retrospective
 Category: Incident Retrospectives
-Slug: leap-second-chaos-2012-revised
+Slug: leap-second-chaos-2012
 Author: Oliver Rivas
 Summary: A retrospective on the infamous 2012 leap second bug — how a single second disrupted global services, exposed timekeeping flaws in Java, and triggered cascading failures across the cloud.
 

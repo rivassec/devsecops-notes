@@ -2,7 +2,7 @@ Title: Taming the OOM Killer: Process Prioritization for Memory-Constrained Linu
 Date: 2025-04-18
 Tags: linux, oomkiller, memory, system-administration, devsecops, process-management, hardening
 Category: DevSecOps
-Slug: oom-killer-process-prioritization-revised
+Slug: oom-killer-process-prioritization
 Author: Oliver Rivas
 Summary: A practical and security-aware guide to defending critical processes from the Linux Out of Memory Killer by adjusting oom_score_adj dynamically at runtime.
 
