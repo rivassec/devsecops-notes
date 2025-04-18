@@ -4,9 +4,9 @@ SITESUBTITLE = 'Infrastructure. Security. Insight.'
 SITEURL = 'https://rivassec.github.io/devsecops-notes'
 
 PATH = "content"
-STATIC_PATHS = ['images']
+STATIC_PATHS = ['images', 'static']
+CUSTOM_CSS = 'static/custom.css'
 THEME = 'themes/Flex'
-
 TIMEZONE = 'America/Los_Angeles'
 DEFAULT_LANG = 'en'
 

@@ -1,0 +1,11 @@
+/* content/static/custom.css */
+
+/* Override title and link colors */
+a, h1 a, h2 a, h3 a,
+.article h1, .article h2, .article h3 {
+  color: #1E88E5; /* Darker security blue */
+}
+
+a:hover {
+  color: #1565C0;
+}
