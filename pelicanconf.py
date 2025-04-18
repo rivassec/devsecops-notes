@@ -30,8 +30,8 @@ PYGMENTS_STYLE = 'monokai'
 SITELOGO = '/images/avatar.png'  # Must exist in content/images/
 FAVICON = '/images/favicon.ico'
 EXTRA_PATH_METADATA = {
-    'images/favicon.ico': {'path': 'favicon.ico'},
-    'images/avatar.png': {'path': 'avatar.png'},
+    'images/favicon.ico': {'path': 'image/favicon.ico'},
+    'images/avatar.png': {'path': 'images/avatar.png'},
 }
 
 # Social widget
