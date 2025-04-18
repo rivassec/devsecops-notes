@@ -1,11 +1,13 @@
 AUTHOR = 'RivasSec'
 SITENAME = 'DevSecOps Notes'
+SITESUBTITLE = 'Infrastructure. Security. Insight.'
 SITEURL = 'https://rivassec.github.io/devsecops-notes'
 
 PATH = "content"
+STATIC_PATHS = ['images']
+THEME = 'themes/Flex'
 
 TIMEZONE = 'America/Los_Angeles'
-
 DEFAULT_LANG = 'en'
 
 # Feed generation is usually not desired when developing
@@ -15,21 +17,35 @@ TRANSLATION_FEED_ATOM = None
 AUTHOR_FEED_ATOM = None
 AUTHOR_FEED_RSS = None
 
-# Blogroll
-LINKS = (
-    ("Pelican", "https://getpelican.com/"),
-    ("Python.org", "https://www.python.org/"),
-    ("Jinja2", "https://palletsprojects.com/p/jinja/"),
-    ("You can modify those links in your config file", "#"),
-)
+# Appearance and menu
+MAIN_MENU = True
+DISPLAY_PAGES_ON_MENU = False
+DISPLAY_CATEGORIES_ON_MENU = True
+DISPLAY_TAGS_ON_MENU = True
+USE_GOOGLE_FONTS = True
+BROWSER_COLOR = '#222222'
+PYGMENTS_STYLE = 'monokai'
+
+# Optional site assets
+SITELOGO = '/images/avatar.png'  # Optional: place avatar in content/images/
+FAVICON = '/images/favicon.ico'  # Optional
+EXTRA_PATH_METADATA = {
+    'images/favicon.ico': {'path': 'favicon.ico'},
+    'images/avatar.png': {'path': 'avatar.png'},
+}
 
 # Social widget
 SOCIAL = (
     ("GitHub", "https://github.com/rivassec"),
-    ("LinkedIn", "https://linkedin.com/in/9082311s2"),  # Optional
+    ("LinkedIn", "https://linkedin.com/in/9082311s2"),
 )
+GITHUB_URL = "https://github.com/rivassec"
+
+# Footer
+COPYRIGHT_NAME = "RivasSec"
 
 DEFAULT_PAGINATION = 10
 
-# Uncomment following line if you want document-relative URLs when developing
+# Development
 RELATIVE_URLS = True
+

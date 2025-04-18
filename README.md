@@ -1,55 +1,67 @@
-# DevSecOps Notes
+# DevSecOps Notes by RivasSec
 
-A growing collection of field-tested tips, security hardening guides, and cloud-native best practices — written from hands-on experience in DevSecOps, Kubernetes, and infrastructure security.
+This is the source code and content for [DevSecOps Notes](https://rivassec.github.io/devsecops-notes), a technical blog focused on infrastructure security, OSINT, cloud hardening, and DevSecOps practices — curated and maintained by **RivasSec**.
 
-This blog is generated using [Pelican](https://getpelican.com/), a static site generator written in Python, and published via GitHub Pages.
+---
 
-## 🔍 Topics Covered
+## 📦 Features
 
-- Kubernetes security (Pod Security Standards, restricted profiles)
-- CI/CD pipeline hardening
-- Infrastructure as Code (IaC) security
-- Secrets management
-- Secure defaults for cloud-native deployments
-- Container hardening (Docker, Podman)
+- Static site powered by [Pelican](https://getpelican.com/)
+- Professional layout using the [Flex theme](https://github.com/alexandrevicenzi/Flex)
+- Markdown-based blog posts located in `content/`
+- GitHub Pages deployment (via the `output/` folder)
 
-## 🚀 Getting Started
+---
 
-1. Clone the repository:
+## 🛠️ Local Development
+
+### 1. Install dependencies
 
 ```bash
-git clone https://github.com/rivassec/devsecops-notes.git
-cd devsecops-notes
+pip install pelican markdown
 ```
 
-2. Create and activate a Python virtual environment:
+(Optional) Create a virtualenv:
 
 ```bash
-python3 -m venv .venv
+python -m venv .venv
 source .venv/bin/activate
 ```
 
-3. Install dependencies:
+### 2. Clone and build the theme
 
 ```bash
-pip install -r requirements.txt
+git clone https://github.com/alexandrevicenzi/Flex themes/Flex
 ```
 
-4. Run a local preview:
+### 3. Build the site
 
 ```bash
-pelican content -o output -s pelicanconf.py
-python3 -m http.server --directory output/
+make clean
+make html
+make serve  # View at http://localhost:8000
 ```
 
-5. Visit `http://localhost:8000` in your browser.
+---
 
-## 🌐 Live Site
+## 🚀 Deploying to GitHub Pages
 
-View the published blog at:  
-👉 https://rivassec.github.io/devsecops-notes/
+The blog is deployed from the `output/` directory. After rebuilding the site:
 
-## 📄 License
+```bash
+cd output
+git add .
+git commit -m "Update site"
+git push
+```
 
-- Text and articles are licensed under [Creative Commons Attribution 4.0 (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/).
-- Code snippets are available under the [MIT License](LICENSE).
+Make sure your `gh-pages` branch (or root) is configured correctly in the GitHub Pages settings.
+
+---
+
+## 🧾 License
+
+Content is © RivasSec. All rights reserved unless otherwise noted.
+
+For inquiries or collaboration, reach out via [GitHub](https://github.com/rivassec).
+

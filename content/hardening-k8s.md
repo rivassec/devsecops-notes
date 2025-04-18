@@ -1,9 +1,9 @@
-Title: Hardening Kubernetes Deployments  
-Date: 2025-04-18  
-Category: Kubernetes Security  
-Tags: kubernetes, hardening, pod-security-standards  
-Slug: hardening-k8s  
-Author: RivasSec  
+Title: Hardening Kubernetes Deployments
+Date: 2025-04-19
+Category: Kubernetes Security
+Tags: kubernetes, hardening, pod-security-standards
+Slug: hardening-k8s
+Author: RivasSec
 Summary: Practical hardening tips using the Restricted Pod Security Standard.
 
 Securing Kubernetes workloads isn't just about scanning images or tweaking RBAC — it's about enforcing the right guardrails at the pod level to minimize risk by default. This post shares field-tested strategies aligned with the Pod Security Standards (Restricted profile) to help you build safer, production-grade deployments.
