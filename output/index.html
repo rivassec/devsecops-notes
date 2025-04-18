@@ -1,63 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="generator" content="Pelican" />
         <title>DevSecOps Notes</title>
-        <link rel="stylesheet" href="./theme/css/main.css" />
+        <meta charset="utf-8" />
+        <meta name="generator" content="Pelican" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Infrastructure. Security. Insight." />
 </head>
 
-<body id="index" class="home">
-        <header id="banner" class="body">
-                <h1><a href="./">DevSecOps Notes</a></h1>
-                <nav><ul>
-                    <li><a href="./category/general.html">General</a></li>
-                </ul></nav>
-        </header><!-- /#banner -->
+<body>
+        <header>
+              <hgroup><h1><a href="./">DevSecOps Notes</a></h1><p>Infrastructure. Security. Insight.</p></hgroup>
+        <nav><ul>
+            <li><a href="./category/devsecops.html" >DevSecOps</a></li>
+            <li><a href="./category/incident-retrospectives.html" >Incident Retrospectives</a></li>
+            <li><a href="./category/kubernetes-security.html" >Kubernetes Security</a></li>
+            <li><a href="./category/threat-intelligence.html" >Threat Intelligence</a></li>
+        </ul></nav>
+        </header>
+        <main>
+<h2>All articles</h2>
 
-            <aside id="featured" class="body">
-                <article>
-                    <h1 class="entry-title"><a href="./test-post.html">Test Post</a></h1>
-<footer class="post-info">
-        <abbr class="published" title="2025-04-18T00:00:00-07:00">
-                Published: Fri 18 April 2025
-        </abbr>
 
-        <address class="vcard author">
-                By                         <a class="url fn" href="./author/rivassec.html">RivasSec</a>
-        </address>
-<p>In <a href="./category/general.html">General</a>.</p>
-<p>tags: <a href="./tag/test.html">test</a> </p>
-</footer><!-- /.post-info --><p>This is a test post to confirm that the site builds and deploys correctly.</p>                </article>
-            </aside><!-- /#featured -->
-        <section id="extras" class="body">
-                <div class="blogroll">
-                        <h2>links</h2>
-                        <ul>
-                            <li><a href="https://getpelican.com/">Pelican</a></li>
-                            <li><a href="https://www.python.org/">Python.org</a></li>
-                            <li><a href="https://palletsprojects.com/p/jinja/">Jinja2</a></li>
-                            <li><a href="#">You can modify those links in your config file</a></li>
-                        </ul>
-                </div><!-- /.blogroll -->
-                <div class="social">
-                        <h2>social</h2>
-                        <ul>
+        <article>
+                <header> <h2><a href="./hardening-k8s.html" rel="bookmark" title="Permalink to Hardening Kubernetes Deployments">Hardening Kubernetes Deployments</a></h2> </header>
+                <section><p>Practical hardening tips using the Restricted Pod Security Standard.</p></section>
+                <footer>
+                    <p>Published: <time datetime="2025-04-19T00:00:00-07:00"> Sat 19 April 2025 </time></p>
+                    <address>By
+                        <a href="./author/rivassec.html">RivasSec</a>
+                    </address>
+                </footer>
+        </article>
+        <article>
+                <header> <h2><a href="./oom-killer-process-prioritization-revised.html" rel="bookmark" title="Permalink to Taming the OOM Killer: Process Prioritization for Memory-Constrained Linux Systems">Taming the OOM Killer: Process Prioritization for Memory-Constrained Linux Systems</a></h2> </header>
+                <section><p>A practical and security-aware guide to defending critical processes from the Linux Out of Memory Killer by adjusting oom_score_adj dynamically at runtime.</p></section>
+                <footer>
+                    <p>Published: <time datetime="2025-04-18T00:00:00-07:00"> Fri 18 April 2025 </time></p>
+                    <address>By
+                        <a href="./author/oliver-rivas.html">Oliver Rivas</a>
+                    </address>
+                </footer>
+        </article>
+        <article>
+                <header> <h2><a href="./venezuela-twitter-proxy-osint.html" rel="bookmark" title="Permalink to Catching a Nation-State Proxy: OSINT Lessons from the Twitter Frontlines">Catching a Nation-State Proxy: OSINT Lessons from the Twitter Frontlines</a></h2> </header>
+                <section><p>In 2012, I uncovered a suspicious Twitter proxy linked to Venezuela's ruling party. This post revisits that discovery and breaks down the open-source investigation techniques still relevant to threat analysts today.</p></section>
+                <footer>
+                    <p>Published: <time datetime="2025-04-17T00:00:00-07:00"> Thu 17 April 2025 </time></p>
+                    <address>By
+                        <a href="./author/oliver-rivas.html">Oliver Rivas</a>
+                    </address>
+                </footer>
+        </article>
+        <article>
+                <header> <h2><a href="./208-day-kernel-bug-lessons.html" rel="bookmark" title="Permalink to The 208.5-Day Kernel Bug: A Lesson in Uptime, Overflow, and Operational Risk">The 208.5-Day Kernel Bug: A Lesson in Uptime, Overflow, and Operational Risk</a></h2> </header>
+                <section><p>A historical Linux kernel bug that caused CPU lockups after 208.5 days of uptime offers timeless lessons in patching, observability, and managing operational risk in modern DevSecOps environments.</p></section>
+                <footer>
+                    <p>Published: <time datetime="2025-04-16T00:00:00-07:00"> Wed 16 April 2025 </time></p>
+                    <address>By
+                        <a href="./author/oliver-rivas.html">Oliver Rivas</a>
+                    </address>
+                </footer>
+        </article>
+        <article>
+                <header> <h2><a href="./leap-second-chaos-2012-revised.html" rel="bookmark" title="Permalink to The Chaos of the Leap Second (2012): When Time Broke Java and the Cloud">The Chaos of the Leap Second (2012): When Time Broke Java and the Cloud</a></h2> </header>
+                <section><p>A retrospective on the infamous 2012 leap second bug — how a single second disrupted global services, exposed timekeeping flaws in Java, and triggered cascading failures across the cloud.</p></section>
+                <footer>
+                    <p>Published: <time datetime="2025-04-15T00:00:00-07:00"> Tue 15 April 2025 </time></p>
+                    <address>By
+                        <a href="./author/oliver-rivas.html">Oliver Rivas</a>
+                    </address>
+                </footer>
+        </article>
 
-                            <li><a href="https://github.com/rivassec">GitHub</a></li>
-                            <li><a href="https://linkedin.com/in/9082311s2">LinkedIn</a></li>
-                        </ul>
-                </div><!-- /.social -->
-        </section><!-- /#extras -->
 
-        <footer id="contentinfo" class="body">
-                <address id="about" class="vcard body">
-                Proudly powered by <a rel="nofollow" href="https://getpelican.com/">Pelican</a>, which takes great advantage of <a rel="nofollow" href="https://www.python.org/">Python</a>.
-                </address><!-- /#about -->
-
-                <p>The theme is by <a rel="nofollow" href="https://www.smashingmagazine.com/2009/08/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
-        </footer><!-- /#contentinfo -->
-
+        </main>
+        <footer>
+                <address>
+                Proudly powered by <a rel="nofollow" href="https://getpelican.com/">Pelican</a>,
+                which takes great advantage of <a rel="nofollow" href="https://www.python.org/">Python</a>.
+                </address>
+        </footer>
 </body>
 </html>
