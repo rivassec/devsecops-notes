@@ -27,8 +27,8 @@ BROWSER_COLOR = '#222222'
 PYGMENTS_STYLE = 'monokai'
 
 # Optional site assets
-SITELOGO = '/images/avatar.png'  # Optional: place avatar in content/images/
-FAVICON = '/images/favicon.ico'  # Optional
+SITELOGO = '/images/avatar.png'  # Must exist in content/images/
+FAVICON = '/images/favicon.ico'
 EXTRA_PATH_METADATA = {
     'images/favicon.ico': {'path': 'favicon.ico'},
     'images/avatar.png': {'path': 'avatar.png'},
@@ -37,7 +37,7 @@ EXTRA_PATH_METADATA = {
 # Social widget
 SOCIAL = (
     ("GitHub", "https://github.com/rivassec"),
-    ("LinkedIn", "https://linkedin.com/in/9082311s2"),
+#    ("LinkedIn", "https://linkedin.com/in/9082311s2"),
 )
 GITHUB_URL = "https://github.com/rivassec"
 
@@ -48,4 +48,3 @@ DEFAULT_PAGINATION = 10
 
 # Development
 RELATIVE_URLS = True
-
