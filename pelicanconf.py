@@ -27,8 +27,8 @@ BROWSER_COLOR = '#222222'
 PYGMENTS_STYLE = 'monokai'
 
 # Optional site assets
-SITELOGO = '/images/avatar.png'  # Must exist in content/images/
-FAVICON = '/images/favicon.ico'
+SITELOGO = 'images/avatar.png'
+FAVICON = 'images/favicon.ico'
 EXTRA_PATH_METADATA = {
     'images/favicon.ico': {'path': 'images/favicon.ico'},
     'images/avatar.png': {'path': 'images/avatar.png'},
