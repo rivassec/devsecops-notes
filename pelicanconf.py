@@ -28,6 +28,7 @@ PYGMENTS_STYLE = 'monokai'
 
 # Optional site assets
 SITELOGO = 'images/avatar.png'
+SITELOGO_SIZE = 32
 FAVICON = 'images/favicon.ico'
 EXTRA_PATH_METADATA = {
     'images/favicon.ico': {'path': 'images/favicon.ico'},
@@ -49,3 +50,9 @@ DEFAULT_PAGINATION = 10
 # Development
 RELATIVE_URLS = True
 
+TAG_CLOUD_MAX_ITEMS = 10
+MENUITEMS = [
+    ('Home', '/'),
+    ('GitHub', 'https://github.com/rivassec'),
+]
+SUMMARY_MAX_LENGTH = 350  # words
