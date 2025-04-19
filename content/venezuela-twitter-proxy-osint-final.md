@@ -3,8 +3,8 @@ Date: 2025-04-17
 Tags: osint, threat-intelligence, phishing, venezuela, twitter, surveillance, devsecops
 Category: Threat Intelligence
 Slug: venezuela-twitter-proxy-osint
-Author: Oliver Rivas
-Summary: In 2012, I uncovered a suspicious Twitter proxy linked to Venezuela's ruling party. This post revisits that discovery and breaks down the open-source investigation techniques still relevant to threat analysts today.
+Author: RivasSec
+Summary: In 2012, I uncovered a state-aligned Twitter proxy tied to Venezuela’s ruling party. It mimicked Twitter, redirected traffic, and risked phishing user credentials. This post breaks down the OSINT methods I used to uncover it — and why threat intel teams still need to watch for subtle, state-run infrastructure.
 
 ---
 

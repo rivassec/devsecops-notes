@@ -3,8 +3,8 @@ Date: 2025-04-15
 Tags: leap-second, kernel, linux, java, ntp, distributed-systems, devops, sre, incident-retrospective
 Category: Incident Retrospectives
 Slug: leap-second-chaos-2012
-Author: Oliver Rivas
-Summary: A retrospective on the infamous 2012 leap second bug — how a single second disrupted global services, exposed timekeeping flaws in Java, and triggered cascading failures across the cloud.
+Author: RivasSec
+Summary: In 2012, a single leap second triggered global outages across Reddit, Yelp, and more. This retrospective unpacks how fragile timekeeping broke Java apps at scale, and what DevOps, SRE, and distributed systems teams can do today to avoid repeating history.
 
 ---
 
