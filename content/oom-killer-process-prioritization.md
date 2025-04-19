@@ -4,7 +4,8 @@ Tags: linux, oomkiller, memory, system-administration, devsecops, process-manage
 Category: DevSecOps
 Slug: oom-killer-process-prioritization
 Author: RivasSec
-Summary: A practical and security-aware guide to defending critical processes from the Linux Out of Memory Killer by adjusting oom_score_adj dynamically at runtime.
+Summary: In memory-constrained environments, the Linux OOM Killer decides what lives and what gets killed. This guide shows how to protect critical processes like sshd and mysqld using oom_score_adj values, with a script that applies them reliably and securely. Make memory pressure predictable and survivable.
+
 
 In resource-constrained environments — especially virtual private servers, CI agents, and container hosts — the Linux kernel's **Out of Memory Killer (OOM Killer)** is a last-resort defense mechanism. When memory is exhausted, it begins terminating processes to keep the system alive.
 

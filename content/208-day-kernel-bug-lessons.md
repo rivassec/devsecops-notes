@@ -4,7 +4,7 @@ Tags: kernel, bug, Linux, uptime, overflow, devsecops, integer-overflow
 Category: DevSecOps
 Slug: 208-day-kernel-bug-lessons
 Author: RivasSec
-Summary: A historical Linux kernel bug that caused CPU lockups after 208.5 days of uptime offers timeless lessons in patching, observability, and managing operational risk in modern DevSecOps environments.
+Summary: A 2012 Linux kernel bug caused CPU lockups after 208.5 days of uptime due to an integer overflow in sched_clock(). Affecting RHEL 5 and 6, it exposed the risks of long uptimes, underscoring the importance of timely patching, uptime observability, and operational risk management in DevSecOps.
 
 In 2012, a subtle but potentially catastrophic bug was discovered in older versions of the Linux kernel — particularly affecting Red Hat Enterprise Linux (RHEL) and its derivatives. Once a system reached **208.5 days of continuous uptime**, a flaw in the kernel’s `sched_clock()` function could trigger a soft lockup, freezing the CPU for an estimated **584 years**.
 
