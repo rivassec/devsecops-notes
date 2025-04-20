@@ -35,6 +35,17 @@ EXTRA_PATH_METADATA = {
     'images/avatar.png': {'path': 'images/avatar.png'},
 }
 
+# Plugins
+PLUGIN_PATHS = ['plugins']
+PLUGINS = ['include_code']
+IGNORE_FILES = ['_external/elasticsearch-tools/docs/README.md',
+                '_external/elasticsearch-tools/scripts/README.md']
+ARTICLE_EXCLUDES = [
+    'content/_external/elasticsearch-tools/scripts/README.md',
+    'content/_external/elasticsearch-tools/docs/README.md',
+    'content/_external/elasticsearch-tools/README.md'
+]
+
 # Social widget
 SOCIAL = (
     ("GitHub", "https://github.com/rivassec"),

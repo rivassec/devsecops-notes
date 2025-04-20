@@ -104,6 +104,26 @@
 
 <article>
   <header>
+    <h2><a href="./elasticsearch-secure-snapshot-verification.html#elasticsearch-secure-snapshot-verification">Secure Snapshot Verification in Elasticsearch with Minimal Privileges</a></h2>
+    <p>
+      Posted on Sun 20 April 2025 in <a href="./category/devsecops.html">DevSecOps</a>
+
+          &#8226; Tagged with
+              <a href="./tag/elasticsearch.html">elasticsearch</a>,              <a href="./tag/snapshot.html">snapshot</a>,              <a href="./tag/security.html">security</a>,              <a href="./tag/observability.html">observability</a>,              <a href="./tag/prometheus.html">prometheus</a>,              <a href="./tag/minimal-permissions.html">minimal-permissions</a>
+    </p>
+  </header>
+  <div>
+      <div><p>Learn how to securely verify Elasticsearch snapshots without using <code>manage_snapshot</code>, using a minimal API key, Prometheus-compatible script, and hardened monitoring practices. Includes a GitHub tools repo for automation.</p></div>
+        <br>
+        <a class="btn"
+           href="./elasticsearch-secure-snapshot-verification.html#elasticsearch-secure-snapshot-verification">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="./hardening-k8s.html#hardening-k8s">Hardening Kubernetes Deployments</a></h2>
     <p>
       Posted on Sat 19 April 2025 in <a href="./category/kubernetes-security.html">Kubernetes Security</a>
@@ -113,7 +133,7 @@
     </p>
   </header>
   <div>
-      <div><p>Practical hardening tips using the Restricted Pod Security Standard.</p></div>
+      <div><p>Hardening Kubernetes workloads goes beyond RBAC tweaks or image scans. This post shares field-tested pod-level guardrails—like non-root containers, dropped Linux capabilities, and read-only filesystems—aligned with the Pod Security Standards (Restricted profile).</p></div>
         <br>
         <a class="btn"
            href="./hardening-k8s.html#hardening-k8s">
@@ -133,7 +153,7 @@
     </p>
   </header>
   <div>
-      <div><p>A practical and security-aware guide to defending critical processes from the Linux Out of Memory Killer by adjusting oom_score_adj dynamically at runtime.</p></div>
+      <div><p>In memory-constrained environments, the Linux OOM Killer decides what lives and what gets killed. This guide shows how to protect critical processes like sshd and mysqld using oom_score_adj values, with a script that applies them reliably and securely. Make memory pressure predictable and survivable.</p></div>
         <br>
         <a class="btn"
            href="./oom-killer-process-prioritization.html#oom-killer-process-prioritization">
@@ -153,7 +173,7 @@
     </p>
   </header>
   <div>
-      <div><p>In 2012, I uncovered a suspicious Twitter proxy linked to Venezuela's ruling party. This post revisits that discovery and breaks down the open-source investigation techniques still relevant to threat analysts today.</p></div>
+      <div><p>In 2012, I uncovered a state-aligned Twitter proxy tied to Venezuela’s ruling party. It mimicked Twitter, redirected traffic, and risked phishing user credentials. This post breaks down the OSINT methods I used to uncover it — and why threat intel teams still need to watch for subtle, state-run infrastructure.</p></div>
         <br>
         <a class="btn"
            href="./venezuela-twitter-proxy-osint.html#venezuela-twitter-proxy-osint">
@@ -173,7 +193,7 @@
     </p>
   </header>
   <div>
-      <div><p>A historical Linux kernel bug that caused CPU lockups after 208.5 days of uptime offers timeless lessons in patching, observability, and managing operational risk in modern DevSecOps environments.</p></div>
+      <div><p>A 2012 Linux kernel bug caused CPU lockups after 208.5 days of uptime due to an integer overflow in sched_clock(). Affecting RHEL 5 and 6, it exposed the risks of long uptimes, underscoring the importance of timely patching, uptime observability, and operational risk management in DevSecOps.</p></div>
         <br>
         <a class="btn"
            href="./208-day-kernel-bug-lessons.html#208-day-kernel-bug-lessons">
@@ -193,7 +213,7 @@
     </p>
   </header>
   <div>
-      <div><p>A retrospective on the infamous 2012 leap second bug — how a single second disrupted global services, exposed timekeeping flaws in Java, and triggered cascading failures across the cloud.</p></div>
+      <div><p>In 2012, a single leap second triggered global outages across Reddit, Yelp, and more. This retrospective unpacks how fragile timekeeping broke Java apps at scale, and what DevOps, SRE, and distributed systems teams can do today to avoid repeating history.</p></div>
         <br>
         <a class="btn"
            href="./leap-second-chaos-2012.html#leap-second-chaos-2012">
