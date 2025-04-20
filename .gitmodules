@@ -1,0 +1,3 @@
+[submodule "content/_external/elasticsearch-tools"]
+	path = content/_external/elasticsearch-tools
+	url = https://github.com/rivassec/elasticsearch-tools
