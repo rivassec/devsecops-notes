@@ -64,7 +64,7 @@ RELATIVE_URLS = True
 TAG_CLOUD_MAX_ITEMS = 10
 MENUITEMS = [
     ('GitHub', 'https://github.com/rivassec'),
-    ('Categories', 'categories.html'),    
+    ('Categories', 'categories.html'),
 ]
 SUMMARY_MAX_LENGTH = 350  # words
 DIRECT_TEMPLATES = ['index', 'categories', 'tags', 'archives']
