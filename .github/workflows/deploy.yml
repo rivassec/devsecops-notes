@@ -29,6 +29,9 @@ jobs:
         run: |
           pelican content -o output -s pelicanconf.py
 
+      - name: Add CNAME file
+        run: echo rivassec.com > output/CNAME
+
       - name: Deploy to GitHub Pages
         run: |
           ghp-import output -b gh-pages
