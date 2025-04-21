@@ -33,4 +33,5 @@ jobs:
         run: |
           ghp-import output -b gh-pages
           git push origin gh-pages --force
-
+          ghp-import output -b gh-blog
+          git push origin gh-blog --force
