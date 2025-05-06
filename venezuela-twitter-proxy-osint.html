@@ -1,0 +1,234 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="./theme/stylesheet/style.min.css">
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="./theme/pygments/monokai.min.css">
+
+
+
+  <link rel="stylesheet" type="text/css" href="./theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="./theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="./theme/font-awesome/css/solid.css">
+
+  <link rel="stylesheet" type="text/css" href="./static/custom.css">
+
+  <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+
+  <!-- Chrome, Firefox OS and Opera -->
+  <meta name="theme-color" content="#222222">
+  <!-- Windows Phone -->
+  <meta name="msapplication-navbutton-color" content="#222222">
+  <!-- iOS Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!-- Microsoft EDGE -->
+  <meta name="msapplication-TileColor" content="#222222">
+
+
+
+
+
+
+
+
+
+
+<meta name="author" content="RivasSec" />
+<meta name="description" content="In 2012, I uncovered a state-aligned Twitter proxy tied to Venezuela’s ruling party. It mimicked Twitter, redirected traffic, and risked phishing user credentials. This post breaks down the OSINT methods I used to uncover it — and why threat intel teams still need to watch for subtle, state-run infrastructure." />
+<meta name="keywords" content="osint, threat-intelligence, phishing, venezuela, twitter, surveillance, devsecops">
+
+
+  <meta property="og:site_name" content="DevSecOps Notes"/>
+  <meta property="og:title" content="Catching a Nation-State Proxy: OSINT Lessons from the Twitter Frontlines"/>
+  <meta property="og:description" content="In 2012, I uncovered a state-aligned Twitter proxy tied to Venezuela’s ruling party. It mimicked Twitter, redirected traffic, and risked phishing user credentials. This post breaks down the OSINT methods I used to uncover it — and why threat intel teams still need to watch for subtle, state-run infrastructure."/>
+  <meta property="og:locale" content="en_US"/>
+  <meta property="og:url" content="./venezuela-twitter-proxy-osint.html"/>
+  <meta property="og:type" content="article"/>
+  <meta property="article:published_time" content="2025-04-17 00:00:00-07:00"/>
+  <meta property="article:modified_time" content=""/>
+  <meta property="article:author" content="./author/rivassec.html">
+  <meta property="article:section" content="Threat Intelligence"/>
+  <meta property="article:tag" content="osint"/>
+  <meta property="article:tag" content="threat-intelligence"/>
+  <meta property="article:tag" content="phishing"/>
+  <meta property="article:tag" content="venezuela"/>
+  <meta property="article:tag" content="twitter"/>
+  <meta property="article:tag" content="surveillance"/>
+  <meta property="article:tag" content="devsecops"/>
+  <meta property="og:image" content="images/avatar.png">
+
+  <title>DevSecOps Notes &ndash; Catching a Nation-State Proxy: OSINT Lessons from the Twitter Frontlines</title>
+
+
+</head>
+<body class="light-theme">
+
+<aside>
+  <div>
+    <a href="./">
+      <img src="images/avatar.png" alt="" title="">
+    </a>
+
+    <h1>
+      <a href="./"></a>
+    </h1>
+
+    <p>Infrastructure. Security. Insight.</p>
+
+
+
+    <ul class="social">
+      <li>
+        <a class="sc-GitHub"
+           href="https://github.com/rivassec"
+           target="_blank">
+          <i class="fa-brands fa-GitHub"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+</aside>
+  <main>
+
+<nav>
+  <a href="./">Home</a>
+
+  <a href="https://github.com/rivassec">GitHub</a>
+  <a href="categories.html">Categories</a>
+
+
+</nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="venezuela-twitter-proxy-osint">Catching a Nation-State Proxy: OSINT Lessons from the Twitter Frontlines</h1>
+    <p>
+      Posted on Thu 17 April 2025 in <a href="./category/threat-intelligence.html">Threat Intelligence</a>
+
+    </p>
+  </header>
+
+
+  <div>
+    <hr>
+<h2>🛰️ Situation</h2>
+<p>In the lead-up to Venezuela’s 2012 regional elections, I observed unusual behavior around Twitter access within the country. What began as anecdotal reports of DNS outages evolved into a deeper investigation that revealed a state-aligned proxy infrastructure potentially capable of phishing Twitter credentials.</p>
+<hr>
+<h2>🧠 Key Finding</h2>
+<p>A subdomain under <code>chavezcandanga.org.ve</code> — the official handle of then-President Hugo Chávez — was hosting a <strong>transparent proxy to Twitter</strong>.
+A transparent proxy intercepts user traffic without modifying requests or requiring configuration, making it ideal for passive surveillance or phishing.</p>
+<p>While it initially showed no malicious behavior, it was:</p>
+<ul>
+<li>Hosted on IP addresses <strong>outside of Twitter’s ranges</strong></li>
+<li>Registered under infrastructure owned by the Venezuelan government (PSUV – <em>Partido Socialista Unido de Venezuela</em>)</li>
+<li>Promoted through state-controlled media and bot accounts</li>
+<li>Served from the same IP as a political messaging app</li>
+</ul>
+<hr>
+<h2>🔎 OSINT Breakdown</h2>
+<h3>1. ✅ DNS Resolution</h3>
+<div class="highlight"><pre><span></span><code>host<span class="w"> </span>twitter.com
+</code></pre></div>
+
+<p>Returned expected Twitter IPs (199.59.x.x), but users in Venezuela were silently being redirected to:</p>
+<div class="highlight"><pre><span></span><code><span class="m">190</span>.202.80.20
+</code></pre></div>
+
+<p>This IP <strong>served Twitter content</strong> but was not operated by Twitter Inc.</p>
+<p>It’s unclear whether this redirection was caused by ISP DNS override, local resolver poisoning, or upstream hijack — but the net effect was consistent: Twitter domains were silently redirected to non-Twitter infrastructure under state control.</p>
+<hr>
+<h3>2. ✅ WHOIS and Hosting Clues</h3>
+<div class="highlight"><pre><span></span><code>whois<span class="w"> </span>chavezcandanga.org.ve
+</code></pre></div>
+
+<p>Revealed that the domain was registered to <strong>PSUV</strong> (<em>Partido Socialista Unido de Venezuela</em>) and managed through CONATEL — Venezuela’s FCC-equivalent telecommunications regulator.</p>
+<p><img alt="WHOIS output showing chavzescandanga.org.ve registered to PSUV" src="./images/who-is-chavezcandanga-com.jpg">
+<em>Figure: WHOIS lookup confirms chavzescandanga.org.ve is registered to PSUV, with administrative and technical contacts using @psuv.org.ve emails.</em></p>
+<hr>
+<h3>3. ✅ Application Infrastructure</h3>
+<p>The same server IP hosted:</p>
+<ul>
+<li><code>mensajes.chavezcandanga.org.ve</code> – a campaign messaging platform</li>
+<li>A proxy script that mirrored Twitter’s login screen</li>
+</ul>
+<p><img alt="Screenshot of chavzescandanga.org.ve auto-retweet app" src="./images/chavezcandanga-web.jpg">
+<em>Figure: The official chavzescandanga.org.ve campaign app asks users to authenticate with Twitter to enable automatic retweets of Chávez's posts.</em></p>
+<p>At the time of discovery, this site <strong>did not contain malicious code</strong>, but the potential for <strong>credential harvesting</strong> during peak election activity was substantial. The authentication flow mimicked Twitter’s branding and prompted users to log in — creating a window for silent credential capture, token misuse, or targeted amplification based on follower behavior.</p>
+<hr>
+<h2>🔐 Threat Model &amp; Implications</h2>
+<ul>
+<li><strong>Credential Harvesting Risk</strong>: Even without malware, a proxy to Twitter login enables password theft.</li>
+<li><strong>Social Media Control</strong>: Through automated bots, the government amplified its message while monitoring access points.</li>
+<li><strong>Authentication-layer surveillance</strong>: Intercepting Twitter logins enables password theft, identity tracking, or selective disinformation at the user level.</li>
+<li><strong>Infrastructure trust erosion</strong>: Even minor state-level interference with DNS or TLS undermines confidence in web authentication across the board.</li>
+<li><strong>Evasion of International Scrutiny</strong>: By mimicking Twitter directly, users could be deceived into trusting a controlled proxy.</li>
+</ul>
+<hr>
+<h2>🧰 Lessons for DevSecOps &amp; Threat Intelligence Today</h2>
+<ul>
+<li><strong>Verify SSL and domain trust chains</strong> during high-risk periods like elections.</li>
+<li>Use <code>host</code>, <code>whois</code>, and passive DNS to correlate domains and IP ranges.</li>
+<li>Watch for <strong>content delivery mismatches</strong> (site appears normal, IP is not).</li>
+<li>Document and archive suspicious infra using tools like the Wayback Machine.</li>
+<li>Phishing infrastructure can be <strong>state-sponsored and subtle</strong> — early detection matters.</li>
+</ul>
+<hr>
+<h2>📅 Epilogue</h2>
+<p>The proxy remained active until at least December 2012, shortly before elections. To this day, the archived proxy content and WHOIS records serve as a warning about the ease with which social media can be co-opted in hostile environments.</p>
+<p>This investigation was one of the earliest times I realized how fragile trusted infrastructure becomes in the hands of a motivated actor — and how critical open-source techniques are in defending it.</p>
+<hr>
+<p><strong>Have you ever spotted unusual network redirections or infrastructure anomalies? What tools or tactics helped you confirm your suspicions?</strong></p>
+<p><em>Originally published in 2012 and revisited in 2025 to reflect current DevSecOps and threat intelligence practices.</em></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="./tag/osint.html">osint</a>
+      <a href="./tag/threat-intelligence.html">threat-intelligence</a>
+      <a href="./tag/phishing.html">phishing</a>
+      <a href="./tag/venezuela.html">venezuela</a>
+      <a href="./tag/twitter.html">twitter</a>
+      <a href="./tag/surveillance.html">surveillance</a>
+      <a href="./tag/devsecops.html">devsecops</a>
+    </p>
+  </div>
+
+
+
+
+
+
+</article>
+
+<footer>
+<p>&copy;  RivasSec</p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p></footer>  </main>
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " DevSecOps Notes ",
+  "url" : ".",
+  "image": "images/avatar.png",
+  "description": ""
+}
+</script>
+</body>
+</html>

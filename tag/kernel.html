@@ -1,0 +1,166 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="../theme/stylesheet/style.min.css">
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="../theme/pygments/monokai.min.css">
+
+
+
+  <link rel="stylesheet" type="text/css" href="../theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="../theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="../theme/font-awesome/css/solid.css">
+
+  <link rel="stylesheet" type="text/css" href="../static/custom.css">
+
+  <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+
+  <!-- Chrome, Firefox OS and Opera -->
+  <meta name="theme-color" content="#222222">
+  <!-- Windows Phone -->
+  <meta name="msapplication-navbutton-color" content="#222222">
+  <!-- iOS Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!-- Microsoft EDGE -->
+  <meta name="msapplication-TileColor" content="#222222">
+
+
+
+
+
+
+
+
+
+
+    <meta name="author" content="RivasSec" />
+    <meta name="description" content="" />
+  <meta property="og:site_name" content="DevSecOps Notes"/>
+  <meta property="og:type" content="blog"/>
+  <meta property="og:title" content="DevSecOps Notes"/>
+  <meta property="og:description" content=""/>
+  <meta property="og:locale" content="en_US"/>
+  <meta property="og:url" content=".."/>
+  <meta property="og:image" content="images/avatar.png">
+
+  <title>DevSecOps Notes &ndash; Tag kernel</title>
+
+
+</head>
+<body class="light-theme">
+
+<aside>
+  <div>
+    <a href="../">
+      <img src="images/avatar.png" alt="" title="">
+    </a>
+
+    <h1>
+      <a href="../"></a>
+    </h1>
+
+    <p>Infrastructure. Security. Insight.</p>
+
+
+
+    <ul class="social">
+      <li>
+        <a class="sc-GitHub"
+           href="https://github.com/rivassec"
+           target="_blank">
+          <i class="fa-brands fa-GitHub"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+</aside>
+  <main>
+
+<nav>
+  <a href="../">Home</a>
+
+  <a href="https://github.com/rivassec">GitHub</a>
+  <a href="categories.html">Categories</a>
+
+
+</nav>
+
+
+
+<article>
+  <header>
+    <h2><a href="../208-day-kernel-bug-lessons.html#208-day-kernel-bug-lessons">The 208.5-Day Kernel Bug: A Lesson in Uptime, Overflow, and Operational Risk</a></h2>
+    <p>
+      Posted on Wed 16 April 2025 in <a href="../category/devsecops.html">DevSecOps</a>
+
+          &#8226; Tagged with
+              <a href="../tag/kernel.html">kernel</a>,              <a href="../tag/bug.html">bug</a>,              <a href="../tag/linux.html">Linux</a>,              <a href="../tag/uptime.html">uptime</a>,              <a href="../tag/overflow.html">overflow</a>,              <a href="../tag/devsecops.html">devsecops</a>,              <a href="../tag/integer-overflow.html">integer-overflow</a>
+    </p>
+  </header>
+  <div>
+      <div><p>A 2012 Linux kernel bug caused CPU lockups after 208.5 days of uptime due to an integer overflow in sched_clock(). Affecting RHEL 5 and 6, it exposed the risks of long uptimes, underscoring the importance of timely patching, uptime observability, and operational risk management in DevSecOps.</p></div>
+        <br>
+        <a class="btn"
+           href="../208-day-kernel-bug-lessons.html#208-day-kernel-bug-lessons">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="../leap-second-chaos-2012.html#leap-second-chaos-2012">The Chaos of the Leap Second (2012): When Time Broke Java and the Cloud</a></h2>
+    <p>
+      Posted on Tue 15 April 2025 in <a href="../category/incident-retrospectives.html">Incident Retrospectives</a>
+
+          &#8226; Tagged with
+              <a href="../tag/leap-second.html">leap-second</a>,              <a href="../tag/kernel.html">kernel</a>,              <a href="../tag/linux.html">linux</a>,              <a href="../tag/java.html">java</a>,              <a href="../tag/ntp.html">ntp</a>,              <a href="../tag/distributed-systems.html">distributed-systems</a>,              <a href="../tag/devops.html">devops</a>,              <a href="../tag/sre.html">sre</a>,              <a href="../tag/incident-retrospective.html">incident-retrospective</a>
+    </p>
+  </header>
+  <div>
+      <div><p>In 2012, a single leap second triggered global outages across Reddit, Yelp, and more. This retrospective unpacks how fragile timekeeping broke Java apps at scale, and what DevOps, SRE, and distributed systems teams can do today to avoid repeating history.</p></div>
+        <br>
+        <a class="btn"
+           href="../leap-second-chaos-2012.html#leap-second-chaos-2012">
+          Continue reading
+        </a>
+  </div>
+</article>
+
+  <div class="pagination">
+  </div>
+
+
+
+<footer>
+<p>&copy;  RivasSec</p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p></footer>  </main>
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " DevSecOps Notes ",
+  "url" : "..",
+  "image": "images/avatar.png",
+  "description": ""
+}
+</script>
+</body>
+</html>
