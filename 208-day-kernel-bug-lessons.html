@@ -1,0 +1,196 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="./theme/stylesheet/style.min.css">
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="./theme/pygments/monokai.min.css">
+
+
+
+  <link rel="stylesheet" type="text/css" href="./theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="./theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="./theme/font-awesome/css/solid.css">
+
+  <link rel="stylesheet" type="text/css" href="./static/custom.css">
+
+  <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+
+  <!-- Chrome, Firefox OS and Opera -->
+  <meta name="theme-color" content="#222222">
+  <!-- Windows Phone -->
+  <meta name="msapplication-navbutton-color" content="#222222">
+  <!-- iOS Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!-- Microsoft EDGE -->
+  <meta name="msapplication-TileColor" content="#222222">
+
+
+
+
+
+
+
+
+
+
+<meta name="author" content="RivasSec" />
+<meta name="description" content="A 2012 Linux kernel bug caused CPU lockups after 208.5 days of uptime due to an integer overflow in sched_clock(). Affecting RHEL 5 and 6, it exposed the risks of long uptimes, underscoring the importance of timely patching, uptime observability, and operational risk management in DevSecOps." />
+<meta name="keywords" content="kernel, bug, Linux, uptime, overflow, devsecops, integer-overflow">
+
+
+  <meta property="og:site_name" content="DevSecOps Notes"/>
+  <meta property="og:title" content="The 208.5-Day Kernel Bug: A Lesson in Uptime, Overflow, and Operational Risk"/>
+  <meta property="og:description" content="A 2012 Linux kernel bug caused CPU lockups after 208.5 days of uptime due to an integer overflow in sched_clock(). Affecting RHEL 5 and 6, it exposed the risks of long uptimes, underscoring the importance of timely patching, uptime observability, and operational risk management in DevSecOps."/>
+  <meta property="og:locale" content="en_US"/>
+  <meta property="og:url" content="./208-day-kernel-bug-lessons.html"/>
+  <meta property="og:type" content="article"/>
+  <meta property="article:published_time" content="2025-04-16 00:00:00-07:00"/>
+  <meta property="article:modified_time" content=""/>
+  <meta property="article:author" content="./author/rivassec.html">
+  <meta property="article:section" content="DevSecOps"/>
+  <meta property="article:tag" content="kernel"/>
+  <meta property="article:tag" content="bug"/>
+  <meta property="article:tag" content="Linux"/>
+  <meta property="article:tag" content="uptime"/>
+  <meta property="article:tag" content="overflow"/>
+  <meta property="article:tag" content="devsecops"/>
+  <meta property="article:tag" content="integer-overflow"/>
+  <meta property="og:image" content="images/avatar.png">
+
+  <title>DevSecOps Notes &ndash; The 208.5-Day Kernel Bug: A Lesson in Uptime, Overflow, and Operational Risk</title>
+
+
+</head>
+<body class="light-theme">
+
+<aside>
+  <div>
+    <a href="./">
+      <img src="images/avatar.png" alt="" title="">
+    </a>
+
+    <h1>
+      <a href="./"></a>
+    </h1>
+
+    <p>Infrastructure. Security. Insight.</p>
+
+
+
+    <ul class="social">
+      <li>
+        <a class="sc-GitHub"
+           href="https://github.com/rivassec"
+           target="_blank">
+          <i class="fa-brands fa-GitHub"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+</aside>
+  <main>
+
+<nav>
+  <a href="./">Home</a>
+
+  <a href="https://github.com/rivassec">GitHub</a>
+  <a href="categories.html">Categories</a>
+
+
+</nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="208-day-kernel-bug-lessons">The 208.5-Day Kernel Bug: A Lesson in Uptime, Overflow, and Operational Risk</h1>
+    <p>
+      Posted on Wed 16 April 2025 in <a href="./category/devsecops.html">DevSecOps</a>
+
+    </p>
+  </header>
+
+
+  <div>
+    <p>In 2012, a subtle but potentially catastrophic bug was discovered in older versions of the Linux kernel — particularly affecting Red Hat Enterprise Linux (RHEL) and its derivatives. Once a system reached <strong>208.5 days of continuous uptime</strong>, a flaw in the kernel’s <code>sched_clock()</code> function could trigger a soft lockup, freezing the CPU for an estimated <strong>584 years</strong>.</p>
+<p>Yes, <strong>584 years</strong>.</p>
+<p>The root cause? An <strong>unsigned 64-bit integer overflow</strong>. The kernel attempted to compute elapsed nanoseconds based on CPU cycles, using this logic:</p>
+<div class="highlight"><pre><span></span><code><span class="cm">/* Simplified representation of the overflow-prone calculation */</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">cpu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">smp_processor_id</span><span class="p">();</span>
+<span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">ns</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">per_cpu</span><span class="p">(</span><span class="n">cyc2ns_offset</span><span class="p">,</span><span class="w"> </span><span class="n">cpu</span><span class="p">);</span>
+<span class="n">ns</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">cyc</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">per_cpu</span><span class="p">(</span><span class="n">cyc2ns</span><span class="p">,</span><span class="w"> </span><span class="n">cpu</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">CYC2NS_SCALE_FACTOR</span><span class="p">;</span>
+<span class="k">return</span><span class="w"> </span><span class="n">ns</span><span class="p">;</span>
+</code></pre></div>
+
+<p>Once the computed value exceeded <code>0xffffffffffffffff</code>, it wrapped around — leading to undefined behavior in the scheduler and an unrecoverable state requiring a manual reboot.</p>
+<hr>
+<h3>Why This Matters to DevSecOps</h3>
+<p>This bug is more than a curiosity — it's a classic case study in:</p>
+<ul>
+<li><strong>The operational danger of long uptimes</strong></li>
+<li><strong>Why kernel patching should be automated and observable</strong></li>
+<li><strong>How integer overflows can lead to severe availability risks</strong></li>
+</ul>
+<p>Affected systems included RHEL 5.0 through 5.5 and early RHEL 6 versions running kernels below <code>2.6.32-220.4.*</code>. Some Debian-based distributions were likely impacted, though documentation was less complete.</p>
+<hr>
+<h3>Takeaways for Modern Systems</h3>
+<ul>
+<li><strong>Live patching tools</strong> like Ksplice, KernelCare, and kpatch can reduce reboot pressure</li>
+<li><strong>Observability stacks</strong> should alert on uptime thresholds and kernel messages (<code>dmesg</code>, <code>uptime</code>, scheduler warnings)</li>
+<li><strong>Compliance frameworks</strong> often require timely OS patching — this bug illustrates why</li>
+<li><strong>CI/CD pipelines for OS-level components</strong> should test for edge cases, including time-based and overflow scenarios</li>
+</ul>
+<hr>
+<p>Even today, this incident reminds us that uptime isn't always a badge of honor. In some cases, it's a quiet countdown to failure.</p>
+<p><em>Originally inspired by a 2012 analysis of the <code>sched_clock()</code> bug affecting Linux systems with prolonged uptime.</em></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="./tag/kernel.html">kernel</a>
+      <a href="./tag/bug.html">bug</a>
+      <a href="./tag/linux.html">Linux</a>
+      <a href="./tag/uptime.html">uptime</a>
+      <a href="./tag/overflow.html">overflow</a>
+      <a href="./tag/devsecops.html">devsecops</a>
+      <a href="./tag/integer-overflow.html">integer-overflow</a>
+    </p>
+  </div>
+
+
+
+
+
+
+</article>
+
+<footer>
+<p>&copy;  RivasSec</p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p></footer>  </main>
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " DevSecOps Notes ",
+  "url" : ".",
+  "image": "images/avatar.png",
+  "description": ""
+}
+</script>
+</body>
+</html>

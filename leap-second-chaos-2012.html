@@ -1,0 +1,225 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="./theme/stylesheet/style.min.css">
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="./theme/pygments/monokai.min.css">
+
+
+
+  <link rel="stylesheet" type="text/css" href="./theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="./theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="./theme/font-awesome/css/solid.css">
+
+  <link rel="stylesheet" type="text/css" href="./static/custom.css">
+
+  <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+
+  <!-- Chrome, Firefox OS and Opera -->
+  <meta name="theme-color" content="#222222">
+  <!-- Windows Phone -->
+  <meta name="msapplication-navbutton-color" content="#222222">
+  <!-- iOS Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!-- Microsoft EDGE -->
+  <meta name="msapplication-TileColor" content="#222222">
+
+
+
+
+
+
+
+
+
+
+<meta name="author" content="RivasSec" />
+<meta name="description" content="In 2012, a single leap second triggered global outages across Reddit, Yelp, and more. This retrospective unpacks how fragile timekeeping broke Java apps at scale, and what DevOps, SRE, and distributed systems teams can do today to avoid repeating history." />
+<meta name="keywords" content="leap-second, kernel, linux, java, ntp, distributed-systems, devops, sre, incident-retrospective">
+
+
+  <meta property="og:site_name" content="DevSecOps Notes"/>
+  <meta property="og:title" content="The Chaos of the Leap Second (2012): When Time Broke Java and the Cloud"/>
+  <meta property="og:description" content="In 2012, a single leap second triggered global outages across Reddit, Yelp, and more. This retrospective unpacks how fragile timekeeping broke Java apps at scale, and what DevOps, SRE, and distributed systems teams can do today to avoid repeating history."/>
+  <meta property="og:locale" content="en_US"/>
+  <meta property="og:url" content="./leap-second-chaos-2012.html"/>
+  <meta property="og:type" content="article"/>
+  <meta property="article:published_time" content="2025-04-15 00:00:00-07:00"/>
+  <meta property="article:modified_time" content=""/>
+  <meta property="article:author" content="./author/rivassec.html">
+  <meta property="article:section" content="Incident Retrospectives"/>
+  <meta property="article:tag" content="leap-second"/>
+  <meta property="article:tag" content="kernel"/>
+  <meta property="article:tag" content="linux"/>
+  <meta property="article:tag" content="java"/>
+  <meta property="article:tag" content="ntp"/>
+  <meta property="article:tag" content="distributed-systems"/>
+  <meta property="article:tag" content="devops"/>
+  <meta property="article:tag" content="sre"/>
+  <meta property="article:tag" content="incident-retrospective"/>
+  <meta property="og:image" content="images/avatar.png">
+
+  <title>DevSecOps Notes &ndash; The Chaos of the Leap Second (2012): When Time Broke Java and the Cloud</title>
+
+
+</head>
+<body class="light-theme">
+
+<aside>
+  <div>
+    <a href="./">
+      <img src="images/avatar.png" alt="" title="">
+    </a>
+
+    <h1>
+      <a href="./"></a>
+    </h1>
+
+    <p>Infrastructure. Security. Insight.</p>
+
+
+
+    <ul class="social">
+      <li>
+        <a class="sc-GitHub"
+           href="https://github.com/rivassec"
+           target="_blank">
+          <i class="fa-brands fa-GitHub"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+</aside>
+  <main>
+
+<nav>
+  <a href="./">Home</a>
+
+  <a href="https://github.com/rivassec">GitHub</a>
+  <a href="categories.html">Categories</a>
+
+
+</nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="leap-second-chaos-2012">The Chaos of the Leap Second (2012): When Time Broke Java and the Cloud</h1>
+    <p>
+      Posted on Tue 15 April 2025 in <a href="./category/incident-retrospectives.html">Incident Retrospectives</a>
+
+    </p>
+  </header>
+
+
+  <div>
+    <hr>
+<h2>🕐 What Happened?</h2>
+<p>On June 30, 2012, a <strong>leap second</strong> was inserted into atomic time via NTP to keep UTC aligned with Earth’s rotation. At 23:59:60 UTC, global systems experienced a hiccup — a single extra second that caused widespread disruptions across Reddit, LinkedIn, Yelp, Google, FourSquare, and many more.</p>
+<p>What followed were 500 errors, high latency, and CPU usage spikes that crippled backend services.</p>
+<hr>
+<h2>🔍 Why Did It Break?</h2>
+<p>Though seemingly minor, the leap second broke systems in subtle and severe ways:</p>
+<ul>
+<li><strong>Java Runtime Sensitivity:</strong> Popular JVM versions at the time failed to handle the repeated 23:59:59 correctly. This triggered runaway CPU usage via thread timing bugs, particularly in services running Hadoop, Cassandra, and Elasticsearch.</li>
+<li><strong>Userland Misbehavior:</strong> While many Linux kernels handled the leap second without panic, userland libraries and runtimes (especially Java) choked under non-monotonic time changes.</li>
+<li><strong>Cloud Weakness Exposure:</strong> An Amazon EC2 outage the day before had already left infrastructure strained. With fewer available instances, systems were more vulnerable when the leap second hit.</li>
+<li><strong>Limited Real-World Testing:</strong> Simulating leap seconds under actual load, in full-stack distributed systems, proved nearly impossible. Pre-patch validations missed edge behavior.</li>
+</ul>
+<hr>
+<h2>🔥 Real-World Impact</h2>
+<p>This bug hit nearly every high-scale Java-based system:</p>
+<ul>
+<li><strong>Stacks</strong>: Cassandra, Hadoop, Elasticsearch, JVM-based schedulers</li>
+<li><strong>Companies</strong>: Reddit, Mozilla, Yelp, LinkedIn, Gawker, Facebook, StumbleUpon</li>
+<li><strong>Behavior</strong>: High CPU loops, 500 errors, frozen services, delayed recovery due to restart complexity</li>
+</ul>
+<p>In many cases, the kernel <em>didn't fail</em> — the chaos came from how services processed time at runtime.</p>
+<hr>
+<h2>🛠️ Mitigation &amp; Takeaways</h2>
+<h3>Immediate Fixes in 2012</h3>
+<ul>
+<li><strong>Rolling Restarts</strong>: Restarting affected Java services often cleared the CPU lock-up, though distributed services like Cassandra made this time-consuming.</li>
+<li><strong>Manual Clock Reset</strong>: Some environments required forcibly resetting system time post-leap second. This fix was often applied via config tools like Puppet:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1"># CAUTION: Only use in environments that can tolerate manual time reset.</span>
+sudo<span class="w"> </span>/etc/init.d/ntp<span class="w"> </span>stop
+date
+date<span class="w"> </span><span class="sb">`</span>date<span class="w"> </span>+<span class="s2">&quot;%m%d%H%M%C%y.%S&quot;</span><span class="sb">`</span>
+date
+sudo<span class="w"> </span>/etc/init.d/ntp<span class="w"> </span>start
+</code></pre></div>
+
+<h3>Modern Resilience Strategies</h3>
+<ul>
+<li><strong>Leap Smearing</strong>: Today’s <code>ntpd</code>, <code>chronyd</code>, and cloud providers use “leap smear” — slowly adjusting clocks over hours to avoid time jumps entirely.</li>
+<li><strong>Use Monotonic Clocks</strong>: Time-sensitive logic should rely on <code>CLOCK_MONOTONIC</code>, not wall-clock time, to measure durations safely.</li>
+</ul>
+<p><img alt="Wall Clock vs Monotonic Time During a Leap Second" src="./images/leap_second_monotonic_vs_wall_clock.png">
+<em>Figure: Monotonic time continues uninterrupted while wall-clock time repeats a second — highlighting why monotonic clocks are preferred for duration tracking.</em></p>
+<ul>
+<li><strong>Monitor Clock Drift</strong>: Observability pipelines should expose clock sync state and NTP drift as first-class metrics.</li>
+<li><strong>Design for Temporal Anomalies</strong>: Distributed systems should assume wall-clock time can regress, freeze, or desync — and gracefully degrade when it does.</li>
+<li><strong>Simulated Testing Isn’t Enough</strong>: Always combine synthetic load with chaos testing under unusual real-world conditions (e.g., leap seconds, DNS failures, NTP skew).</li>
+</ul>
+<hr>
+<h2>📚 Epilogue</h2>
+<p>The 2012 leap second chaos wasn’t caused by incompetence — many teams patched, prepared, and tested. But the leap second hit during degraded cloud capacity, exposed fragile JVM behavior, and stressed assumptions in time-sensitive code.</p>
+<p>A single second exposed fault lines in the foundations of the modern internet.</p>
+<hr>
+<p><strong>What other “just time” failures have caught you off guard in production? Let’s share war stories.</strong></p>
+<p><em>(Originally published in 2012. Revisited and revised in 2025 for modern SREs, DevOps, and distributed systems engineers.)</em></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="./tag/leap-second.html">leap-second</a>
+      <a href="./tag/kernel.html">kernel</a>
+      <a href="./tag/linux.html">linux</a>
+      <a href="./tag/java.html">java</a>
+      <a href="./tag/ntp.html">ntp</a>
+      <a href="./tag/distributed-systems.html">distributed-systems</a>
+      <a href="./tag/devops.html">devops</a>
+      <a href="./tag/sre.html">sre</a>
+      <a href="./tag/incident-retrospective.html">incident-retrospective</a>
+    </p>
+  </div>
+
+
+
+
+
+
+</article>
+
+<footer>
+<p>&copy;  RivasSec</p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p></footer>  </main>
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " DevSecOps Notes ",
+  "url" : ".",
+  "image": "images/avatar.png",
+  "description": ""
+}
+</script>
+</body>
+</html>

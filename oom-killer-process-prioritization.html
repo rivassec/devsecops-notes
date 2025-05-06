@@ -1,0 +1,283 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="./theme/stylesheet/style.min.css">
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="./theme/pygments/monokai.min.css">
+
+
+
+  <link rel="stylesheet" type="text/css" href="./theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="./theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="./theme/font-awesome/css/solid.css">
+
+  <link rel="stylesheet" type="text/css" href="./static/custom.css">
+
+  <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+
+  <!-- Chrome, Firefox OS and Opera -->
+  <meta name="theme-color" content="#222222">
+  <!-- Windows Phone -->
+  <meta name="msapplication-navbutton-color" content="#222222">
+  <!-- iOS Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!-- Microsoft EDGE -->
+  <meta name="msapplication-TileColor" content="#222222">
+
+
+
+
+
+
+
+
+
+
+<meta name="author" content="RivasSec" />
+<meta name="description" content="In memory-constrained environments, the Linux OOM Killer decides what lives and what gets killed. This guide shows how to protect critical processes like sshd and mysqld using oom_score_adj values, with a script that applies them reliably and securely. Make memory pressure predictable and survivable." />
+<meta name="keywords" content="linux, oomkiller, memory, system-administration, devsecops, process-management, hardening">
+
+
+  <meta property="og:site_name" content="DevSecOps Notes"/>
+  <meta property="og:title" content="Taming the OOM Killer: Process Prioritization for Memory-Constrained Linux Systems"/>
+  <meta property="og:description" content="In memory-constrained environments, the Linux OOM Killer decides what lives and what gets killed. This guide shows how to protect critical processes like sshd and mysqld using oom_score_adj values, with a script that applies them reliably and securely. Make memory pressure predictable and survivable."/>
+  <meta property="og:locale" content="en_US"/>
+  <meta property="og:url" content="./oom-killer-process-prioritization.html"/>
+  <meta property="og:type" content="article"/>
+  <meta property="article:published_time" content="2025-04-18 00:00:00-07:00"/>
+  <meta property="article:modified_time" content=""/>
+  <meta property="article:author" content="./author/rivassec.html">
+  <meta property="article:section" content="DevSecOps"/>
+  <meta property="article:tag" content="linux"/>
+  <meta property="article:tag" content="oomkiller"/>
+  <meta property="article:tag" content="memory"/>
+  <meta property="article:tag" content="system-administration"/>
+  <meta property="article:tag" content="devsecops"/>
+  <meta property="article:tag" content="process-management"/>
+  <meta property="article:tag" content="hardening"/>
+  <meta property="og:image" content="images/avatar.png">
+
+  <title>DevSecOps Notes &ndash; Taming the OOM Killer: Process Prioritization for Memory-Constrained Linux Systems</title>
+
+
+</head>
+<body class="light-theme">
+
+<aside>
+  <div>
+    <a href="./">
+      <img src="images/avatar.png" alt="" title="">
+    </a>
+
+    <h1>
+      <a href="./"></a>
+    </h1>
+
+    <p>Infrastructure. Security. Insight.</p>
+
+
+
+    <ul class="social">
+      <li>
+        <a class="sc-GitHub"
+           href="https://github.com/rivassec"
+           target="_blank">
+          <i class="fa-brands fa-GitHub"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+</aside>
+  <main>
+
+<nav>
+  <a href="./">Home</a>
+
+  <a href="https://github.com/rivassec">GitHub</a>
+  <a href="categories.html">Categories</a>
+
+
+</nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="oom-killer-process-prioritization">Taming the OOM Killer: Process Prioritization for Memory-Constrained Linux Systems</h1>
+    <p>
+      Posted on Fri 18 April 2025 in <a href="./category/devsecops.html">DevSecOps</a>
+
+    </p>
+  </header>
+
+
+  <div>
+    <p>In resource-constrained environments — especially virtual private servers, CI agents, and container hosts — the Linux kernel's <strong>Out of Memory Killer (OOM Killer)</strong> is a last-resort defense mechanism. When memory is exhausted, it begins terminating processes to keep the system alive.</p>
+<p>The OOM Killer uses heuristics (like memory usage and the <code>oom_score_adj</code> value) to select processes it deems less essential. But you don’t have to leave that critical decision entirely to the kernel's default logic.</p>
+<hr>
+<h2>📉 The Incident</h2>
+<p>Years ago, I had to recover a VPS via remote console. A quick dive into <code>/var/log/messages</code> showed that the OOM Killer had struck, terminating critical services. The culprit? A perfect storm:</p>
+<ul>
+<li>Web crawlers (Google, Yahoo, Yandex) simultaneously indexing multiple sites</li>
+<li>A torrent tracker and download script both running</li>
+<li>IRC flood attempts while <code>irssi</code> was connected</li>
+</ul>
+<p>This combination overwhelmed system memory. Without process priority tuning, the OOM Killer started targeting processes based on its heuristics, which felt indiscriminate from an operational view as it even took down <code>sshd</code>.</p>
+<hr>
+<h2>⚙️ The Mitigation Strategy</h2>
+<p>You can significantly influence OOM Killer decisions using the <code>/proc/&lt;pid&gt;/oom_score_adj</code> setting for a process. This value ranges from -1000 to +1000. The kernel uses this score, combined with memory usage, to decide kill priority; a lower score makes the process less likely to be chosen relative to others.</p>
+<ul>
+<li>A value of <code>-1000</code> effectively disables OOM killing for that process.</li>
+<li>A value of <code>+1000</code> makes it a highly preferred target.</li>
+<li><code>0</code> is the default.</li>
+</ul>
+<p>Here’s a script that reads preferences from a config file and adjusts running process scores accordingly.</p>
+<h3><code>/etc/oom_candidates.conf</code></h3>
+<div class="highlight"><pre><span></span><code><span class="gh">#</span> Format: &lt;process_name&gt; &lt;oom_score_adj_value&gt;
+<span class="gh">#</span> Higher = more likely to be killed. Negative = more protected.
+<span class="gh">#</span> Critical Services (Protect Strongly)
+sshd -1000
+mysqld -500
+portsentry -200
+
+<span class="gh">#</span> Important Services (Protect Moderately)
+apache2 100
+
+<span class="gh">#</span> Less Critical Interactive/Background (Allow Killing)
+screen 300
+irssi 400
+</code></pre></div>
+
+<h3><code>oom_adjuster.sh</code></h3>
+<div class="highlight"><pre><span></span><code><span class="ch">#!/bin/bash</span>
+<span class="nv">CONFIG</span><span class="o">=</span><span class="s2">&quot;/etc/oom_candidates.conf&quot;</span>
+
+<span class="k">if</span><span class="w"> </span><span class="o">[[</span><span class="w"> </span>!<span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$CONFIG</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">]]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Error: Config file </span><span class="nv">$CONFIG</span><span class="s2"> not found.&quot;</span><span class="w"> </span>&gt;<span class="p">&amp;</span><span class="m">2</span>
+<span class="w">  </span><span class="nb">exit</span><span class="w"> </span><span class="m">1</span>
+<span class="k">fi</span>
+
+<span class="k">while</span><span class="w"> </span><span class="nv">IFS</span><span class="o">=</span><span class="w"> </span><span class="nb">read</span><span class="w"> </span>-r<span class="w"> </span>line<span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="o">[[</span><span class="w"> </span>-n<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$line</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">]]</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">  </span><span class="o">[[</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$line</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">=</span>~<span class="w"> </span>^#.*$<span class="w"> </span><span class="o">||</span><span class="w"> </span>-z<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$line</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">]]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="k">continue</span>
+<span class="w">  </span><span class="nb">read</span><span class="w"> </span>-r<span class="w"> </span>process<span class="w"> </span>score<span class="w"> </span><span class="o">&lt;&lt;&lt;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$line</span><span class="s2">&quot;</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="o">[[</span><span class="w"> </span>-z<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$process</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">||</span><span class="w"> </span>-z<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$score</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">]]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Warning: Skipping invalid line: </span><span class="nv">$line</span><span class="s2">&quot;</span><span class="w"> </span>&gt;<span class="p">&amp;</span><span class="m">2</span>
+<span class="w">    </span><span class="k">continue</span>
+<span class="w">  </span><span class="k">fi</span>
+
+<span class="w">  </span><span class="nv">pids</span><span class="o">=</span><span class="k">$(</span>pgrep<span class="w"> </span>-x<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$process</span><span class="s2">&quot;</span><span class="k">)</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="o">[[</span><span class="w"> </span>-z<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$pids</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">]]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">    </span><span class="k">continue</span>
+<span class="w">  </span><span class="k">fi</span>
+
+<span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Adjusting OOM score for </span><span class="nv">$process</span><span class="s2"> (PIDs: </span><span class="nv">$pids</span><span class="s2">) to </span><span class="nv">$score</span><span class="s2">&quot;</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span>pid<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="nv">$pids</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">[[</span><span class="w"> </span>-w<span class="w"> </span><span class="s2">&quot;/proc/</span><span class="nv">$pid</span><span class="s2">/oom_score_adj&quot;</span><span class="w"> </span><span class="o">]]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">      </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$score</span><span class="s2">&quot;</span><span class="w"> </span>&gt;<span class="w"> </span><span class="s2">&quot;/proc/</span><span class="nv">$pid</span><span class="s2">/oom_score_adj&quot;</span><span class="w"> </span><span class="m">2</span>&gt;/dev/null
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="o">[[</span><span class="w"> </span><span class="nv">$?</span><span class="w"> </span>-ne<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">]]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">         </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Warning: Failed to set score for </span><span class="nv">$process</span><span class="s2"> (PID: </span><span class="nv">$pid</span><span class="s2">)&quot;</span><span class="w"> </span>&gt;<span class="p">&amp;</span><span class="m">2</span>
+<span class="w">      </span><span class="k">fi</span>
+<span class="w">    </span><span class="k">else</span>
+<span class="w">       </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Warning: Cannot write to oom_score_adj for </span><span class="nv">$process</span><span class="s2"> (PID: </span><span class="nv">$pid</span><span class="s2">)&quot;</span><span class="w"> </span>&gt;<span class="p">&amp;</span><span class="m">2</span>
+<span class="w">    </span><span class="k">fi</span>
+<span class="w">  </span><span class="k">done</span>
+<span class="k">done</span><span class="w"> </span>&lt;<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$CONFIG</span><span class="s2">&quot;</span>
+
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;OOM score adjustment complete.&quot;</span>
+</code></pre></div>
+
+<hr>
+<h2>🧩 Running the Script</h2>
+<p>You can run this periodically via cron or on boot with systemd. For example:</p>
+<h3><code>/etc/systemd/system/oom-adjuster.service</code></h3>
+<div class="highlight"><pre><span></span><code><span class="k">[Unit]</span>
+<span class="na">Description</span><span class="o">=</span><span class="s">Adjust OOM Scores from config file</span>
+<span class="na">After</span><span class="o">=</span><span class="s">network.target</span>
+
+<span class="k">[Service]</span>
+<span class="na">Type</span><span class="o">=</span><span class="s">oneshot</span>
+<span class="na">ExecStart</span><span class="o">=</span><span class="s">/usr/local/bin/oom_adjuster.sh</span>
+
+<span class="k">[Install]</span>
+<span class="na">WantedBy</span><span class="o">=</span><span class="s">multi-user.target</span>
+</code></pre></div>
+
+<p>Then run:</p>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>systemctl<span class="w"> </span>daemon-reload
+sudo<span class="w"> </span>systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>--now<span class="w"> </span>oom-adjuster.service
+</code></pre></div>
+
+<hr>
+<h2>🔐 Security Considerations</h2>
+<p>From a DevSecOps perspective, OOM prioritization is not just about uptime — it’s a security hardening technique:</p>
+<ul>
+<li><strong>SSHD protection</strong> prevents lockouts during memory exhaustion.</li>
+<li><strong>Preserving portsentry or IDS processes</strong> ensures defense mechanisms remain active.</li>
+<li><strong>Avoiding the kill of logging/monitoring agents</strong> helps retain forensic data post-incident.</li>
+<li><strong>Minimizing risk of service flapping</strong> reduces noisy alerts and potential abuse vectors during DoS scenarios.</li>
+</ul>
+<p>Misconfigured systems where critical daemons (like <code>iptables</code>, <code>auditd</code>, <code>sshd</code>, or VPN tunnels) are killed first expose themselves to avoidable downtime and security gaps.</p>
+<hr>
+<h2>✅ Modern Use Cases</h2>
+<ul>
+<li><strong>Kubernetes nodes</strong>: Influence OOM behavior via Quality of Service (QoS) classes (set by defining resource requests/limits in pod specs), or apply node-level tuning using methods like the script above for critical node components (e.g., kubelet, container runtime).</li>
+<li><strong>CI/CD runners</strong>: Protect build agents or essential runner services from being killed during resource-intensive test suites or concurrent builds.</li>
+<li><strong>Shared hosting / VPS</strong>: Prioritize core services (web server, database, SSH) over potentially less critical user processes or background tasks.</li>
+</ul>
+<hr>
+<h2>🔚 Conclusion</h2>
+<p>The OOM Killer is an essential part of the Linux kernel, but leaving process termination order purely to default heuristics can be risky in production. By strategically assigning <code>oom_score_adj</code> values based on business continuity and security priorities, you can significantly reduce recovery time and harden your systems against memory pressure scenarios.</p>
+<p><strong>How does your team manage OOM Killer behavior in critical environments? Share your strategies!</strong></p>
+<p><em>Originally inspired by a real-world VPS recovery and refreshed for the modern DevSecOps landscape.</em></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="./tag/linux.html">linux</a>
+      <a href="./tag/oomkiller.html">oomkiller</a>
+      <a href="./tag/memory.html">memory</a>
+      <a href="./tag/system-administration.html">system-administration</a>
+      <a href="./tag/devsecops.html">devsecops</a>
+      <a href="./tag/process-management.html">process-management</a>
+      <a href="./tag/hardening.html">hardening</a>
+    </p>
+  </div>
+
+
+
+
+
+
+</article>
+
+<footer>
+<p>&copy;  RivasSec</p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p></footer>  </main>
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " DevSecOps Notes ",
+  "url" : ".",
+  "image": "images/avatar.png",
+  "description": ""
+}
+</script>
+</body>
+</html>
