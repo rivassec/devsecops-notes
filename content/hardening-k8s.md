@@ -6,7 +6,7 @@ Slug: hardening-k8s
 Author: RivasSec
 Summary: Hardening Kubernetes workloads goes beyond RBAC tweaks or image scans. This post shares field-tested pod-level guardrails—like non-root containers, dropped Linux capabilities, and read-only filesystems—aligned with the Pod Security Standards (Restricted profile).
 
-Securing Kubernetes workloads isn't just about scanning images or tweaking RBAC — it's about enforcing the right guardrails at the pod level to minimize risk by default. This post shares field-tested strategies aligned with the Pod Security Standards (Restricted profile) to help you build safer, production-grade deployments.
+Securing Kubernetes workloads isn't just about scanning images or tweaking RBAC, it's about enforcing the right guardrails at the pod level to minimize risk by default. This post shares field-tested strategies aligned with the Pod Security Standards (Restricted profile) to help you build safer, production-grade deployments.
 
 ## Key Practices for Hardening Kubernetes Deployments
 
@@ -106,6 +106,6 @@ Mounting secrets as volumes avoids accidental exposure via logs or `/proc`.
 
 ## Final Thoughts
 
-Security isn’t just about tools — it’s about secure defaults. These practices help harden your Kubernetes workloads using the Restricted Pod Security Standard and reduce risks across the board.
+Security isn’t just about tools, it’s about secure defaults. These practices help harden your Kubernetes workloads using the Restricted Pod Security Standard and reduce risks across the board.
 
 If you're managing production clusters or sensitive environments, these changes are low-hanging fruit with a high return on security posture.
