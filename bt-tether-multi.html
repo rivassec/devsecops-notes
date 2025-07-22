@@ -1,0 +1,222 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="./theme/stylesheet/style.min.css">
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="./theme/pygments/monokai.min.css">
+
+
+
+  <link rel="stylesheet" type="text/css" href="./theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="./theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="./theme/font-awesome/css/solid.css">
+
+  <link rel="stylesheet" type="text/css" href="./static/custom.css">
+
+  <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+
+  <!-- Chrome, Firefox OS and Opera -->
+  <meta name="theme-color" content="#222222">
+  <!-- Windows Phone -->
+  <meta name="msapplication-navbutton-color" content="#222222">
+  <!-- iOS Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!-- Microsoft EDGE -->
+  <meta name="msapplication-TileColor" content="#222222">
+
+
+
+
+
+
+
+
+
+
+<meta name="author" content="rivassec" />
+<meta name="description" content="Enhance your Pwnagotchi&#39;s autonomy with bt-tether-multi, a custom plugin offering intelligent multi-phone Bluetooth tethering, automatic WAN failover, and robust connection management." />
+<meta name="keywords" content="pwnagotchi, bluetooth, plugin, networking, python, hacking, automation">
+
+
+  <meta property="og:site_name" content="DevSecOps Notes"/>
+  <meta property="og:title" content="Never Lose Connection: Multi-Phone Bluetooth Tethering for Pwnagotchi"/>
+  <meta property="og:description" content="Enhance your Pwnagotchi&#39;s autonomy with bt-tether-multi, a custom plugin offering intelligent multi-phone Bluetooth tethering, automatic WAN failover, and robust connection management."/>
+  <meta property="og:locale" content="en_US"/>
+  <meta property="og:url" content="./bt-tether-multi.html"/>
+  <meta property="og:type" content="article"/>
+  <meta property="article:published_time" content="2025-07-22 00:00:00-07:00"/>
+  <meta property="article:modified_time" content=""/>
+  <meta property="article:author" content="./author/rivassec.html">
+  <meta property="article:section" content="Projects"/>
+  <meta property="article:tag" content="pwnagotchi"/>
+  <meta property="article:tag" content="bluetooth"/>
+  <meta property="article:tag" content="plugin"/>
+  <meta property="article:tag" content="networking"/>
+  <meta property="article:tag" content="python"/>
+  <meta property="article:tag" content="hacking"/>
+  <meta property="article:tag" content="automation"/>
+  <meta property="og:image" content="images/avatar.png">
+
+  <title>DevSecOps Notes &ndash; Never Lose Connection: Multi-Phone Bluetooth Tethering for Pwnagotchi</title>
+
+
+</head>
+<body class="light-theme">
+
+<aside>
+  <div>
+    <a href="./">
+      <img src="images/avatar.png" alt="" title="">
+    </a>
+
+    <h1>
+      <a href="./"></a>
+    </h1>
+
+    <p>Infrastructure. Security. Insight.</p>
+
+
+
+    <ul class="social">
+      <li>
+        <a class="sc-GitHub"
+           href="https://github.com/rivassec"
+           target="_blank">
+          <i class="fa-brands fa-GitHub"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+</aside>
+  <main>
+
+<nav>
+  <a href="./">Home</a>
+
+  <a href="https://github.com/rivassec">GitHub</a>
+  <a href="categories.html">Categories</a>
+
+
+</nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="bt-tether-multi">Never Lose Connection: Multi-Phone Bluetooth Tethering for Pwnagotchi</h1>
+    <p>
+      Posted on Tue 22 July 2025 in <a href="./category/projects.html">Projects</a>
+
+    </p>
+  </header>
+
+
+  <div>
+    <h2>The Common Pwnagotchi Tethering Problem</h2>
+<p>If you're an active Pwnagotchi user, you've likely faced the frustration of losing internet connectivity in the field. Whether you forgot your primary tethering phone, moved out of range, or encountered a "silent disconnect" where your phone still reports a connection but lacks actual WAN access (like a captive portal redirect), the default Bluetooth tethering often leaves your Pwnagotchi stranded. This means missed opportunities for handshakes and updates.</p>
+<h2>Introducing <code>bt-tether-multi</code>: Your Pwnagotchi's Ultimate Network Backup</h2>
+<p>I built <code>bt-tether-multi</code> to make Pwnagotchi networking resilient and autonomous. This plugin empowers your device to:</p>
+<ul>
+<li><strong>Intelligently Connect:</strong> Configure a list of multiple phones, prioritized by your preference, for seamless Bluetooth tethering.</li>
+<li><strong>Proactive WAN Detection:</strong> Detect actual loss of internet access (not just Bluetooth connection) using real-world checks.</li>
+<li><strong>Automatic Fallback:</strong> Gracefully switch to the next available phone in your list if the current connection drops or loses WAN.</li>
+<li><strong>Smart Retries:</strong> Implement a configurable retry delay to prevent rapid, unproductive cycling through phones during temporary network issues.</li>
+<li><strong>Clear UI Feedback:</strong> Provides immediate visual cues on the Pwnagotchi's e-ink display about its tethering status.</li>
+</ul>
+<h2>How It Works Under the Hood</h2>
+<p><code>bt-tether-multi</code> integrates directly with your Pwnagotchi's system. Upon loading, it reads your carefully defined list of tethering phones from the <code>config.toml</code> file. This configuration includes essential details like the phone's name, MAC address, IP address, and operating system type (Android or iOS) to ensure correct gateway settings.</p>
+<p>The plugin leverages standard Linux networking tools:
+* <strong><code>nmcli</code> (NetworkManager CLI):</strong> Used to programmatically manage Bluetooth connections, including adding, deleting, and bringing up/down network interfaces for your paired phones.
+* <strong><code>curl</code>:</strong> Employed for a fast (<code>--max-time 3</code>), non-intrusive check to <code>https://www.google.com</code> to verify genuine WAN connectivity. If <code>curl</code> can't reach the internet, the plugin considers the WAN lost.</p>
+<h3>UI Status Indicators:</h3>
+<p>The Pwnagotchi's display provides immediate feedback:</p>
+<ul>
+<li><code>B:&lt;name&gt;</code>: Successfully connected to one of your configured phones. The name is truncated for display.</li>
+<li><code>B:???</code>: Bluetooth is connected, but the active phone is not recognized in your configured list. This might indicate an unexpected connection or a misconfiguration.</li>
+<li><code>...</code>: The plugin is currently in the process of rotating through connections or attempting to establish one.</li>
+<li><code>X</code>: Disconnected from all configured phones.</li>
+<li><code>!</code>: A configuration error or plugin-related issue has occurred.</li>
+</ul>
+<p>The sequential fallback and retry logic ensure that your Pwnagotchi stays online with minimal intervention, rotating through your devices until a stable internet connection is found.</p>
+<h2>Installation and Configuration</h2>
+<p>Installing <code>bt-tether-multi</code> is straightforward:</p>
+<ol>
+<li><strong>Download:</strong> Place the plugin file (<code>bt.py</code> from the GitHub repository) into your Pwnagotchi's custom plugin directory (typically <code>/etc/pwnagotchi/custom-plugins/</code>).</li>
+<li>
+<p><strong>Configure:</strong> Add your phone details to your <code>config.toml</code> file. Here's a simplified example of what your <code>config.toml</code> might look like:</p>
+<p><code>toml
+main.plugins.bt-tether-multi.enabled = true
+main.plugins.bt-tether-multi.phones = [
+  { name = "MyAndroid", mac = "XX:XX:XX:XX:XX:XX", ip = "192.168.44.44", type = "android" },
+  { name = "MyiPhone", mac = "YY:YY:YY:YY:YY:YY", ip = "172.20.10.10", type = "ios" },
+]
+main.plugins.bt-tether-multi.retry_delay = 180 # Optional: customize retry delay (seconds)</code>
+<strong>Important:</strong> Replace <code>XX:XX:XX:XX:XX:XX</code> and <code>YY:YY:YY:YY:YY:YY</code> with your actual phone MAC addresses. Ensure your IP addresses match what your phone assigns to the Pwnagotchi's Bluetooth interface.</p>
+</li>
+</ol>
+<p>For a comprehensive guide and the most up-to-date configuration examples, please refer to the <a href="https://github.com/rivassec/bt-tether-multi">GitHub README</a> in the repository.</p>
+<h2>Security Considerations</h2>
+<p>As with any tool that interacts with your system's networking, security is paramount. This plugin has been rigorously scanned with <a href="https://bandit.readthedocs.io">Bandit</a>, a leading Python security linter.</p>
+<p>The scan reported "Low Severity" warnings primarily related to the use of the <code>subprocess</code> module. It's crucial to understand why these are considered acceptable in this context and how they're mitigated:</p>
+<ul>
+<li><strong>No <code>shell=True</code>:</strong> All external commands (<code>nmcli</code>, <code>curl</code>, <code>bluetoothctl</code>) are executed with <code>shell=False</code>. This is a critical security measure as it prevents arbitrary shell command injection by treating all arguments as literal strings, not executable code.</li>
+<li><strong>Full Paths for Executables:</strong> The plugin now uses <code>shutil.which</code> to dynamically determine and use the <strong>absolute file path</strong> for <code>nmcli</code>, <code>curl</code>, and <code>bluetoothctl</code>. This prevents malicious executables from being run if a compromised <code>PATH</code> environment variable is present.</li>
+<li><strong>Strict Input Validation:</strong> All dynamic inputs (like <code>MAC addresses</code>, <code>phone names</code>, and <code>IP addresses</code>) coming from your <code>config.toml</code> are subjected to strict regular expression and <code>ipaddress</code> module validation <em>before</em> being passed to <code>subprocess</code> commands. This ensures that only well-formed and safe values are used.</li>
+<li><strong>Controlled Environment:</strong> Pwnagotchi runs in a specific, often isolated, environment. While caution is always advised, the risk surface is contained compared to a general-purpose server.</li>
+</ul>
+<p>The "Low Severity" warnings are primarily general advisories about the <em>potential</em> for misuse of <code>subprocess</code>, rather than indicative of a direct, exploitable vulnerability in this specific implementation, given the defensive measures taken.</p>
+<h2>Final Thoughts</h2>
+<p><code>bt-tether-multi</code> is designed for the Pwnagotchi enthusiast who values uptime and autonomy. It transforms a common point of failure into a robust, self-managing solution. No more restarting your Pwnagotchi or manually re-tethering when your connection goes south.</p>
+<p>This plugin has become an indispensable part of my Pwnagotchi setup, saving me countless headaches in the field. I invite you to try it out and contribute to its development!</p>
+<p>Find the source code, detailed installation instructions, and contribute to the project on GitHub: <a href="https://github.com/rivassec/bt-tether-multi">rivassec/bt-tether-multi</a></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="./tag/pwnagotchi.html">pwnagotchi</a>
+      <a href="./tag/bluetooth.html">bluetooth</a>
+      <a href="./tag/plugin.html">plugin</a>
+      <a href="./tag/networking.html">networking</a>
+      <a href="./tag/python.html">python</a>
+      <a href="./tag/hacking.html">hacking</a>
+      <a href="./tag/automation.html">automation</a>
+    </p>
+  </div>
+
+
+
+
+
+
+</article>
+
+<footer>
+<p>&copy;  RivasSec</p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p></footer>  </main>
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " DevSecOps Notes ",
+  "url" : ".",
+  "image": "images/avatar.png",
+  "description": ""
+}
+</script>
+</body>
+</html>
