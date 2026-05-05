@@ -8,7 +8,7 @@ Summary: In 2012, a single leap second triggered global outages across Reddit, Y
 
 ---
 
-## 🕐 What Happened?
+## What Happened?
 
 On June 30, 2012, a **leap second** was inserted into atomic time via NTP to keep UTC aligned with Earth’s rotation. At 23:59:60 UTC, global systems experienced a hiccup — a single extra second that caused widespread disruptions across Reddit, LinkedIn, Yelp, Google, FourSquare, and many more.
 
@@ -16,7 +16,7 @@ What followed were 500 errors, high latency, and CPU usage spikes that crippled 
 
 ---
 
-## 🔍 Why Did It Break?
+## Why Did It Break?
 
 Though seemingly minor, the leap second broke systems in subtle and severe ways:
 
@@ -27,7 +27,7 @@ Though seemingly minor, the leap second broke systems in subtle and severe ways:
 
 ---
 
-## 🔥 Real-World Impact
+## Real-World Impact
 
 This bug hit nearly every high-scale Java-based system:
 
@@ -39,7 +39,7 @@ In many cases, the kernel *didn't fail* — the chaos came from how services pro
 
 ---
 
-## 🛠️ Mitigation & Takeaways
+## Mitigation & Takeaways
 
 ### Immediate Fixes in 2012
 
@@ -69,7 +69,7 @@ sudo /etc/init.d/ntp start
 
 ---
 
-## 📚 Epilogue
+## Epilogue
 
 The 2012 leap second chaos wasn’t caused by incompetence — many teams patched, prepared, and tested. But the leap second hit during degraded cloud capacity, exposed fragile JVM behavior, and stressed assumptions in time-sensitive code.
 

@@ -1,6 +1,6 @@
 Title: Secure Snapshot Verification in Elasticsearch with Minimal Privileges
 Date: 2025-04-20
-Author: Oliver Rivas
+Author: RivasSec
 Category: DevSecOps
 Tags: elasticsearch, snapshot, security, observability, prometheus, minimal-permissions
 Slug: elasticsearch-secure-snapshot-verification

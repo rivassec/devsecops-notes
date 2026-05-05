@@ -52,7 +52,8 @@ SITEMAP = {
         'pages': 'monthly',
     },
 }
-ARTICLE_EXCLUDES = ['_external']
+STATIC_PATHS.append('extra')
+EXTRA_PATH_METADATA['extra/robots.txt'] = {'path': 'robots.txt'}
 
 # Social widget
 SOCIAL = (
@@ -73,6 +74,7 @@ TAG_CLOUD_MAX_ITEMS = 10
 MENUITEMS = [
     ('GitHub', 'https://github.com/rivassec'),
     ('Categories', 'categories.html'),
+    ('RSS', 'https://rivassec.com/feeds/all.atom.xml'),
 ]
 SUMMARY_MAX_LENGTH = 350  # words
 DIRECT_TEMPLATES = ['index', 'categories', 'tags', 'archives']

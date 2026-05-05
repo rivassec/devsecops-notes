@@ -3,7 +3,7 @@ Date: 2025-07-22
 Category: Projects
 Tags: pwnagotchi, bluetooth, plugin, networking, python, hacking, automation
 Slug: bt-tether-multi
-Author: rivassec
+Author: RivasSec
 Summary: Enhance your Pwnagotchi's autonomy with `bt-tether-multi`, a custom plugin offering intelligent multi-phone Bluetooth tethering, automatic WAN failover, and robust connection management.
 
 ## The Common Pwnagotchi Tethering Problem

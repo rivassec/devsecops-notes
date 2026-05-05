@@ -8,13 +8,13 @@ Summary: In 2012, I uncovered a state-aligned Twitter proxy tied to Venezuela’
 
 ---
 
-## 🛰️ Situation
+## Situation
 
 In the lead-up to Venezuela’s 2012 regional elections, I observed unusual behavior around Twitter access within the country. What began as anecdotal reports of DNS outages evolved into a deeper investigation that revealed a state-aligned proxy infrastructure potentially capable of phishing Twitter credentials.
 
 ---
 
-## 🧠 Key Finding
+## Key Finding
 
 A subdomain under `chavezcandanga.org.ve` — the official handle of then-President Hugo Chávez — was hosting a **transparent proxy to Twitter**.
 A transparent proxy intercepts user traffic without modifying requests or requiring configuration, making it ideal for passive surveillance or phishing.
@@ -28,9 +28,9 @@ While it initially showed no malicious behavior, it was:
 
 ---
 
-## 🔎 OSINT Breakdown
+## OSINT Breakdown
 
-### 1. ✅ DNS Resolution
+### 1. DNS Resolution
 
 ```bash
 host twitter.com
@@ -48,7 +48,7 @@ It’s unclear whether this redirection was caused by ISP DNS override, local re
 
 ---
 
-### 2. ✅ WHOIS and Hosting Clues
+### 2. WHOIS and Hosting Clues
 
 ```bash
 whois chavezcandanga.org.ve
@@ -61,7 +61,7 @@ Revealed that the domain was registered to **PSUV** (*Partido Socialista Unido d
 
 ---
 
-### 3. ✅ Application Infrastructure
+### 3. Application Infrastructure
 
 The same server IP hosted:
 
@@ -75,7 +75,7 @@ At the time of discovery, this site **did not contain malicious code**, but the 
 
 ---
 
-## 🔐 Threat Model & Implications
+## Threat Model & Implications
 
 - **Credential Harvesting Risk**: Even without malware, a proxy to Twitter login enables password theft.
 - **Social Media Control**: Through automated bots, the government amplified its message while monitoring access points.
@@ -85,7 +85,7 @@ At the time of discovery, this site **did not contain malicious code**, but the 
 
 ---
 
-## 🧰 Lessons for DevSecOps & Threat Intelligence Today
+## Lessons for DevSecOps & Threat Intelligence Today
 
 - **Verify SSL and domain trust chains** during high-risk periods like elections.
 - Use `host`, `whois`, and passive DNS to correlate domains and IP ranges.
@@ -95,7 +95,7 @@ At the time of discovery, this site **did not contain malicious code**, but the 
 
 ---
 
-## 📅 Epilogue
+## Epilogue
 
 The proxy remained active until at least December 2012, shortly before elections. To this day, the archived proxy content and WHOIS records serve as a warning about the ease with which social media can be co-opted in hostile environments.
 
