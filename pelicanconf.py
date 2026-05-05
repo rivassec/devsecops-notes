@@ -37,14 +37,22 @@ EXTRA_PATH_METADATA = {
 
 # Plugins
 PLUGIN_PATHS = ['plugins']
-PLUGINS = ['include_code']
-IGNORE_FILES = ['_external/elasticsearch-tools/docs/README.md',
-                '_external/elasticsearch-tools/scripts/README.md']
-ARTICLE_EXCLUDES = [
-    'content/_external/elasticsearch-tools/scripts/README.md',
-    'content/_external/elasticsearch-tools/docs/README.md',
-    'content/_external/elasticsearch-tools/README.md'
-]
+PLUGINS = ['sitemap']
+
+SITEMAP = {
+    'format': 'xml',
+    'priorities': {
+        'articles': 0.7,
+        'indexes': 0.5,
+        'pages': 0.3,
+    },
+    'changefreqs': {
+        'articles': 'monthly',
+        'indexes': 'daily',
+        'pages': 'monthly',
+    },
+}
+ARTICLE_EXCLUDES = ['_external']
 
 # Social widget
 SOCIAL = (
