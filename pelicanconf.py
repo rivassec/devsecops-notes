@@ -1,9 +1,10 @@
 AUTHOR = 'RivasSec'
 SITENAME = 'DevSecOps Notes'
 SITESUBTITLE = 'Infrastructure. Security. Insight.'
-SITEURL = 'https://rivassec.github.io/devsecops-notes'
+SITEURL = 'https://rivassec.com'
 
 PATH = "content"
+ARTICLE_EXCLUDES = ['_external']
 STATIC_PATHS = ['images', 'static']
 CUSTOM_CSS = 'static/custom.css'
 THEME = 'themes/Flex'

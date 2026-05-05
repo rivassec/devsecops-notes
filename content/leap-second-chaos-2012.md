@@ -75,6 +75,8 @@ The 2012 leap second chaos wasn’t caused by incompetence — many teams patche
 
 A single second exposed fault lines in the foundations of the modern internet.
 
+In 2022, the ITU voted to abolish leap seconds by 2035, largely driven by incidents like this one. Until then, the mitigations above remain essential for any system that touches wall-clock time.
+
 ---
 
 **What other “just time” failures have caught you off guard in production? Let’s share war stories.**

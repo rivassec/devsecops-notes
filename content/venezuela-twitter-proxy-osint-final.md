@@ -88,7 +88,8 @@ At the time of discovery, this site **did not contain malicious code**, but the 
 ## Lessons for DevSecOps & Threat Intelligence Today
 
 - **Verify SSL and domain trust chains** during high-risk periods like elections.
-- Use `host`, `whois`, and passive DNS to correlate domains and IP ranges.
+- Use `host`, `whois`, and passive DNS to correlate domains and IP ranges. Modern tools like `amass` and certificate transparency logs expand this capability significantly.
+- Query infrastructure databases (Shodan, Censys) for historical records on suspicious IPs and exposed services.
 - Watch for **content delivery mismatches** (site appears normal, IP is not).
 - Document and archive suspicious infra using tools like the Wayback Machine.
 - Phishing infrastructure can be **state-sponsored and subtle** — early detection matters.

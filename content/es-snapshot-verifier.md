@@ -81,7 +81,7 @@ fi
 
 API_KEY=$(<"$API_KEY_FILE")
 TMP_PROM_FILE=$(mktemp)
-safe_repo=safe_repo="${REPO_NAME//[^a-zA-Z0-9_]/_}"
+safe_repo="${REPO_NAME//[^a-zA-Z0-9_]/_}"
 timestamp=$(date +%s)
 
 response=$(curl -fsSL --retry 3 --retry-delay 2 \
