@@ -13,7 +13,7 @@ The OOM Killer uses heuristics (like memory usage and the `oom_score_adj` value)
 
 ---
 
-## 📉 The Incident
+## The Incident
 
 Years ago, I had to recover a VPS via remote console. A quick dive into `/var/log/messages` showed that the OOM Killer had struck, terminating critical services. The culprit? A perfect storm:
 
@@ -25,7 +25,7 @@ This combination overwhelmed system memory. Without process priority tuning, the
 
 ---
 
-## ⚙️ The Mitigation Strategy
+## The Mitigation Strategy
 
 You can significantly influence OOM Killer decisions using the `/proc/<pid>/oom_score_adj` setting for a process. This value ranges from -1000 to +1000. The kernel uses this score, combined with memory usage, to decide kill priority; a lower score makes the process less likely to be chosen relative to others.
 
@@ -96,7 +96,7 @@ echo "OOM score adjustment complete."
 
 ---
 
-## 🧩 Running the Script
+## Running the Script
 
 You can run this periodically via cron or on boot with systemd. For example:
 
@@ -124,7 +124,7 @@ sudo systemctl enable --now oom-adjuster.service
 
 ---
 
-## 🔐 Security Considerations
+## Security Considerations
 
 From a DevSecOps perspective, OOM prioritization is not just about uptime — it’s a security hardening technique:
 
@@ -137,7 +137,7 @@ Misconfigured systems where critical daemons (like `iptables`, `auditd`, `sshd`,
 
 ---
 
-## ✅ Modern Use Cases
+## Modern Use Cases
 
 - **Kubernetes nodes**: Influence OOM behavior via Quality of Service (QoS) classes (set by defining resource requests/limits in pod specs), or apply node-level tuning using methods like the script above for critical node components (e.g., kubelet, container runtime).
 - **CI/CD runners**: Protect build agents or essential runner services from being killed during resource-intensive test suites or concurrent builds.
@@ -145,7 +145,7 @@ Misconfigured systems where critical daemons (like `iptables`, `auditd`, `sshd`,
 
 ---
 
-## 🔚 Conclusion
+## Conclusion
 
 The OOM Killer is an essential part of the Linux kernel, but leaving process termination order purely to default heuristics can be risky in production. By strategically assigning `oom_score_adj` values based on business continuity and security priorities, you can significantly reduce recovery time and harden your systems against memory pressure scenarios.
 
