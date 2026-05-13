@@ -1,5 +1,58 @@
 /* content/static/custom.css */
 
+/* Self-hosted fonts (OFL; see content/static/fonts/LICENSE-*.txt).
+   Family names match what the Flex theme's stylesheet already uses,
+   so this replaces the Google Fonts CSS link without theme changes. */
+@font-face {
+  font-family: "Source Sans Pro";
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url("/static/fonts/SourceSans3-Light.ttf.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Source Sans Pro";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/static/fonts/SourceSans3-Regular.ttf.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Source Sans Pro";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/static/fonts/SourceSans3-It.ttf.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Source Sans Pro";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/static/fonts/SourceSans3-Bold.ttf.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Source Code Pro";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/static/fonts/SourceCodePro-Regular.ttf.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Source Code Pro";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/static/fonts/SourceCodePro-It.ttf.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Source Code Pro";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/static/fonts/SourceCodePro-Bold.ttf.woff2") format("woff2");
+}
+
 /* Global link color overrides */
 a,
 h1 a, h2 a, h3 a,
