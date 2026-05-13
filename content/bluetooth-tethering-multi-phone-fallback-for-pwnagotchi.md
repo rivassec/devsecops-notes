@@ -56,7 +56,7 @@ Installing `bt-tether-multi` is straightforward:
     ```
     **Important:** Replace `XX:XX:XX:XX:XX:XX` and `YY:YY:YY:YY:YY:YY` with your actual phone MAC addresses. Ensure your IP addresses match what your phone assigns to the Pwnagotchi's Bluetooth interface.
 
-For a comprehensive guide and the most up-to-date configuration examples, please refer to the [GitHub README](https://github.com/rivassec/bt-tether-multi) in the repository.
+Configuration examples above reflect the current plugin layout; adjust MAC addresses and IPs for your own phones before enabling.
 
 ## Security Considerations
 
@@ -75,6 +75,4 @@ The "Low Severity" warnings are primarily general advisories about the *potentia
 
 `bt-tether-multi` is designed for the Pwnagotchi enthusiast who values uptime and autonomy. It transforms a common point of failure into a robust, self-managing solution. No more restarting your Pwnagotchi or manually re-tethering when your connection goes south.
 
-This plugin has become an indispensable part of my Pwnagotchi setup, saving me countless headaches in the field. I invite you to try it out and contribute to its development!
-
-Find the source code, detailed installation instructions, and contribute to the project on GitHub: [rivassec/bt-tether-multi](https://github.com/rivassec/bt-tether-multi)
+This plugin has become an indispensable part of my Pwnagotchi setup, saving me countless headaches in the field.
