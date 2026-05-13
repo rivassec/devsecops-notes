@@ -1,3 +1,13 @@
 {% extends "index.html" %}
 {% block title %} &ndash; {{ _('Category %(name)s', name=category) }}{% endblock %}
 {% set summarise = True %}
+
+{% block content %}
+{% if CATEGORY_INTROS and category.name in CATEGORY_INTROS %}
+<section class="category-intro">
+  <h1>{{ category.name }}</h1>
+  <p>{{ CATEGORY_INTROS[category.name] }}</p>
+</section>
+{% endif %}
+{{ super() }}
+{% endblock %}

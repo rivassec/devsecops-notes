@@ -112,3 +112,13 @@ MENUITEMS = [
 ]
 SUMMARY_MAX_LENGTH = 350  # words
 DIRECT_TEMPLATES = ['index', 'categories', 'tags', 'archives']
+
+# One-line intros rendered at the top of each /category/<name>.html page.
+# Keys match Category: frontmatter values exactly.
+CATEGORY_INTROS = {
+    'DevSecOps': 'Security defaults, pipeline hardening, and operational lessons from running production infrastructure under real adversary pressure.',
+    'Kubernetes Security': 'Pod-level guardrails, RBAC, and the Pod Security Standards applied to production workloads.',
+    'Incident Retrospectives': 'Post-mortems on real outages - what broke, why it broke, and what the industry should have learned.',
+    'Projects': 'Tools, plugins, and one-off builds from my homelab and field work.',
+    'Threat Intelligence': 'OSINT investigations and case studies on phishing infrastructure, nation-state operations, and emerging threats.',
+}
