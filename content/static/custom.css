@@ -88,10 +88,10 @@ main article aside.article-toc h4 {
   color: #57606a;
 }
 main article aside.article-toc a {
-  color: #0969da;
+  color: #1A2E4F;
 }
 main article aside.article-toc a:hover {
-  color: #0550ae;
+  color: #0D47A1;
   text-decoration: underline;
 }
 main article aside.article-toc .toc > ul {
@@ -114,7 +114,7 @@ body.dark-theme main article aside.article-toc h4 {
   color: #8b949e;
 }
 body.dark-theme main article aside.article-toc a {
-  color: #58a6ff;
+  color: #a2c4ff;
 }
 
 /* Global link color overrides */
