@@ -1,7 +1,7 @@
-Title: Catching a Nation-State Proxy: OSINT Lessons from the Twitter Frontlines
+Title: Catching a Nation-State Proxy: OSINT on Twitter
 Date: 2025-04-17
 Modified: 2026-05-12
-Tags: osint, threat-intelligence, phishing, venezuela, twitter, surveillance, devsecops
+Tags: osint, threat-intelligence, phishing, devsecops
 Category: Threat Intelligence
 Slug: venezuela-twitter-proxy-osint
 Author: RivasSec

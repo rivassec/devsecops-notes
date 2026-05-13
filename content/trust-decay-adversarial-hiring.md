@@ -2,7 +2,7 @@ Title: The Trust Decay: Why Modern Hiring Has Become an Adversarial System
 Date: 2026-05-04
 Modified: 2026-05-12
 Category: DevSecOps
-Tags: hiring, job-market, devsecops, careers, adversarial-systems, trust
+Tags: careers, devsecops
 Slug: trust-decay-adversarial-hiring
 Author: RivasSec
 Summary: The tech hiring pipeline has shifted from talent discovery to risk mitigation. In 2026, the engineers who get hired are the ones who are hardest to doubt.

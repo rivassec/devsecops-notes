@@ -3,7 +3,7 @@ Date: 2026-05-12
 Modified: 2026-05-12
 Author: RivasSec
 Category: DevSecOps
-Tags: aws, iam, pulumi, python, security, permissions-boundary, supply-chain
+Tags: aws, iam, pulumi, python, devsecops
 Slug: iam-safe-defaults-fail-loud
 Summary: A small Pulumi library that treats IAM safety as a precondition: mandatory permissions boundary, no wildcard trust, no wildcard actions, every opt-out explicit.
 Cover: images/covers/iam-safe-defaults-fail-loud.png

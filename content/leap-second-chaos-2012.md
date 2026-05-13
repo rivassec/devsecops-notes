@@ -1,7 +1,7 @@
-Title: The Chaos of the Leap Second (2012): When Time Broke Java and the Cloud
+Title: The 2012 Leap Second: When Time Broke Java and the Cloud
 Date: 2025-04-15
 Modified: 2026-05-12
-Tags: leap-second, kernel, linux, java, ntp, distributed-systems, devops, sre, incident-retrospective
+Tags: kernel, linux, java, ntp, sre
 Category: Incident Retrospectives
 Slug: leap-second-chaos-2012
 Author: RivasSec

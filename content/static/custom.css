@@ -53,39 +53,54 @@
   src: url("/static/fonts/SourceCodePro-Bold.ttf.woff2") format("woff2");
 }
 
-/* Article table of contents (extract_toc plugin) */
-.article-toc {
+/* Article table of contents (extract_toc plugin).
+   Flex's base stylesheet sets `aside { color: #fff }` globally for the
+   site sidebar; override so in-article TOC text stays readable on its
+   light background. */
+main article aside.article-toc {
   background: #f6f8fa;
+  color: #1f2328;
   border: 1px solid #d0d7de;
   border-radius: 6px;
   padding: 12px 18px;
   margin: 16px 0 24px;
   font-size: 0.95em;
 }
-.article-toc h4 {
+main article aside.article-toc h4 {
   margin: 0 0 8px;
   font-size: 0.95em;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: #57606a;
 }
-.article-toc .toc > ul {
+main article aside.article-toc a {
+  color: #0969da;
+}
+main article aside.article-toc a:hover {
+  color: #0550ae;
+  text-decoration: underline;
+}
+main article aside.article-toc .toc > ul {
   margin: 0;
   padding-left: 20px;
 }
-.article-toc .toc ul ul {
-  margin: 4px 0 4px;
+main article aside.article-toc .toc ul ul {
+  margin: 4px 0;
 }
-.article-toc li {
+main article aside.article-toc li {
   line-height: 1.55;
 }
-.dark-theme .article-toc,
-.article-toc.dark-theme {
+body.dark-theme main article aside.article-toc,
+main article aside.article-toc.dark-theme {
   background: #161b22;
+  color: #e6edf3;
   border-color: #30363d;
 }
-.dark-theme .article-toc h4 {
+body.dark-theme main article aside.article-toc h4 {
   color: #8b949e;
+}
+body.dark-theme main article aside.article-toc a {
+  color: #58a6ff;
 }
 
 /* Global link color overrides */
