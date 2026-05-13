@@ -7,7 +7,7 @@ OG_IMAGE = 'images/og-default.png'
 TWITTER_USERNAME = 'rivassec'
 
 PATH = "content"
-ARTICLE_EXCLUDES = ['_external']
+ARTICLE_EXCLUDES = ['_external', 'extra']
 STATIC_PATHS = ['images', 'static']
 CUSTOM_CSS = 'static/custom.css'
 THEME = 'themes/Flex'
@@ -61,6 +61,8 @@ SITEMAP = {
 }
 STATIC_PATHS.append('extra')
 EXTRA_PATH_METADATA['extra/robots.txt'] = {'path': 'robots.txt'}
+# Legacy slug redirect: PR #15 renamed bt-tether-multi -> pwnagotchi-bluetooth-tethering.
+EXTRA_PATH_METADATA['extra/bt-tether-multi.html'] = {'path': 'bt-tether-multi.html'}
 
 # Social widget
 SOCIAL = (
