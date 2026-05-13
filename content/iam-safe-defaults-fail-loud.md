@@ -5,6 +5,7 @@ Category: DevSecOps
 Tags: aws, iam, pulumi, python, security, permissions-boundary, supply-chain
 Slug: iam-safe-defaults-fail-loud
 Summary: A small Pulumi library that treats IAM safety as a precondition: mandatory permissions boundary, no wildcard trust, no wildcard actions, every opt-out explicit.
+Cover: images/covers/iam-safe-defaults-fail-loud.png
 
 There's a class of AWS bug that doesn't show up until audit season: an IAM role that nobody reviewed closely, quietly granted more than it needed, sat for three years, and shows up in a Security Hub finding with `*` in its action list. The role did exactly what it was told to do. The problem is that "do what I'm told" and "refuse to do anything dumb" aren't the same default.
 

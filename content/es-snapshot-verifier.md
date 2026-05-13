@@ -5,6 +5,7 @@ Category: DevSecOps
 Tags: elasticsearch, snapshot, security, observability, prometheus, minimal-permissions
 Slug: elasticsearch-secure-snapshot-verification
 Summary: Verify Elasticsearch snapshots without manage_snapshot: minimal API key, Prometheus-friendly script, and a public tools repo for hardened monitoring automation.
+Cover: images/covers/elasticsearch-secure-snapshot-verification.png
 
 # Es Snapshot Verifier
 
