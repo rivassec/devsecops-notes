@@ -5,6 +5,7 @@ Category: Incident Retrospectives
 Slug: leap-second-chaos-2012
 Author: RivasSec
 Summary: The 2012 leap second broke Reddit, Yelp, Java apps, and more. A retrospective on how fragile timekeeping bit the cloud, and what SRE teams should do today.
+Cover: images/covers/leap-second-chaos-2012.png
 
 ---
 

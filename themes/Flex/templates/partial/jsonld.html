@@ -4,7 +4,7 @@
   "@type" : "Blog",
   "name": " {{ SITENAME }} ",
   "url" : "{{ SITEURL }}",
-  "image": "{{ SITELOGO }}",
+  "image": "{% if OG_IMAGE %}{{ SITEURL }}/{{ OG_IMAGE }}{% else %}{{ SITEURL }}/{{ SITELOGO }}{% endif %}",
   "description": "{{ SITEDESCRIPTION }}"
 }
 </script>

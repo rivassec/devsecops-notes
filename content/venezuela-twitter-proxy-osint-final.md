@@ -5,6 +5,7 @@ Category: Threat Intelligence
 Slug: venezuela-twitter-proxy-osint
 Author: RivasSec
 Summary: In 2012 I traced a state-aligned Twitter proxy tied to Venezuela's ruling party. OSINT lessons for spotting subtle, credential-phishing nation-state infra.
+Cover: images/covers/venezuela-twitter-proxy-osint.png
 
 ---
 
