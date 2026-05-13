@@ -33,9 +33,10 @@ PYGMENTS_STYLE = 'monokai'
 # Optional site assets
 SITELOGO = 'images/avatar.png'
 SITELOGO_SIZE = 32
-FAVICON = 'images/favicon.ico'
+# Favicon lives at /favicon.ico so browser defaults find it. Multiple PNG
+# sizes are emitted for higher-DPI tabs and iOS home-screen shortcuts.
+FAVICON = '/favicon.ico'
 EXTRA_PATH_METADATA = {
-    'images/favicon.ico': {'path': 'images/favicon.ico'},
     'images/avatar.png': {'path': 'images/avatar.png'},
 }
 
@@ -79,6 +80,11 @@ SITEMAP = {
 }
 STATIC_PATHS.append('extra')
 EXTRA_PATH_METADATA['extra/robots.txt'] = {'path': 'robots.txt'}
+# Favicons ship at the site root so /favicon.ico resolves on every request.
+EXTRA_PATH_METADATA['extra/favicon.ico'] = {'path': 'favicon.ico'}
+EXTRA_PATH_METADATA['extra/favicon-16.png'] = {'path': 'favicon-16.png'}
+EXTRA_PATH_METADATA['extra/favicon-32.png'] = {'path': 'favicon-32.png'}
+EXTRA_PATH_METADATA['extra/apple-touch-icon.png'] = {'path': 'apple-touch-icon.png'}
 # Legacy slug redirect: PR #15 renamed bt-tether-multi -> pwnagotchi-bluetooth-tethering.
 EXTRA_PATH_METADATA['extra/bt-tether-multi.html'] = {'path': 'bt-tether-multi.html'}
 

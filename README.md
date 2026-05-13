@@ -1,67 +1,58 @@
-# DevSecOps Notes by RivasSec
+# DevSecOps Notes
 
-This is the source code and content for [DevSecOps Notes](https://rivassec.github.io/devsecops-notes), a technical blog focused on infrastructure security, OSINT, cloud hardening, and DevSecOps practices — curated and maintained by **RivasSec**.
+Source for [rivassec.com](https://rivassec.com), a blog on infrastructure security, Kubernetes, IAM, cloud hardening, and OSINT by RivasSec.
 
----
+## Stack
 
-## 📦 Features
+- [Pelican](https://getpelican.com/) static site generator (config in `pelicanconf.py` and `publishconf.py`)
+- [Flex](https://github.com/alexandrevicenzi/Flex) theme, vendored under `themes/Flex/` with local edits
+- Pelican plugins vendored under `plugins/` (sitemap, neighbors, post_stats, related_posts, extract_toc)
+- Markdown posts in `content/`
+- Self-hosted fonts (Source Sans 3, Source Code Pro) under `content/static/fonts/`
+- CI + deploy via GitHub Actions to `gh-pages` branch (`.github/workflows/deploy.yml`)
 
-- Static site powered by [Pelican](https://getpelican.com/)
-- Professional layout using the [Flex theme](https://github.com/alexandrevicenzi/Flex)
-- Markdown-based blog posts located in `content/`
-- GitHub Pages deployment (via the `output/` folder)
-
----
-
-## 🛠️ Local Development
-
-### 1. Install dependencies
+## Local development
 
 ```bash
-pip install pelican markdown
+python3 -m venv .venv
+.venv/bin/pip install --require-hashes -r requirements.txt
+.venv/bin/pelican content -s pelicanconf.py -o output   # dev build (relative URLs)
+.venv/bin/pelican content -s publishconf.py -o output   # prod build (absolute URLs)
+make serve                                              # serves output/ on :8000
 ```
 
-(Optional) Create a virtualenv:
+`pelicanconf.py` is the dev config, `publishconf.py` extends it for production.
+
+## Dependency management
+
+`requirements.in` is the source of truth (hand-edited). `requirements.txt` is generated with `pip-compile --generate-hashes` and enforced via `pip install --require-hashes` in CI. To regenerate after editing `.in`:
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate
+python3.13 -m venv .venv-compile
+PIP_CONFIG_FILE=/dev/null .venv-compile/bin/pip install pip-tools
+PIP_CONFIG_FILE=/dev/null .venv-compile/bin/pip-compile \
+    --generate-hashes --output-file=requirements.txt requirements.in
 ```
 
-### 2. Clone and build the theme
+Dependabot opens weekly PRs bumping `requirements.in`; each needs a local pip-compile pass before merging.
+
+## Cover image generation
+
+Per-article 1200x630 social cards are rendered from Title + Category:
 
 ```bash
-git clone https://github.com/alexandrevicenzi/Flex themes/Flex
+.venv/bin/python scripts/generate_covers.py                   # generate missing
+.venv/bin/python scripts/generate_covers.py --force           # regenerate all
+.venv/bin/python scripts/generate_covers.py --only <slug>     # single post
+.venv/bin/python scripts/generate_covers.py --write-frontmatter  # insert Cover: line
 ```
 
-### 3. Build the site
+Inter v4.1 fonts are vendored under `scripts/fonts/`. Requires `pngquant` on PATH for compression; warns otherwise.
 
-```bash
-make clean
-make html
-make serve  # View at http://localhost:8000
-```
+## Deploy
 
----
+CI builds on every PR to `main` (lychee link-check, Pelican build) and deploys to `gh-pages` on pushes to `main`. No manual deploy required.
 
-## 🚀 Deploying to GitHub Pages
+## License
 
-The blog is deployed from the `output/` directory. After rebuilding the site:
-
-```bash
-cd output
-git add .
-git commit -m "Update site"
-git push
-```
-
-Make sure your `gh-pages` branch (or root) is configured correctly in the GitHub Pages settings.
-
----
-
-## 🧾 License
-
-Content is © RivasSec. All rights reserved unless otherwise noted.
-
-For inquiries or collaboration, reach out via [GitHub](https://github.com/rivassec).
-
+Content (c) RivasSec. Code fragments and configuration are permissive; see `LICENSE`. Vendored fonts ship under the SIL Open Font License - see `scripts/fonts/LICENSE.txt` and `content/static/fonts/LICENSE-*.txt`.
