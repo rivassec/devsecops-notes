@@ -47,6 +47,13 @@
     </script>
   {% endif %}
 
+  {% if article.toc %}
+  <aside class="article-toc" aria-label="Table of contents">
+    <h4>On this page</h4>
+    {{ article.toc }}
+  </aside>
+  {% endif %}
+
   <div>
     {{ article.content }}
   </div>

@@ -53,6 +53,41 @@
   src: url("/static/fonts/SourceCodePro-Bold.ttf.woff2") format("woff2");
 }
 
+/* Article table of contents (extract_toc plugin) */
+.article-toc {
+  background: #f6f8fa;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  padding: 12px 18px;
+  margin: 16px 0 24px;
+  font-size: 0.95em;
+}
+.article-toc h4 {
+  margin: 0 0 8px;
+  font-size: 0.95em;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #57606a;
+}
+.article-toc .toc > ul {
+  margin: 0;
+  padding-left: 20px;
+}
+.article-toc .toc ul ul {
+  margin: 4px 0 4px;
+}
+.article-toc li {
+  line-height: 1.55;
+}
+.dark-theme .article-toc,
+.article-toc.dark-theme {
+  background: #161b22;
+  border-color: #30363d;
+}
+.dark-theme .article-toc h4 {
+  color: #8b949e;
+}
+
 /* Global link color overrides */
 a,
 h1 a, h2 a, h3 a,
