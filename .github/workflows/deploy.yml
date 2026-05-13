@@ -42,6 +42,30 @@ jobs:
       - name: Add CNAME file
         run: echo rivassec.com > output/CNAME
 
+      - name: Enforce strict CSP preconditions (no inline styles/scripts)
+        # Keeps style-src 'self' / script-src 'self' safe: if a template
+        # change ever introduces an inline style="..." or <style> block
+        # or onclick= handler, this fails CI before deploy. See
+        # docs/security-headers.md for the CSP we ship.
+        run: |
+          set -e
+          if grep -rhE 'style="[^"]*"' output --include="*.html" | grep -v '^$' | head -c1 > /dev/null; then
+            echo "::error ::Inline style attributes found in build output; strict CSP would block them."
+            grep -rnE 'style="[^"]*"' output --include="*.html" | head -20
+            exit 1
+          fi
+          if grep -rl '<style' output --include="*.html" | head -c1 > /dev/null; then
+            echo "::error ::<style> block found in build output; strict CSP would block it."
+            grep -rln '<style' output --include="*.html"
+            exit 1
+          fi
+          if grep -rhE '(^|[^-a-z])on[a-z]+="[^"]*"' output --include="*.html" | grep -v 'http-equiv=' | grep -v 'font-display:' | head -c1 > /dev/null; then
+            echo "::error ::Inline event handler (onclick=...) found; strict CSP would block it."
+            grep -rnE '(^|[^-a-z])on[a-z]+="[^"]*"' output --include="*.html" | grep -v 'http-equiv=' | head -20
+            exit 1
+          fi
+          echo "OK: no inline styles, <style> blocks, or event handlers found."
+
       - name: Check links in built site
         uses: lycheeverse/lychee-action@8646ba30535128ac92d33dfc9133794bfdd9b411 # v2.8.0
         with:

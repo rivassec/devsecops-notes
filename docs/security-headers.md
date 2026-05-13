@@ -47,14 +47,14 @@ https://hstspreload.org/.
 - **Value:**
 
 ```
-default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://img.shields.io; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests
+default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: https://img.shields.io; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests
 ```
 
 Rationale for each directive:
 
 - `default-src 'self'`: block everything by default, only same-origin allowed
 - `script-src 'self'`: our only JS is `/static/copy-code.js` - no inline scripts, no CDN
-- `style-src 'self' 'unsafe-inline'`: Flex and pygments inline some style attributes on generated HTML; `unsafe-inline` is required until that's cleaned up
+- `style-src 'self'`: audited 2026-05-13 - the rendered output contains zero `style="..."` attributes and zero `<style>` blocks. Flex ships all CSS via `<link>`; pygments code blocks use semantic classes (`class="highlight"`, `class="nt"`, etc.) styled from `/theme/pygments/monokai.min.css`. `'unsafe-inline'` is NOT needed.
 - `img-src 'self' data: https://img.shields.io`: `data:` for any inline icons; shields.io for About page badges
 - `font-src 'self'`: self-hosted Source Sans / Source Code Pro (PR #10)
 - `object-src 'none'` + `frame-ancestors 'none'`: clickjacking prevention
@@ -63,6 +63,15 @@ Rationale for each directive:
 If the strict CSP breaks something, start in **report-only** mode:
 change header name to `Content-Security-Policy-Report-Only` for a
 week and watch the browser console / CF security events.
+
+**Audit command to re-verify after theme changes:**
+
+```bash
+# If either of these prints anything, you need 'unsafe-inline' on
+# style-src or you need to hoist the inline style into a stylesheet.
+grep -rhE 'style="[^"]*"' output --include="*.html" | sort -u
+grep -rl '<style' output --include="*.html"
+```
 
 ### 3. X-Content-Type-Options
 
