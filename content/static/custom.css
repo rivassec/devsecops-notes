@@ -59,6 +59,45 @@ main article li {
   src: url("/static/fonts/SourceCodePro-Bold.ttf.woff2") format("woff2");
 }
 
+/* Copy-to-clipboard button injected by /static/copy-code.js on every
+   <pre> block inside main article. Button sits top-right of the code
+   block; only visible on hover or keyboard focus to keep the default
+   reading surface clean. */
+main article pre.has-copy {
+  position: relative;
+}
+main article pre.has-copy .copy-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  padding: 4px 8px;
+  font-size: 0.78em;
+  line-height: 1;
+  color: #c9d1d9;
+  background: rgba(30, 36, 46, 0.85);
+  border: 1px solid #30363d;
+  border-radius: 4px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 120ms, color 120ms, background 120ms;
+}
+main article pre.has-copy:hover .copy-btn,
+main article pre.has-copy .copy-btn:focus {
+  opacity: 1;
+}
+main article pre.has-copy .copy-btn:hover {
+  color: #fff;
+  background: rgba(55, 65, 81, 0.95);
+}
+main article pre.has-copy .copy-btn.copied {
+  opacity: 1;
+  color: #3fb950;
+  border-color: #238636;
+}
+main article pre.has-copy .copy-btn svg {
+  vertical-align: -2px;
+}
+
 /* Inline SVG icons (replaces Font Awesome 1 MB ship). */
 .btn svg.icon {
   width: 0.9em;
