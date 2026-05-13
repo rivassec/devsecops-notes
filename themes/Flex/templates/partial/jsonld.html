@@ -1,10 +1,22 @@
 <script type="application/ld+json">
 {
   "@context" : "http://schema.org",
-  "@type" : "Blog",
-  "name": " {{ SITENAME }} ",
+  "@type" : "WebSite",
+  "name": "{{ SITENAME }}",
   "url" : "{{ SITEURL }}",
   "image": "{% if OG_IMAGE %}{{ SITEURL }}/{{ OG_IMAGE }}{% else %}{{ SITEURL }}/{{ SITELOGO }}{% endif %}",
-  "description": "{{ SITEDESCRIPTION }}"
+  "description": "{{ SITEDESCRIPTION }}",
+  "author": {
+    "@type": "Person",
+    "name": "{{ AUTHOR }}",
+    "url": "{{ SITEURL }}"
+    {%- if SOCIAL %}
+    ,"sameAs": [
+      {%- for name, link in SOCIAL %}
+      "{{ link }}"{% if not loop.last %},{% endif %}
+      {%- endfor %}
+    ]
+    {%- endif %}
+  }
 }
 </script>

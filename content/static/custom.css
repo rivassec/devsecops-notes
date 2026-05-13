@@ -1,5 +1,11 @@
 /* content/static/custom.css */
 
+/* Long-form readability: slightly looser line-height on article bodies. */
+main article p,
+main article li {
+  line-height: 1.6;
+}
+
 /* Self-hosted fonts (OFL; see content/static/fonts/LICENSE-*.txt).
    Family names match what the Flex theme's stylesheet already uses,
    so this replaces the Google Fonts CSS link without theme changes. */
