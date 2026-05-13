@@ -1,5 +1,28 @@
 /* content/static/custom.css */
 
+/* Category landing page intro block (CATEGORY_INTROS in pelicanconf). */
+main section.category-intro {
+  padding: 8px 0 16px;
+  margin: 0 0 24px;
+  border-bottom: 1px solid #d0d7de;
+}
+main section.category-intro h1 {
+  margin: 0 0 6px;
+  font-size: 1.9em;
+  letter-spacing: -0.02em;
+}
+main section.category-intro p {
+  margin: 0;
+  color: #57606a;
+  line-height: 1.55;
+}
+body.dark-theme main section.category-intro {
+  border-bottom-color: #30363d;
+}
+body.dark-theme main section.category-intro p {
+  color: #8b949e;
+}
+
 /* Long-form readability: slightly looser line-height on article bodies. */
 main article p,
 main article li {
