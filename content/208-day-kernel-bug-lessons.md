@@ -1,7 +1,7 @@
-Title: The 208.5-Day Kernel Bug: A Lesson in Uptime, Overflow, and Operational Risk
+Title: The 208.5-Day Kernel Bug: Uptime, Overflow, and Risk
 Date: 2025-04-16
 Modified: 2026-05-12
-Tags: kernel, bug, linux, uptime, overflow, devsecops, integer-overflow
+Tags: kernel, linux, bug, devsecops
 Category: DevSecOps
 Slug: 208-day-kernel-bug-lessons
 Author: RivasSec

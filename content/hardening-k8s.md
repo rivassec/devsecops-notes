@@ -2,7 +2,7 @@ Title: Hardening Kubernetes Deployments
 Date: 2025-04-19
 Modified: 2026-05-12
 Category: Kubernetes Security
-Tags: kubernetes, hardening, pod-security-standards
+Tags: kubernetes, hardening, devsecops
 Slug: hardening-k8s
 Author: RivasSec
 Summary: Pod-level Kubernetes guardrails aligned with the Pod Security Standards Restricted profile: non-root, no caps, read-only FS, NetworkPolicies, SA hardening.
