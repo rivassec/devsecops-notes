@@ -88,12 +88,6 @@
 
   {% include "partial/feed.html" %}
 
-  {% include "partial/ga.html" %}
-  {% include "partial/ggst.html" %}
-
-
-  {% include "partial/plausible.html" %}
-
   {% if PGP_KEY %}
     <link rel="pgpkey" type="application/pgp-keys" href="{{ SITEURL }}/{{ PGP_KEY }}">
   {% endif %}
@@ -129,36 +123,11 @@
   {% endblock %}
 
   <title>{{ SITENAME }}{% block title %}{% endblock %}</title>
-
-  {% if GOOGLE_ADSENSE and GOOGLE_ADSENSE.page_level_ads %}
-  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-  <script>
-    (adsbygoogle = window.adsbygoogle || []).push({
-      google_ad_client: "{{ GOOGLE_ADSENSE.ca_id }}",
-      enable_page_level_ads: true
-    });
-  </script>
-  {% endif %}
-
-  {% include "partial/gtm.html" %}
-  {% include "partial/clarity.html" %}
 </head>
 <body {% if not THEME_COLOR_AUTO_DETECT_BROWSER_PREFERENCE %}class="{{ THEME_COLOR|default('light') }}-theme"{% endif %}>
-  {% include "partial/gtm_noscript.html" %}
-
   {% include "partial/sidebar.html" %}
 
   <main>
-    {% if GOOGLE_ADSENSE and GOOGLE_ADSENSE.ads.main_menu %}
-      <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <ins class="adsbygoogle ads-responsive"
-           data-ad-client="{{ GOOGLE_ADSENSE.ca_id }}"
-           data-ad-slot="{{ GOOGLE_ADSENSE.ads.main_menu }}"></ins>
-      <script>
-        (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-    {% endif %}
-
     {% include "partial/nav.html" %}
 
     {% block content %}
@@ -168,12 +137,6 @@
   </main>
 
   {% include "partial/jsonld.html" %}
-  {% include "partial/guages.html" %}
-  {% include "partial/addthis.html" %}
-  {% include "partial/matomo.html" %}
-  {% include 'partial/github.html' %}
-  {% include 'partial/stork.html' %}
-  {% include 'partial/cf_analytics.html' %}
 
   {% block additional_js %}{% endblock %}
 </body>
