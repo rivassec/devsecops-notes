@@ -33,6 +33,9 @@ jobs:
       - name: Install dependencies
         run: pip install --require-hashes -r requirements.txt
 
+      - name: Refresh About page from GitHub profile README
+        run: scripts/fetch_about.sh
+
       - name: Build site
         run: pelican content -o output -s publishconf.py
 
