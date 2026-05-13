@@ -106,9 +106,9 @@ RELATIVE_URLS = True
 
 TAG_CLOUD_MAX_ITEMS = 10
 MENUITEMS = [
+    ('About', 'https://rivassec.com/pages/about.html'),
+    ('Categories', 'https://rivassec.com/categories.html'),
     ('GitHub', 'https://github.com/rivassec'),
-    ('Categories', 'categories.html'),
-    ('RSS', 'https://rivassec.com/feeds/all.atom.xml'),
 ]
 SUMMARY_MAX_LENGTH = 350  # words
 DIRECT_TEMPLATES = ['index', 'categories', 'tags', 'archives']
