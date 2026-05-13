@@ -21,12 +21,25 @@ Create **one** rule named `rivassec.com security headers`, apply to
 ### 1. Strict-Transport-Security
 
 - **Header:** `Strict-Transport-Security`
-- **Value:** `max-age=63072000; includeSubDomains; preload`
+- **Value:** `max-age=63072000; includeSubDomains`
 
 Declares HTTPS-only for 2 years. `includeSubDomains` is only safe
 if every subdomain of rivassec.com supports HTTPS - confirm before
-enabling `preload`. Once submitted to hstspreload.org, rollback
-takes weeks.
+applying.
+
+**`preload` is intentionally NOT included by default.** Submitting
+to hstspreload.org is a one-way door: rollback takes weeks and the
+domain (with subdomains) is hardcoded into every major browser.
+Only add `preload` after:
+
+1. Every subdomain of rivassec.com is HTTPS-only and will remain so.
+2. The site has been running with the header above for at least a
+   few weeks without HSTS-related incident reports.
+3. You've read https://hstspreload.org/ and accept the commitment.
+
+When ready, change the header value to
+`max-age=63072000; includeSubDomains; preload` and submit at
+https://hstspreload.org/.
 
 ### 2. Content-Security-Policy
 
