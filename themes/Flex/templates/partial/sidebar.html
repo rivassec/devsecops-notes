@@ -85,13 +85,4 @@
     {% endif %}
   </div>
 
-  {% if GOOGLE_ADSENSE and GOOGLE_ADSENSE.ads.aside %}
-    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-    <ins class="adsbygoogle ads-aside"
-         data-ad-client="{{ GOOGLE_ADSENSE.ca_id }}"
-         data-ad-slot="{{ GOOGLE_ADSENSE.ads.aside }}"></ins>
-    <script>
-      (adsbygoogle = window.adsbygoogle || []).push({});
-    </script>
-  {% endif %}
 </aside>
