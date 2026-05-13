@@ -1,5 +1,6 @@
 Title: Taming the OOM Killer: Process Prioritization for Memory-Constrained Linux Systems
 Date: 2025-04-18
+Modified: 2026-05-12
 Tags: linux, oomkiller, memory, system-administration, devsecops, process-management, hardening
 Category: DevSecOps
 Slug: oom-killer-process-prioritization
