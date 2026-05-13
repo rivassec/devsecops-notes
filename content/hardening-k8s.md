@@ -8,6 +8,8 @@ Author: RivasSec
 Summary: Pod-level Kubernetes guardrails aligned with the Pod Security Standards Restricted profile: non-root, no caps, read-only FS, NetworkPolicies, SA hardening.
 Cover: images/covers/hardening-k8s.png
 
+[TOC]
+
 Securing Kubernetes workloads isn't just about scanning images or tweaking RBAC, it's about enforcing the right guardrails at the pod level to minimize risk by default. This post shares field-tested strategies aligned with the Pod Security Standards (Restricted profile) to help you build safer, production-grade deployments.
 
 ## Key Practices for Hardening Kubernetes Deployments

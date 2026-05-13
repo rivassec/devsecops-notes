@@ -8,6 +8,8 @@ Slug: iam-safe-defaults-fail-loud
 Summary: A small Pulumi library that treats IAM safety as a precondition: mandatory permissions boundary, no wildcard trust, no wildcard actions, every opt-out explicit.
 Cover: images/covers/iam-safe-defaults-fail-loud.png
 
+[TOC]
+
 There's a class of AWS bug that doesn't show up until audit season: an IAM role that nobody reviewed closely, quietly granted more than it needed, sat for three years, and shows up in a Security Hub finding with `*` in its action list. The role did exactly what it was told to do. The problem is that "do what I'm told" and "refuse to do anything dumb" aren't the same default.
 
 I put a small Pulumi library together to move that default. It's called [iam-safe-defaults](https://github.com/rivassec/iam-safe-defaults), it's under 200 lines of Python, and the behavior it changes is narrow on purpose.

@@ -39,12 +39,30 @@ EXTRA_PATH_METADATA = {
     'images/avatar.png': {'path': 'images/avatar.png'},
 }
 
-# Plugins
+# Plugins (vendored under plugins/; see plugins/ for sources)
 PLUGIN_PATHS = ['plugins']
-PLUGINS = ['sitemap', 'neighbors', 'post_stats', 'related_posts']
+PLUGINS = [
+    'sitemap',
+    'neighbors',
+    'post_stats',
+    'related_posts',
+    'extract_toc',
+]
 
 # related_posts configuration
 RELATED_POSTS_MAX = 5
+
+# Markdown: extract_toc needs the python-markdown `toc` extension to emit a
+# <div class="toc"> block that it then lifts into article.toc.
+MARKDOWN = {
+    'extension_configs': {
+        'markdown.extensions.codehilite': {'css_class': 'highlight'},
+        'markdown.extensions.extra': {},
+        'markdown.extensions.meta': {},
+        'markdown.extensions.toc': {'permalink': False},
+    },
+    'output_format': 'html5',
+}
 
 SITEMAP = {
     'format': 'xml',
