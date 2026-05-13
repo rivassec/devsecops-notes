@@ -17,6 +17,8 @@ from __future__ import annotations
 
 import argparse
 import re
+import shutil
+import subprocess
 import sys
 import textwrap
 from pathlib import Path
@@ -146,6 +148,17 @@ def render_cover(title: str, category: str, out_path: Path) -> None:
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
     img.save(out_path, format="PNG", optimize=True)
+
+    pngquant = shutil.which("pngquant")
+    if pngquant:
+        subprocess.run(
+            [pngquant, "--quality=70-90", "--strip", "--ext", ".png",
+             "--force", str(out_path)],
+            check=True,
+        )
+    else:
+        print(f"  ! pngquant not found on PATH; cover left uncompressed "
+              f"({out_path.name})", file=sys.stderr)
 
 
 def ensure_cover_in_frontmatter(path: Path, cover_rel: str) -> bool:
