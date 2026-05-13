@@ -1,5 +1,6 @@
 Title: Never Lose Connection: Multi-Phone Bluetooth Tethering for Pwnagotchi
 Date: 2025-07-22
+Modified: 2026-05-12
 Category: Projects
 Tags: pwnagotchi, bluetooth, plugin, networking, python, hacking, automation
 Slug: bt-tether-multi

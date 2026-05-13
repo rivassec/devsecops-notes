@@ -1,5 +1,6 @@
 Title: Hardening Kubernetes Deployments
 Date: 2025-04-19
+Modified: 2026-05-12
 Category: Kubernetes Security
 Tags: kubernetes, hardening, pod-security-standards
 Slug: hardening-k8s
