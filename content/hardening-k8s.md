@@ -4,7 +4,7 @@ Category: Kubernetes Security
 Tags: kubernetes, hardening, pod-security-standards
 Slug: hardening-k8s
 Author: RivasSec
-Summary: Hardening Kubernetes workloads goes beyond RBAC tweaks or image scans. This post shares field-tested pod-level guardrails aligned with the Pod Security Standards (Restricted profile), covering non-root containers, dropped capabilities, read-only filesystems, NetworkPolicies, and ServiceAccount hardening.
+Summary: Pod-level Kubernetes guardrails aligned with the Pod Security Standards Restricted profile: non-root, no caps, read-only FS, NetworkPolicies, SA hardening.
 
 Securing Kubernetes workloads isn't just about scanning images or tweaking RBAC, it's about enforcing the right guardrails at the pod level to minimize risk by default. This post shares field-tested strategies aligned with the Pod Security Standards (Restricted profile) to help you build safer, production-grade deployments.
 
@@ -135,4 +135,4 @@ Disable automatic token mounting for pods that don’t need API server access. C
 
 Security isn’t just about tools, it’s about secure defaults. These practices help harden your Kubernetes workloads using the Restricted Pod Security Standard and reduce risks across the board.
 
-If you’re managing production clusters or sensitive environments, these changes are low-hanging fruit with a high return on security posture.
+If you’re managing production clusters or sensitive environments, these changes are low-hanging fruit with a high return on security posture. The same "safe by default" mindset applied to AWS IAM is the subject of [IAM Roles That Fail Loud]({filename}iam-safe-defaults-fail-loud.md); for the node side of memory pressure, see [Taming the OOM Killer]({filename}oom-killer-process-prioritization.md).

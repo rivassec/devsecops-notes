@@ -2,6 +2,9 @@ AUTHOR = 'RivasSec'
 SITENAME = 'DevSecOps Notes'
 SITESUBTITLE = 'Infrastructure. Security. Insight.'
 SITEURL = 'https://rivassec.com'
+SITEDESCRIPTION = 'Field notes on infrastructure security, cloud hardening, Kubernetes, IAM, and OSINT by RivasSec.'
+OG_IMAGE = 'images/og-default.png'
+TWITTER_USERNAME = 'rivassec'
 
 PATH = "content"
 ARTICLE_EXCLUDES = ['_external']
@@ -38,7 +41,10 @@ EXTRA_PATH_METADATA = {
 
 # Plugins
 PLUGIN_PATHS = ['plugins']
-PLUGINS = ['sitemap']
+PLUGINS = ['sitemap', 'neighbors', 'post_stats', 'related_posts']
+
+# related_posts configuration
+RELATED_POSTS_MAX = 5
 
 SITEMAP = {
     'format': 'xml',
@@ -48,7 +54,7 @@ SITEMAP = {
         'pages': 0.3,
     },
     'changefreqs': {
-        'articles': 'monthly',
+        'articles': 'weekly',
         'indexes': 'daily',
         'pages': 'monthly',
     },

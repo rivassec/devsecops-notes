@@ -4,7 +4,7 @@ Tags: leap-second, kernel, linux, java, ntp, distributed-systems, devops, sre, i
 Category: Incident Retrospectives
 Slug: leap-second-chaos-2012
 Author: RivasSec
-Summary: In 2012, a single leap second triggered global outages across Reddit, Yelp, and more. This retrospective unpacks how fragile timekeeping broke Java apps at scale, and what DevOps, SRE, and distributed systems teams can do today to avoid repeating history.
+Summary: The 2012 leap second broke Reddit, Yelp, Java apps, and more. A retrospective on how fragile timekeeping bit the cloud, and what SRE teams should do today.
 
 ---
 
@@ -80,6 +80,8 @@ In 2022, the ITU voted to abolish leap seconds by 2035, largely driven by incide
 ---
 
 **What other “just time” failures have caught you off guard in production? Let’s share war stories.**
+
+Related reading: the [208.5-day kernel bug]({filename}208-day-kernel-bug-lessons.md) - another case where a piece of time math, left unpatched, was a silent countdown to an outage.
 
 *(Originally published in 2012. Revisited and revised in 2025 for modern SREs, DevOps, and distributed systems engineers.)*
 

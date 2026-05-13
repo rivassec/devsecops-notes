@@ -4,7 +4,7 @@ Category: DevSecOps
 Tags: hiring, job-market, devsecops, careers, adversarial-systems, trust
 Slug: trust-decay-adversarial-hiring
 Author: RivasSec
-Summary: The tech hiring pipeline has shifted from talent discovery to defensive risk mitigation. Flooded by synthetic resumes and hyper-automated applications, hiring systems now favor pre-validated channels and proof-of-work over polished presentations. For engineers, success in 2026 means being the most difficult to doubt.
+Summary: The tech hiring pipeline has shifted from talent discovery to risk mitigation. In 2026, the engineers who get hired are the ones who are hardest to doubt.
 
 ## The Duality of the Current Market
 

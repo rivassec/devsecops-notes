@@ -19,7 +19,23 @@
   {% endfor %}
   {% if 'cover' in article.metadata %}
   <meta property="og:image" content="{{ SITEURL }}/{{ article.metadata['cover'] }}">
+  {% elif OG_IMAGE %}
+  <meta property="og:image" content="{{ SITEURL }}/{{ OG_IMAGE }}">
   {% else %}
   <meta property="og:image" content="{{ SITELOGO }}">
+  {% endif %}
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="{{ article.title|striptags|escape }}"/>
+  <meta name="twitter:description" content="{{ article.summary|striptags|escape }}"/>
+  {% if TWITTER_USERNAME %}
+  <meta name="twitter:site" content="@{{ TWITTER_USERNAME }}"/>
+  <meta name="twitter:creator" content="@{{ TWITTER_USERNAME }}"/>
+  {% endif %}
+  {% if 'cover' in article.metadata %}
+  <meta name="twitter:image" content="{{ SITEURL }}/{{ article.metadata['cover'] }}"/>
+  {% elif OG_IMAGE %}
+  <meta name="twitter:image" content="{{ SITEURL }}/{{ OG_IMAGE }}"/>
+  {% else %}
+  <meta name="twitter:image" content="{{ SITELOGO }}"/>
   {% endif %}
 {% endif %}

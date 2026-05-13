@@ -4,7 +4,7 @@ Tags: linux, oomkiller, memory, system-administration, devsecops, process-manage
 Category: DevSecOps
 Slug: oom-killer-process-prioritization
 Author: RivasSec
-Summary: In memory-constrained environments, the Linux OOM Killer decides what lives and what gets killed. This guide shows how to protect critical processes like sshd and mysqld using oom_score_adj values, with a script that applies them reliably and securely. Make memory pressure predictable and survivable.
+Summary: The Linux OOM Killer decides what dies under memory pressure. Protect sshd, mysqld, and other critical processes with oom_score_adj via a small script.
 
 
 In resource-constrained environments — especially virtual private servers, CI agents, and container hosts — the Linux kernel's **Out of Memory Killer (OOM Killer)** is a last-resort defense mechanism. When memory is exhausted, it begins terminating processes to keep the system alive.
@@ -139,7 +139,7 @@ Misconfigured systems where critical daemons (like `iptables`, `auditd`, `sshd`,
 
 ## Modern Use Cases
 
-- **Kubernetes nodes**: Influence OOM behavior via Quality of Service (QoS) classes (set by defining resource requests/limits in pod specs), or apply node-level tuning using methods like the script above for critical node components (e.g., kubelet, container runtime).
+- **Kubernetes nodes**: Influence OOM behavior via Quality of Service (QoS) classes (set by defining resource requests/limits in pod specs), or apply node-level tuning using methods like the script above for critical node components (e.g., kubelet, container runtime). For the pod-side of the same problem, see [Hardening Kubernetes Deployments]({filename}hardening-k8s.md).
 - **CI/CD runners**: Protect build agents or essential runner services from being killed during resource-intensive test suites or concurrent builds.
 - **Shared hosting / VPS**: Prioritize core services (web server, database, SSH) over potentially less critical user processes or background tasks.
 

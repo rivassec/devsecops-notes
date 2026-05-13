@@ -4,7 +4,7 @@ Author: RivasSec
 Category: DevSecOps
 Tags: elasticsearch, snapshot, security, observability, prometheus, minimal-permissions
 Slug: elasticsearch-secure-snapshot-verification
-Summary: Learn how to securely verify Elasticsearch snapshots without using `manage_snapshot`, using a minimal API key, Prometheus-compatible script, and hardened monitoring practices. Includes a GitHub tools repo for automation.
+Summary: Verify Elasticsearch snapshots without manage_snapshot: minimal API key, Prometheus-friendly script, and a public tools repo for hardened monitoring automation.
 
 # Es Snapshot Verifier
 
@@ -141,4 +141,4 @@ export PROM_FILE="/var/lib/node_exporter/textfile_collector/es_snapshot_${REPO_N
 To install, configure, and run the snapshot verification system, follow the documentation in the repository:
 [View usage guide](https://github.com/rivassec/elasticsearch-tools/blob/main/docs/USAGE.md)
 
-This structure is ideal for environments with limited connectivity or strict compliance rules. It keeps the verification logic reproducible, auditable, and safe from privilege escalation risks. Updates to the tooling can be managed independently of the article, improving long-term maintainability.
+This structure is ideal for environments with limited connectivity or strict compliance rules. It keeps the verification logic reproducible, auditable, and safe from privilege escalation risks. Updates to the tooling can be managed independently of the article, improving long-term maintainability. For the same "grant the minimum, refuse everything else" approach applied to AWS IAM, see [IAM Roles That Fail Loud]({filename}iam-safe-defaults-fail-loud.md).
