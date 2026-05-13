@@ -29,7 +29,7 @@ from PIL import Image, ImageDraw, ImageFont
 REPO_ROOT = Path(__file__).resolve().parent.parent
 CONTENT_DIR = REPO_ROOT / "content"
 COVERS_DIR = CONTENT_DIR / "images" / "covers"
-FONTS_DIR = Path(__file__).resolve().parent / "fonts"
+FONTS_DIR = Path(__file__).resolve().parent / "cover_fonts"
 FONT_REGULAR = FONTS_DIR / "Inter-Regular.ttf"
 FONT_BOLD = FONTS_DIR / "Inter-Bold.ttf"
 

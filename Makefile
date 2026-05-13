@@ -52,6 +52,8 @@ html:
 
 clean:
 	[ ! -d "$(OUTPUTDIR)" ] || rm -rf "$(OUTPUTDIR)"
+	find . -type d -name __pycache__ -not -path './.venv/*' -prune -exec rm -rf {} +
+	find . -type f -name '*.pyc' -not -path './.venv/*' -delete
 
 regenerate:
 	"$(PELICAN)" -r "$(INPUTDIR)" -o "$(OUTPUTDIR)" -s "$(CONFFILE)" $(PELICANOPTS)

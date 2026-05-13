@@ -47,7 +47,7 @@ Per-article 1200x630 social cards are rendered from Title + Category:
 .venv/bin/python scripts/generate_covers.py --write-frontmatter  # insert Cover: line
 ```
 
-Inter v4.1 fonts are vendored under `scripts/fonts/`. Requires `pngquant` on PATH for compression; warns otherwise.
+Inter v4.1 fonts are vendored under `scripts/cover_fonts/`. Requires `pngquant` on PATH for compression; warns otherwise.
 
 ## Deploy
 
