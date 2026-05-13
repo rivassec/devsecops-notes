@@ -3,9 +3,11 @@ name: Deploy Pelican Site
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
 
 concurrency:
-  group: pages-deploy
+  group: pages-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || 'deploy' }}
   cancel-in-progress: true
 
 permissions:
@@ -38,6 +40,7 @@ jobs:
         run: echo rivassec.com > output/CNAME
 
       - name: Deploy to GitHub Pages
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
           ghp-import output -b gh-pages
           git push origin gh-pages --force
