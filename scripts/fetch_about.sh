@@ -9,6 +9,10 @@
 #   - strips emoji / non-ASCII symbols so the page matches the rest
 #     of the blog's ASCII-only convention
 #   - demotes the first H1 so Pelican's page-title H1 isn't duplicated
+#   - drops any "Recent post:" line - those rot quickly on the profile
+#     README and create confusing "this is out of date" impressions
+#     on rivassec.com when the README lags behind the actual latest
+#     post. The /archives page is the authoritative source.
 #
 # Usage: scripts/fetch_about.sh
 set -euo pipefail
@@ -56,6 +60,10 @@ CLEAN=$(printf '%s' "$CLEAN" | awk '
   /^# / && demoted == 0 { sub(/^# /, "## "); demoted = 1 }
   { print }
 ')
+
+# Drop any "Recent post:" line (case-insensitive). The profile README rots
+# relative to the site index; keep the authoritative list on /archives.
+CLEAN=$(printf '%s' "$CLEAN" | awk 'BEGIN{IGNORECASE=1} !/^[[:space:]]*Recent post[[:space:]]*:/')
 
 {
   echo "Title: About"
