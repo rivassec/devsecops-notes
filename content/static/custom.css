@@ -53,6 +53,20 @@
   src: url("/static/fonts/SourceCodePro-Bold.ttf.woff2") format("woff2");
 }
 
+/* Inline SVG icons (replaces Font Awesome 1 MB ship). */
+.btn svg.icon {
+  width: 0.9em;
+  height: 0.9em;
+  vertical-align: -0.125em;
+  fill: currentColor;
+}
+ul.social a svg {
+  width: 1.4em;
+  height: 1.4em;
+  vertical-align: middle;
+  fill: currentColor;
+}
+
 /* Article table of contents (extract_toc plugin).
    Flex's base stylesheet sets `aside { color: #fff }` globally for the
    site sidebar; override so in-article TOC text stays readable on its
