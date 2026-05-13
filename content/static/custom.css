@@ -1,5 +1,61 @@
 /* content/static/custom.css */
 
+/* Homepage post cards: tag pills, clearer meta, consistent spacing. */
+main article.post-card {
+  padding: 20px 0 24px;
+  border-bottom: 1px solid #d0d7de;
+}
+main article.post-card:last-of-type {
+  border-bottom: none;
+}
+main article.post-card header h2 {
+  margin: 0 0 6px;
+  letter-spacing: -0.02em;
+}
+main article.post-card .post-meta {
+  margin: 0 0 10px;
+  color: #57606a;
+  font-size: 0.92em;
+}
+main article.post-card ul.tag-pills {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+main article.post-card ul.tag-pills li a {
+  display: inline-block;
+  padding: 2px 10px;
+  font-size: 0.82em;
+  border: 1px solid #d0d7de;
+  border-radius: 999px;
+  background: transparent;
+  color: #57606a;
+  text-decoration: none;
+}
+main article.post-card ul.tag-pills li a:hover {
+  border-color: #1A2E4F;
+  color: #1A2E4F;
+  background: #f6f8fa;
+}
+body.dark-theme main article.post-card {
+  border-bottom-color: #30363d;
+}
+body.dark-theme main article.post-card .post-meta {
+  color: #8b949e;
+}
+body.dark-theme main article.post-card ul.tag-pills li a {
+  border-color: #30363d;
+  color: #8b949e;
+}
+body.dark-theme main article.post-card ul.tag-pills li a:hover {
+  background: #161b22;
+  border-color: #58a6ff;
+  color: #e6edf3;
+}
+
 /* Category landing page intro block (CATEGORY_INTROS in pelicanconf). */
 main section.category-intro {
   padding: 8px 0 16px;
