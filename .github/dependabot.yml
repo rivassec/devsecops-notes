@@ -1,0 +1,37 @@
+version: 2
+
+updates:
+  # Python deps: edit requirements.in, CI enforces --require-hashes install.
+  # Note: Dependabot bumps requirements.in; regenerate requirements.txt
+  # locally with pip-compile --generate-hashes before merging.
+  - package-ecosystem: pip
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "09:00"
+      timezone: America/Los_Angeles
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - python
+    commit-message:
+      prefix: deps
+      include: scope
+
+  # GitHub Actions pinned by SHA in .github/workflows/*.yml.
+  # Dependabot updates both the SHA and the version comment.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "09:00"
+      timezone: America/Los_Angeles
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - github-actions
+    commit-message:
+      prefix: ci
+      include: scope
