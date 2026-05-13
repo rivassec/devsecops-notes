@@ -1,5 +1,6 @@
 AUTHOR = 'RivasSec'
-SITENAME = 'DevSecOps Notes'
+SITENAME = 'RivasSec | DevSecOps, Kubernetes, AWS IAM'
+SITETITLE = 'RivasSec'
 SITESUBTITLE = 'Infrastructure. Security. Insight.'
 SITEURL = 'https://rivassec.com'
 SITEDESCRIPTION = 'Field notes on infrastructure security, cloud hardening, Kubernetes, IAM, and OSINT by RivasSec.'

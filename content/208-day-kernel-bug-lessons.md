@@ -26,7 +26,7 @@ Once the computed value exceeded `0xffffffffffffffff`, it wrapped around — lea
 
 ---
 
-### Why This Matters to DevSecOps
+## Why This Matters to DevSecOps
 
 This bug is more than a curiosity — it's a classic case study in:
 
@@ -38,7 +38,7 @@ Affected systems included RHEL 5.0 through 5.5 and early RHEL 6 versions running
 
 ---
 
-### Takeaways for Modern Systems
+## Takeaways for Modern Systems
 
 - **Live patching tools** like Ksplice, KernelCare, and kpatch can reduce reboot pressure
 - **Observability stacks** should alert on uptime thresholds and kernel messages (`dmesg`, `uptime`, scheduler warnings)

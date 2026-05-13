@@ -8,8 +8,6 @@ Slug: elasticsearch-secure-snapshot-verification
 Summary: Verify Elasticsearch snapshots without manage_snapshot: minimal API key, Prometheus-friendly script, and a public tools repo for hardened monitoring automation.
 Cover: images/covers/elasticsearch-secure-snapshot-verification.png
 
-# Es Snapshot Verifier
-
 Verifying Elasticsearch snapshots typically requires broad `manage` permissions. This can be risky, especially if credentials are compromised. We can reduce the blast radius by defining a minimal role that grants only the specific actions necessary to verify snapshots without allowing deletions or alterations.
 
 In some environments, using external monitoring systems like Datadog or Prometheus may not be feasible. Whether due to air-gapped infrastructure, compliance restrictions, or footprint concerns, having a hardened custom script with minimal privileges can be a reliable fallback.
