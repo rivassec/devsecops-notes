@@ -14,7 +14,6 @@ Cloud-native security engineer focused on designing hardened infrastructure, bui
 Insights on Kubernetes security, IAM hardening, incident retrospectives, and security automation:
  [**rivassec.com**](https://rivassec.com)
 
- Recent post: [Secure Snapshot Verification in Elasticsearch](https://rivassec.com/elasticsearch-secure-snapshot-verification.html)
 
 ---
 
