@@ -4,7 +4,7 @@ Author: RivasSec
 Category: DevSecOps
 Tags: aws, iam, pulumi, python, security, permissions-boundary, supply-chain
 Slug: iam-safe-defaults-fail-loud
-Summary: A small Pulumi library that treats IAM safety measures as preconditions instead of preferences. Permissions boundary required by default, wildcard trust policies rejected, wildcard actions refused, every opt-out explicit and grep-able. Plus notes on why the CI pipeline for a security library has to hash-pin its dependencies.
+Summary: A small Pulumi library that treats IAM safety as a precondition: mandatory permissions boundary, no wildcard trust, no wildcard actions, every opt-out explicit.
 
 There's a class of AWS bug that doesn't show up until audit season: an IAM role that nobody reviewed closely, quietly granted more than it needed, sat for three years, and shows up in a Security Hub finding with `*` in its action list. The role did exactly what it was told to do. The problem is that "do what I'm told" and "refuse to do anything dumb" aren't the same default.
 
@@ -68,4 +68,4 @@ git clone git@github.com:rivassec/iam-safe-defaults.git
 
 Three helpers: `create_safe_role`, `generate_safe_policy`, `is_policy_overly_permissive`. Each with a single opt-out flag per guard, named explicitly enough that the code review catches it.
 
-If you find a failure mode the checker misses, the next version will fix it. There's always another footgun.
+If you find a failure mode the checker misses, the next version will fix it. There's always another footgun. For the cluster-side cousin of this "secure by default" stance, see [Hardening Kubernetes Deployments]({filename}hardening-k8s.md).
