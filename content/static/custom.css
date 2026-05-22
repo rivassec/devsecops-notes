@@ -736,3 +736,15 @@ main section.home-featured article.featured-card p.meta {
 main h2.section-label + article.post-card {
   border-top: none;
 }
+
+/* Footer feed-subscribe link */
+main footer p.footer-feeds {
+  margin: 0 0 8px;
+  font-size: 12px !important;
+  color: var(--fg-dim);
+}
+main footer p.footer-feeds a {
+  color: var(--accent);
+  font-weight: 600;
+}
+main footer p.footer-feeds a:hover { color: var(--accent-strong); }

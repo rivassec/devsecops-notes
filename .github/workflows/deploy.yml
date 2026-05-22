@@ -31,7 +31,12 @@ jobs:
           cache: pip
 
       - name: Install dependencies
-        run: pip install --require-hashes -r requirements.txt
+        # --no-deps because Pelican 4.12 hard-pins Pygments<2.20.0, but we
+        # override Pygments to 2.20.0 in requirements.txt to patch the
+        # AdlLexer ReDoS advisory (GHSA, dependabot alert #1). Every
+        # transitive dep is already pinned with hashes in requirements.txt,
+        # so --no-deps is safe and avoids the resolver conflict.
+        run: pip install --require-hashes --no-deps -r requirements.txt
 
       - name: Refresh About page from GitHub profile README
         run: scripts/fetch_about.sh
