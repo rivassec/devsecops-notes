@@ -36,6 +36,8 @@ PIP_CONFIG_FILE=/dev/null .venv-compile/bin/pip-compile \
 
 Dependabot opens weekly PRs bumping `requirements.in`; each needs a local pip-compile pass before merging.
 
+CI installs with `pip install --require-hashes --no-deps -r requirements.txt`. The `--no-deps` flag is intentional: when an upstream like Pelican hard-pins a transitive (e.g. `Pygments<2.20.0`), we sometimes need to override that pin to patch a security advisory. Every transitive is already pinned with hashes in `requirements.txt`, so `--no-deps` is safe and the lockfile stays authoritative.
+
 ## Cover image generation
 
 Per-article 1200x630 social cards are rendered from Title + Category:

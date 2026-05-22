@@ -1,4 +1,13 @@
 <footer>
+  {% if FEED_ALL_ATOM %}
+    <p class="footer-feeds">
+      Subscribe:
+      <a href="{{ FEED_DOMAIN }}/{{ FEED_ALL_ATOM }}" rel="alternate" type="application/atom+xml">Atom</a>
+      {% if FEED_ALL_RSS %}
+        &middot; <a href="{{ FEED_DOMAIN }}/{{ FEED_ALL_RSS }}" rel="alternate" type="application/rss+xml">RSS</a>
+      {% endif %}
+    </p>
+  {% endif %}
   {% if CC_LICENSE %}
     {% include "partial/cc_license.html" %}
   {% else %}
