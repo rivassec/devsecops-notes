@@ -16,11 +16,15 @@ A security control developers can route around is not a control. It is a checkbo
 
 In a previous life, I watched our cloud security model fail in a very specific way. Developers would hit a build break, file a ticket, and ship the workload through a side door. The controls all worked on paper. The audit report read fine. Adoption was the problem, and adoption is what determines whether a control exists in practice or only in slides.
 
+<div class="tldr"><strong>TL;DR.</strong> Make the secure path the easy path, own it inside the security org, and aggressively retire the side doors. The political work is harder than the technical work.</div>
+
 So I rebuilt the model around a single idea: make the secure path the easy path, and make every other path expensive enough that nobody picks it twice. Eighteen months in:
 
-- Developer remediation time was down **40%**.
-- CI/CD pipeline latency was down **27%**.
-- The build-break-then-side-door pattern had effectively stopped.
+<div class="metrics">
+  <div class="metric"><div class="num">-40%</div><div class="label">Remediation Time</div></div>
+  <div class="metric"><div class="num">-27%</div><div class="label">Pipeline Latency</div></div>
+  <div class="metric"><div class="num">4 mo</div><div class="label">Adoption Stall</div></div>
+</div>
 
 The reason it worked is not novel - "paved road" as a concept has been written about for years - but the specifics of *why* it stopped failing the way it had been failing are worth writing down. Three things mattered, in this order.
 

@@ -1,21 +1,439 @@
-/* content/static/custom.css */
+/* content/static/custom.css
+   Pixel-port of the dark mockup design (2026-05-21).
+   Stays on Flex theme but overrides aggressively. The previous
+   custom.css is preserved as custom.css.bak-mockup-port.
+   ============================================================ */
 
-/* Homepage post cards: tag pills, clearer meta, consistent spacing. */
+:root {
+  --bg: #1a1c20;
+  --bg-elev: #232730;
+  --bg-elev-2: #2a2d33;
+  --fg: #e6e8eb;
+  --fg-dim: #98a0aa;
+  --fg-strong: #ffffff;
+  --accent: #6cb4ff;
+  --accent-strong: #79b8ff;
+  --accent-dim: #4a6f9c;
+  --border: #2a2d33;
+  --border-strong: #3a3d44;
+  --code-bg: #14161a;
+  --tag-bg: #2d3340;
+  --hero-from: #1f3454;
+  --hero-mid: #2d4f80;
+  --hero-to: #1a3d6b;
+}
+
+/* ============================================================
+   Self-hosted fonts (preserved from previous custom.css).
+   ============================================================ */
+@font-face { font-family: "Source Sans Pro"; font-style: normal; font-weight: 300; font-display: swap;
+  src: url("/static/fonts/SourceSans3-Light.ttf.woff2") format("woff2"); }
+@font-face { font-family: "Source Sans Pro"; font-style: normal; font-weight: 400; font-display: swap;
+  src: url("/static/fonts/SourceSans3-Regular.ttf.woff2") format("woff2"); }
+@font-face { font-family: "Source Sans Pro"; font-style: italic;  font-weight: 400; font-display: swap;
+  src: url("/static/fonts/SourceSans3-It.ttf.woff2") format("woff2"); }
+@font-face { font-family: "Source Sans Pro"; font-style: normal; font-weight: 700; font-display: swap;
+  src: url("/static/fonts/SourceSans3-Bold.ttf.woff2") format("woff2"); }
+@font-face { font-family: "Source Code Pro"; font-style: normal; font-weight: 400; font-display: swap;
+  src: url("/static/fonts/SourceCodePro-Regular.ttf.woff2") format("woff2"); }
+@font-face { font-family: "Source Code Pro"; font-style: italic;  font-weight: 400; font-display: swap;
+  src: url("/static/fonts/SourceCodePro-It.ttf.woff2") format("woff2"); }
+@font-face { font-family: "Source Code Pro"; font-style: normal; font-weight: 700; font-display: swap;
+  src: url("/static/fonts/SourceCodePro-Bold.ttf.woff2") format("woff2"); }
+
+/* ============================================================
+   Global reset for the dark mockup look.
+   ============================================================ */
+html, body {
+  background: var(--bg);
+  color: var(--fg);
+}
+body {
+  font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 17px;
+  line-height: 1.65;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { color: var(--accent-strong); text-decoration: none; }
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--fg-strong);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+/* ============================================================
+   Hide Flex's left sidebar entirely. The mockup uses a top nav.
+   ============================================================ */
+@media screen and (min-width: 768px) {
+  body > aside { display: none !important; }
+  main {
+    padding-left: 0 !important;
+    height: auto !important;
+    position: static !important;
+  }
+}
+@media screen and (max-width: 767px) {
+  body > aside { display: none !important; }
+}
+
+/* ============================================================
+   Top nav bar: promote main > nav to sticky top bar with brand.
+   ============================================================ */
+main > nav {
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 32px !important;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 24px;
+  text-align: right !important;
+  text-transform: none !important;
+  font-size: 14px !important;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+main > nav::before {
+  content: 'RivasSec';
+  margin-right: auto;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: -0.01em;
+}
+main > nav a {
+  color: var(--fg-dim) !important;
+  border-right: none !important;
+  padding: 6px 8px !important;
+  font-size: 14px !important;
+  text-transform: none !important;
+  text-decoration: none;
+}
+main > nav a:hover { color: var(--accent) !important; background: transparent !important; }
+
+/* ============================================================
+   Article page: hero banner, body, sidebar.
+   ============================================================ */
+main article.single {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 280px;
+  grid-column-gap: 32px;
+  padding: 0 32px 64px;
+  max-width: 1200px;
+  margin: 0 auto !important;
+}
+main article.single > header {
+  grid-column: 1 / -1;
+  position: relative;
+  margin: 0 -32px 32px;
+  padding: 64px 32px 40px;
+  background: linear-gradient(135deg, var(--hero-from) 0%, var(--hero-mid) 50%, var(--hero-to) 100%);
+  color: var(--fg-strong);
+  overflow: hidden;
+}
+main article.single > header::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 80% 20%, rgba(108, 180, 255, 0.18), transparent 60%),
+    radial-gradient(circle at 10% 90%, rgba(255, 255, 255, 0.05), transparent 50%);
+  pointer-events: none;
+}
+main article.single > header > * {
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+}
+main article.single > header h1 {
+  font-size: 2.5em;
+  line-height: 1.15;
+  margin: 0 0 12px;
+  color: var(--fg-strong);
+}
+main article.single > header p {
+  margin: 0 0 12px;
+  color: #c9d4e3;
+  font-size: 0.9em;
+}
+main article.single > header p a { color: #a2c4ff; }
+main article.single > header p a:hover { color: #d6e6ff; }
+main article.single > div { grid-column: 1; min-width: 0; }
+main article.single > aside.article-toc { grid-column: 2; grid-row: 2; }
+main article.single .tag-cloud,
+main article.single .related-posts,
+main article.single > .center,
+main article.single > .neighbors,
+main article.single > .related-posts { grid-column: 1 / -1; }
+
+@media (max-width: 1099px) {
+  main article.single { grid-template-columns: 1fr; }
+  main article.single > aside.article-toc { grid-column: 1; }
+}
+
+/* Article body typography */
+main article.single > div {
+  font-size: 17px;
+  color: var(--fg);
+}
+main article.single h2 {
+  font-size: 1.8em;
+  margin-top: 2em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--border);
+  color: var(--fg-strong);
+}
+main article.single h3 {
+  font-size: 1.4em;
+  margin-top: 1.6em;
+  color: var(--fg-strong);
+}
+main article.single p, main article.single li {
+  color: var(--fg);
+  line-height: 1.65;
+}
+main article.single strong { color: var(--fg-strong); }
+main article.single em { color: var(--fg); }
+
+/* In-article TOC card (right rail) */
+main article.single aside.article-toc {
+  position: sticky;
+  top: 80px;
+  align-self: flex-start;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 18px 20px;
+  margin: 0;
+  font-size: 13px;
+  color: var(--fg);
+  text-align: left;
+  width: auto;
+  height: auto;
+  left: auto;
+  z-index: auto;
+}
+main article.single aside.article-toc h4 {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--fg-dim);
+  margin: 0 0 12px;
+  font-weight: 700;
+}
+main article.single aside.article-toc a {
+  color: var(--fg);
+}
+main article.single aside.article-toc a:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+main article.single aside.article-toc .toc { margin-top: 0 !important; }
+main article.single aside.article-toc .toc > ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+main article.single aside.article-toc .toc > ul > li {
+  padding: 5px 0;
+  line-height: 1.4;
+}
+main article.single aside.article-toc .toc ul ul {
+  list-style: none;
+  padding-left: 16px;
+  margin-top: 4px;
+}
+
+/* Article tag-cloud at bottom */
+main article.single .tag-cloud {
+  margin: 32px 0 16px;
+  padding: 16px 0 0;
+  border-top: 1px solid var(--border);
+}
+main article.single .tag-cloud p {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+}
+main article.single .tag-cloud a {
+  display: inline-block;
+  padding: 4px 12px;
+  font-size: 0.75em;
+  background: var(--tag-bg) !important;
+  color: var(--fg) !important;
+  border-radius: 999px;
+  text-decoration: none;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  line-height: 1.4;
+  text-align: center;
+}
+main article.single .tag-cloud a:hover {
+  background: var(--bg-elev-2) !important;
+  border-color: var(--accent-dim);
+  color: var(--accent-strong) !important;
+}
+
+/* Related posts card (right rail) */
+main article.single .related-posts,
+main article.single div.related-posts {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 18px 20px;
+  font-size: 13px;
+}
+main article.single .related-posts h4 {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--fg-dim);
+  margin: 0 0 12px;
+  font-weight: 700;
+}
+main article.single .related-posts ul,
+main article.single ul.related-posts {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+main article.single .related-posts li {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+main article.single .related-posts li:last-child { border-bottom: none; }
+main article.single .related-posts a {
+  color: var(--fg);
+  text-decoration: none;
+  display: block;
+}
+main article.single .related-posts a:hover { color: var(--accent); }
+
+/* TL;DR callout */
+main article.single .tldr {
+  background: var(--bg-elev);
+  border-left: 3px solid var(--accent);
+  padding: 16px 20px;
+  margin: 24px 0;
+  border-radius: 4px;
+  font-size: 0.96em;
+}
+main article.single .tldr strong:first-child {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* Metric cards */
+main article.single .metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin: 24px 0;
+}
+main article.single .metric {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 16px 14px;
+  text-align: center;
+}
+main article.single .metric .num {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 1.8em;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1.1;
+}
+main article.single .metric .label {
+  font-size: 0.7em;
+  color: var(--fg-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-top: 6px;
+}
+
+/* ============================================================
+   Code blocks: dark with copy button.
+   ============================================================ */
+main article pre {
+  background: var(--code-bg) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 4px;
+  padding: 14px 16px;
+  font-size: 0.85em;
+  line-height: 1.55;
+  overflow-x: auto;
+  border-left-width: 1px !important;
+}
+main article :not(pre) > code {
+  background: var(--bg-elev) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--accent-strong) !important;
+  font-size: 0.85em;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+main article blockquote {
+  background: var(--bg-elev);
+  border-left: 3px solid var(--accent);
+  border-radius: 4px;
+  color: var(--fg);
+  margin: 20px 0;
+  padding: 12px 18px;
+  font-weight: 400;
+  font-size: 1em;
+}
+main article pre.has-copy .copy-btn {
+  background: var(--bg-elev-2) !important;
+  border: 1px solid var(--border-strong) !important;
+  color: var(--fg-dim) !important;
+  opacity: 1;
+  font-size: 0.78em;
+  padding: 4px 10px;
+  border-radius: 4px;
+  top: 8px;
+  right: 8px;
+}
+main article pre.has-copy .copy-btn:hover {
+  color: var(--fg-strong) !important;
+  background: var(--accent-dim) !important;
+}
+main article pre.has-copy .copy-btn.copied {
+  color: #3fb950 !important;
+  border-color: #238636 !important;
+}
+
+/* ============================================================
+   Index page (post listing): card-style entries.
+   ============================================================ */
 main article.post-card {
-  padding: 20px 0 24px;
-  border-bottom: 1px solid #d0d7de;
+  max-width: 800px;
+  margin: 0 auto !important;
+  padding: 24px 0;
+  border-bottom: 1px solid var(--border);
 }
-main article.post-card:last-of-type {
-  border-bottom: none;
-}
+main article.post-card:last-of-type { border-bottom: none; }
 main article.post-card header h2 {
-  margin: 0 0 6px;
+  margin: 0 0 8px;
+  font-size: 1.6em;
   letter-spacing: -0.02em;
 }
+main article.post-card header h2 a { color: var(--fg-strong); }
+main article.post-card header h2 a:hover { color: var(--accent); }
 main article.post-card .post-meta {
-  margin: 0 0 10px;
-  color: #57606a;
-  font-size: 0.92em;
+  margin: 0 0 12px;
+  color: var(--fg-dim);
+  font-size: 0.9em;
+}
+main article.post-card .post-meta a {
+  color: var(--accent);
+  background: transparent !important;
+  padding: 0 !important;
 }
 main article.post-card ul.tag-pills {
   list-style: none;
@@ -27,295 +445,127 @@ main article.post-card ul.tag-pills {
 }
 main article.post-card ul.tag-pills li a {
   display: inline-block;
-  padding: 2px 10px;
-  font-size: 0.82em;
-  border: 1px solid #d0d7de;
+  padding: 3px 12px;
+  font-size: 0.78em;
+  background: var(--tag-bg);
+  color: var(--fg);
   border-radius: 999px;
-  background: transparent;
-  color: #57606a;
   text-decoration: none;
+  border: 1px solid transparent;
+  white-space: nowrap;
 }
 main article.post-card ul.tag-pills li a:hover {
-  border-color: #1A2E4F;
-  color: #1A2E4F;
-  background: #f6f8fa;
+  background: var(--bg-elev-2);
+  border-color: var(--accent-dim);
+  color: var(--accent-strong);
 }
-body.dark-theme main article.post-card {
-  border-bottom-color: #30363d;
+main article.post-card div { color: var(--fg); font-size: 16px; }
+main article.post-card a.btn {
+  background: var(--accent-dim) !important;
+  color: var(--fg-strong) !important;
+  border-radius: 4px;
+  padding: 6px 14px !important;
+  font-size: 0.85em !important;
+  margin-top: 12px;
 }
-body.dark-theme main article.post-card .post-meta {
-  color: #8b949e;
-}
-body.dark-theme main article.post-card ul.tag-pills li a {
-  border-color: #30363d;
-  color: #8b949e;
-}
-body.dark-theme main article.post-card ul.tag-pills li a:hover {
-  background: #161b22;
-  border-color: #58a6ff;
-  color: #e6edf3;
-}
+main article.post-card a.btn:hover { background: var(--accent) !important; }
 
-/* Category landing page intro block (CATEGORY_INTROS in pelicanconf). */
+/* Category-intro */
 main section.category-intro {
-  padding: 8px 0 16px;
-  margin: 0 0 24px;
-  border-bottom: 1px solid #d0d7de;
+  max-width: 800px;
+  margin: 0 auto 24px !important;
+  padding: 24px 0 16px;
+  border-bottom: 1px solid var(--border);
 }
 main section.category-intro h1 {
-  margin: 0 0 6px;
-  font-size: 1.9em;
-  letter-spacing: -0.02em;
-}
-main section.category-intro p {
-  margin: 0;
-  color: #57606a;
-  line-height: 1.55;
-}
-body.dark-theme main section.category-intro {
-  border-bottom-color: #30363d;
-}
-body.dark-theme main section.category-intro p {
-  color: #8b949e;
-}
-
-/* Long-form readability: slightly looser line-height on article bodies. */
-main article p,
-main article li {
-  line-height: 1.6;
-}
-
-/* Self-hosted fonts (OFL; see content/static/fonts/LICENSE-*.txt).
-   Family names match what the Flex theme's stylesheet already uses,
-   so this replaces the Google Fonts CSS link without theme changes. */
-@font-face {
-  font-family: "Source Sans Pro";
-  font-style: normal;
-  font-weight: 300;
-  font-display: swap;
-  src: url("/static/fonts/SourceSans3-Light.ttf.woff2") format("woff2");
-}
-@font-face {
-  font-family: "Source Sans Pro";
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("/static/fonts/SourceSans3-Regular.ttf.woff2") format("woff2");
-}
-@font-face {
-  font-family: "Source Sans Pro";
-  font-style: italic;
-  font-weight: 400;
-  font-display: swap;
-  src: url("/static/fonts/SourceSans3-It.ttf.woff2") format("woff2");
-}
-@font-face {
-  font-family: "Source Sans Pro";
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url("/static/fonts/SourceSans3-Bold.ttf.woff2") format("woff2");
-}
-@font-face {
-  font-family: "Source Code Pro";
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("/static/fonts/SourceCodePro-Regular.ttf.woff2") format("woff2");
-}
-@font-face {
-  font-family: "Source Code Pro";
-  font-style: italic;
-  font-weight: 400;
-  font-display: swap;
-  src: url("/static/fonts/SourceCodePro-It.ttf.woff2") format("woff2");
-}
-@font-face {
-  font-family: "Source Code Pro";
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url("/static/fonts/SourceCodePro-Bold.ttf.woff2") format("woff2");
-}
-
-/* Copy-to-clipboard button injected by /static/copy-code.js on every
-   <pre> block inside main article. Button sits top-right of the code
-   block; only visible on hover or keyboard focus to keep the default
-   reading surface clean. */
-main article pre.has-copy {
-  position: relative;
-}
-main article pre.has-copy .copy-btn {
-  position: absolute;
-  top: 6px;
-  right: 6px;
-  padding: 4px 8px;
-  font-size: 0.78em;
-  line-height: 1;
-  color: #c9d1d9;
-  background: rgba(30, 36, 46, 0.85);
-  border: 1px solid #30363d;
-  border-radius: 4px;
-  cursor: pointer;
-  opacity: 0;
-  transition: opacity 120ms, color 120ms, background 120ms;
-}
-main article pre.has-copy:hover .copy-btn,
-main article pre.has-copy .copy-btn:focus {
-  opacity: 1;
-}
-main article pre.has-copy .copy-btn:hover {
-  color: #fff;
-  background: rgba(55, 65, 81, 0.95);
-}
-main article pre.has-copy .copy-btn.copied {
-  opacity: 1;
-  color: #3fb950;
-  border-color: #238636;
-}
-main article pre.has-copy .copy-btn svg {
-  vertical-align: -2px;
-}
-
-/* Inline SVG icons (replaces Font Awesome 1 MB ship). */
-.btn svg.icon {
-  width: 0.9em;
-  height: 0.9em;
-  vertical-align: -0.125em;
-  fill: currentColor;
-}
-ul.social a svg {
-  width: 1.4em;
-  height: 1.4em;
-  vertical-align: middle;
-  fill: currentColor;
-}
-
-/* Article table of contents (extract_toc plugin).
-   Flex's base stylesheet sets `aside { color: #fff }` globally for the
-   site sidebar; override so in-article TOC text stays readable on its
-   light background. */
-main article aside.article-toc {
-  background: #f6f8fa;
-  color: #1f2328;
-  border: 1px solid #d0d7de;
-  border-radius: 6px;
-  padding: 12px 18px;
-  margin: 16px 0 24px;
-  font-size: 0.95em;
-}
-main article aside.article-toc h4 {
   margin: 0 0 8px;
-  font-size: 0.95em;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: #57606a;
+  font-size: 2em;
+  color: var(--fg-strong);
 }
-main article aside.article-toc a {
-  color: #1A2E4F;
+main section.category-intro p { color: var(--fg-dim); margin: 0; }
+
+/* Pagination + footer + neighbors */
+main .pagination, main .neighbors { color: var(--fg-dim); }
+main .pagination a, main .neighbors a { color: var(--accent); }
+main footer {
+  border-top: 1px solid var(--border);
+  background: var(--bg);
+  padding: 16px 32px !important;
+  margin-top: 48px;
 }
-main article aside.article-toc a:hover {
-  color: #0D47A1;
-  text-decoration: underline;
+main footer p { color: var(--fg-dim); }
+
+/* Tag cloud (tags index page) */
+.tagcloud a {
+  background: var(--tag-bg);
+  color: var(--fg);
+  padding: 3px 10px;
+  margin: 2px;
+  border-radius: 999px;
+  font-size: 0.85em;
 }
-main article aside.article-toc .toc > ul {
-  margin: 0;
-  padding-left: 20px;
-}
-main article aside.article-toc .toc ul ul {
-  margin: 4px 0;
-}
-main article aside.article-toc li {
-  line-height: 1.55;
-}
-body.dark-theme main article aside.article-toc,
-main article aside.article-toc.dark-theme {
-  background: #161b22;
-  color: #e6edf3;
-  border-color: #30363d;
-}
-body.dark-theme main article aside.article-toc h4 {
-  color: #8b949e;
-}
-body.dark-theme main article aside.article-toc a {
-  color: #a2c4ff;
+.tagcloud a:hover {
+  background: var(--bg-elev-2);
+  color: var(--accent-strong);
 }
 
-/* Global link color overrides */
-a,
-h1 a, h2 a, h3 a,
-.article h1 a, .article h2 a, .article h3 a {
-  color: #1A2E4F;
+/* Inline SVG icons */
+.btn svg.icon {
+  width: 0.9em; height: 0.9em; vertical-align: -0.125em; fill: currentColor;
 }
 
-a:hover {
-  color: #0D47A1;
-}
-
-/* Article "Continue reading" button */
+/* Read-more button */
 .read-more {
-  background-color: #1A2E4F;
-  color: #ffffff;
+  background: var(--accent-dim);
+  color: var(--fg-strong);
   border-radius: 4px;
   padding: 6px 12px;
   text-decoration: none;
   display: inline-block;
 }
+.read-more:hover { background: var(--accent); }
 
-.read-more:hover {
-  background-color: #0D47A1;
-}
-
-/* Tag cloud styling */
-.tagcloud a {
-  background-color: #1A2E4F;
-  color: #ffffff;
-  padding: 2px 6px;
-  margin: 2px;
-  border-radius: 3px;
-  text-decoration: none;
-  display: inline-block;
-}
-
-.tagcloud a:hover {
-  background-color: #0D47A1;
-}
-
-/* Category and metadata labels */
-.category a,
-article .metadata a {
-  background-color: #1A2E4F;
-  color: #ffffff;
-  padding: 2px 6px;
-  border-radius: 3px;
-  text-decoration: none;
-}
-
-/* Navbar active item or highlight accent */
-.navbar .active a,
-.navbar a:hover {
-  background-color: #1A2E4F;
-  color: #ffffff !important;
-}
-
-/* Footer link hover override */
-footer a:hover {
-  color: #0D47A1;
-}
-
-/* Override default .btn and Isso comment button styles */
+/* ============================================================
+   Override Flex's default orange .btn styling site-wide.
+   The neighbors partial (Previous/Next Post) and Continue Reading
+   on index page use this class.
+   ============================================================ */
 a.btn,
 section#isso-thread section.auth-section p.post-action input {
-  background-color: #1A2E4F !important;
-  color: #ffffff;
-  border-radius: 4px;
-  padding: 6px 12px;
+  background-color: var(--accent-dim) !important;
+  color: var(--fg-strong) !important;
+  border: 1px solid transparent !important;
+  border-radius: 4px !important;
+  padding: 8px 14px !important;
+  font-size: 0.85em !important;
   text-decoration: none;
-  border: none;
+  transition: background-color 120ms, border-color 120ms;
 }
-
 a.btn:hover,
 section#isso-thread section.auth-section p.post-action input:hover {
-  background-color: #0D47A1 !important;
-  color: #ffffff;
+  background-color: var(--accent) !important;
+  border-color: var(--accent-strong) !important;
+  color: var(--fg-strong) !important;
+}
+
+/* Previous/Next post container spacing on the dark layout */
+main article.single .neighbors {
+  height: auto !important;
+  margin: 32px 0 !important;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  grid-column: 1 / -1;
+}
+main article.single .neighbors a.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+/* The .btn inherits float-left/float-right from Flex; flexbox handles
+   alignment now, so neutralize the floats inside .neighbors. */
+main article.single .neighbors a.btn.float-left,
+main article.single .neighbors a.btn.float-right {
+  float: none;
 }
