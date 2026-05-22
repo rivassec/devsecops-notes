@@ -748,3 +748,46 @@ main footer p.footer-feeds a {
   font-weight: 600;
 }
 main footer p.footer-feeds a:hover { color: var(--accent-strong); }
+
+/* ============================================================
+   Layout-shift hardening (CLS fix from Cloudflare RUM data).
+   The 'html>body.light-theme>main>article' element on / was reporting
+   CLS 0.221. Reserve space for homepage layout elements that
+   otherwise paint, then resize as content/fonts load.
+   ============================================================ */
+
+/* Featured grid: reserve a min-height so the row is stable
+   before card content paints. Tuned to the natural height of
+   3 cards with category, title, excerpt, and meta lines. */
+main section.home-featured .featured-grid {
+  min-height: 240px;
+}
+@media (max-width: 900px) {
+  main section.home-featured .featured-grid { min-height: 720px; }
+}
+main section.home-featured article.featured-card {
+  /* Lock minimum card height so flex-grow on the excerpt does
+     not jitter as fonts swap from system to Source Sans Pro. */
+  min-height: 220px;
+}
+
+/* Category strip: lock to a single row by default; pills inside
+   wrap inside-the-bounded-row rather than pushing content down. */
+main nav.home-categories {
+  min-height: 36px;
+}
+
+/* Intro: stable height while fonts swap. */
+main section.home-intro {
+  min-height: 220px;
+}
+
+/* All article-content images get explicit aspect-ratio so the
+   browser reserves layout space before image bytes arrive.
+   Fixes CLS for images without width/height attrs in markdown. */
+main article p img {
+  aspect-ratio: auto;
+  height: auto;
+  max-width: 100%;
+  display: block;
+}
