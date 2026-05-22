@@ -122,3 +122,12 @@ CATEGORY_INTROS = {
     'Projects': 'Tools, plugins, and one-off builds from my homelab and field work.',
     'Threat Intelligence': 'OSINT investigations and case studies on phishing infrastructure, nation-state operations, and emerging threats.',
 }
+
+# Homepage featured posts: hand-picked slugs, ordered. Surfaced at the
+# top of index.html as a "Start here" panel ahead of the chronological
+# feed.
+FEATURED_POST_SLUGS = [
+    'paved-road-adoption-as-control',
+    'iam-safe-defaults-fail-loud',
+    'teensy-efi-bruteforce-hours-late',
+]
