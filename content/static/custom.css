@@ -569,3 +569,170 @@ main article.single .neighbors a.btn.float-left,
 main article.single .neighbors a.btn.float-right {
   float: none;
 }
+
+/* ============================================================
+   Homepage: intro block, category strip, featured posts panel.
+   Only renders on the home (first page of paginated index).
+   ============================================================ */
+
+/* Above-the-fold intro */
+main section.home-intro {
+  max-width: 800px;
+  margin: 0 auto !important;
+  padding: 48px 32px 24px;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+}
+main section.home-intro h1 {
+  margin: 0 0 8px;
+  font-size: 2.6em;
+  letter-spacing: -0.02em;
+  color: var(--fg-strong);
+}
+main section.home-intro p.subtitle {
+  margin: 0 0 16px;
+  font-size: 1.15em;
+  color: var(--accent);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+main section.home-intro p.description {
+  margin: 0 auto;
+  max-width: 600px;
+  color: var(--fg-dim);
+  font-size: 0.95em;
+  line-height: 1.55;
+}
+
+/* Category navigation strip */
+main nav.home-categories {
+  max-width: 800px;
+  margin: 24px auto 36px !important;
+  padding: 0 32px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  position: static;
+  text-align: center !important;
+}
+main nav.home-categories::before { content: none; }
+main nav.home-categories a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px !important;
+  font-size: 13px !important;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: var(--bg-elev);
+  color: var(--fg) !important;
+  text-decoration: none;
+  text-transform: none !important;
+  transition: border-color 120ms, color 120ms, background 120ms;
+}
+main nav.home-categories a:hover {
+  background: var(--bg-elev-2) !important;
+  border-color: var(--accent-dim);
+  color: var(--accent-strong) !important;
+}
+main nav.home-categories .cat-name {
+  font-weight: 600;
+}
+main nav.home-categories .cat-count {
+  display: inline-block;
+  min-width: 20px;
+  padding: 1px 7px;
+  font-size: 11px;
+  font-family: 'Source Code Pro', monospace;
+  color: var(--fg-dim);
+  background: var(--bg);
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  text-align: center;
+}
+
+/* Section labels (Start here, Latest posts) */
+main h2.section-label {
+  max-width: 800px;
+  margin: 32px auto 16px !important;
+  padding: 0 32px;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  font-weight: 700;
+  border: none;
+}
+
+/* Featured posts grid */
+main section.home-featured {
+  max-width: 1200px;
+  margin: 0 auto !important;
+  padding: 0 32px 16px;
+}
+main section.home-featured .featured-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+main section.home-featured article.featured-card {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  transition: border-color 120ms, transform 120ms;
+}
+main section.home-featured article.featured-card:hover {
+  border-color: var(--accent-dim);
+  transform: translateY(-2px);
+}
+main section.home-featured article.featured-card p.cat {
+  margin: 0 0 8px;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  font-weight: 700;
+}
+main section.home-featured article.featured-card h3 {
+  margin: 0 0 12px;
+  font-size: 1.15em;
+  line-height: 1.3;
+  color: var(--fg-strong);
+}
+main section.home-featured article.featured-card h3 a {
+  color: var(--fg-strong);
+  text-decoration: none;
+}
+main section.home-featured article.featured-card:hover h3 a {
+  color: var(--accent);
+}
+main section.home-featured article.featured-card p.excerpt {
+  margin: 0 0 12px;
+  font-size: 0.9em;
+  color: var(--fg);
+  line-height: 1.5;
+  flex: 1;
+}
+main section.home-featured article.featured-card p.meta {
+  margin: 0;
+  font-size: 0.78em;
+  color: var(--fg-dim);
+  letter-spacing: 0.05em;
+}
+
+@media (max-width: 900px) {
+  main section.home-featured .featured-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Compact post-cards after featured panel: undo big top spacing on first card */
+main h2.section-label + article.post-card {
+  border-top: none;
+}

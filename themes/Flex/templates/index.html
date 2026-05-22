@@ -2,6 +2,61 @@
 
 {% block content %}
 
+{# Above-the-fold intro block — only on first page (not paginated views) #}
+{% if not articles_previous_page %}
+<section class="home-intro">
+  <h1>{{ SITETITLE }}</h1>
+  <p class="subtitle">{{ SITESUBTITLE }}</p>
+  <p class="description">{{ SITEDESCRIPTION }}</p>
+</section>
+
+{# Category navigation strip with post counts #}
+{% if categories %}
+<nav class="home-categories" aria-label="Browse by category">
+  {% for cat, cat_articles in categories|sort %}
+    <a href="{{ SITEURL }}/{{ cat.url }}">
+      <span class="cat-name">{{ cat }}</span>
+      <span class="cat-count">{{ cat_articles|length }}</span>
+    </a>
+  {% endfor %}
+</nav>
+{% endif %}
+
+{# Featured posts panel — pinned hand-picked posts ahead of chrono feed #}
+{% if FEATURED_POST_SLUGS %}
+  {% set featured_articles = [] %}
+  {% for slug in FEATURED_POST_SLUGS %}
+    {% for article in articles %}
+      {% if article.slug == slug %}
+        {% if featured_articles.append(article) %}{% endif %}
+      {% endif %}
+    {% endfor %}
+  {% endfor %}
+  {% if featured_articles %}
+  <section class="home-featured" aria-label="Featured posts">
+    <h2 class="section-label">Start here</h2>
+    <div class="featured-grid">
+      {% for article in featured_articles %}
+      <article class="featured-card">
+        <p class="cat">{{ article.category }}</p>
+        <h3>
+          <a href="{{ SITEURL }}/{{ article.url }}{% if not DISABLE_URL_HASH %}#{{ article.slug }}{% endif %}">{{ article.title }}</a>
+        </h3>
+        <p class="excerpt">{{ article.summary|striptags|truncate(160) }}</p>
+        <p class="meta">
+          {% if PLUGINS and 'post_stats' in PLUGINS %}
+            {{ article.stats['read_mins'] }} min read
+          {% endif %}
+        </p>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  <h2 class="section-label">Latest posts</h2>
+  {% endif %}
+{% endif %}
+{% endif %}
+
 {% for article in articles_page.object_list %}
 <article class="post-card">
   <header>
