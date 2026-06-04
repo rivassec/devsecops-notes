@@ -1,6 +1,6 @@
 Title: The Teensy That Failed in Public: An EFI Brute Force, Hours Late
 Date: 2026-05-21
-Modified: 2026-05-21
+Modified: 2026-06-04
 Category: Projects
 Tags: hardware, mac, efi, teensy, security-research, hackaday, hacker-news, open-source
 Slug: teensy-efi-bruteforce-hours-late
@@ -120,4 +120,4 @@ Three corrections, framed as transferable instruction rather than personal regre
 
 The repo is at [github.com/rivassec/efi-bruteforce](https://github.com/rivassec/efi-bruteforce) under MIT license. The README documents the timing values and the power-cycle workaround inline. If you are working with 2012-2017 MacBook hardware for legitimate forensic or device-recovery purposes, the code may still apply. Anything newer, the code does nothing for you, which is what Apple's hardware security model is supposed to do.
 
-For the same instincts applied to current cloud work, [iam-safe-defaults](https://rivassec.com/iam-safe-defaults-fail-loud.html) is the closest cousin: a small library that makes the IAM policy decisions a future auditor will care about happen at write time, not at audit time. The shape is the same — make the boundary teachable, document where the seams leak, ship the artifact in a form that survives your attention.
+For the same instincts applied to current cloud work, [iam-safe-defaults]({filename}iam-safe-defaults-fail-loud.md) is the closest cousin: a small library that makes the IAM policy decisions a future auditor will care about happen at write time, not at audit time. The shape is the same — make the boundary teachable, document where the seams leak, ship the artifact in a form that survives your attention. Why that posture matters more in 2026 than it did in 2013 is the subject of [The Trust Decay]({filename}trust-decay-adversarial-hiring.md): an artifact that names its failure modes inline is one of the few hiring-pipeline signals adversarial filtering hasn't priced down to zero.

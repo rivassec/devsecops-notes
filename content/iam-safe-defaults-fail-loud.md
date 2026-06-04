@@ -1,6 +1,6 @@
 Title: IAM Roles That Fail Loud: Small Defaults, Big Difference
 Date: 2026-05-12
-Modified: 2026-05-12
+Modified: 2026-06-04
 Author: RivasSec
 Category: DevSecOps
 Tags: aws, iam, pulumi, python, devsecops
@@ -51,6 +51,8 @@ New version walks actions with `any(a == "*" or a.endswith(":*") for a in action
 ## Why Pulumi and not Terraform
 
 Pulumi is Python. The guards are Python. The tests are Python. You can unit-test the logic without standing up a provider — Pulumi's mock runtime makes it cheap to verify "this input raises the expected exception" in under a second. The Terraform equivalent would have been an OPA policy or a Sentinel rule, with a different language, a different test harness, and a lot more ceremony for the same amount of actual behavior change.
+
+A library this small only matters if it ships as part of a paved road — a default that developers *land on* without trying. The program shape that makes that work, including the four-month adoption stall I caused myself, is in [Adoption Is a Security Control]({filename}paved-road-adoption-as-control.md).
 
 ## The part I didn't build
 

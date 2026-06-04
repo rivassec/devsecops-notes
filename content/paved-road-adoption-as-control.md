@@ -1,6 +1,6 @@
 Title: Adoption Is a Security Control: Notes from Paving a Road
 Date: 2026-05-21
-Modified: 2026-05-21
+Modified: 2026-06-04
 Author: RivasSec
 Category: DevSecOps
 Tags: devsecops, platform-security, paved-road, pulumi, ci-cd, cloud-security
@@ -30,11 +30,11 @@ The reason it worked is not novel - "paved road" as a concept has been written a
 
 ## 1. Modules with the controls baked in
 
-I shipped Pulumi modules with the controls already inside them. Encryption at rest, IAM least-privilege scaffolding, network segmentation defaults, structured logging, all wired up. A developer picked a module, got a workload, and shipped. The controls happened because the module was *inherently* built that way - they were not a checklist the developer had to remember.
+I shipped Pulumi modules with the controls already inside them. Encryption at rest, IAM least-privilege scaffolding, network segmentation defaults, structured logging, all wired up. A developer picked a module, got a workload, and shipped. The controls happened because the module was *inherently* built that way - they were not a checklist the developer had to remember. The smallest standalone example of that posture is [iam-safe-defaults]({filename}iam-safe-defaults-fail-loud.md), a tiny Pulumi library that refuses to mint a role without a permissions boundary unless the caller types an explicit opt-out.
 
 The CI side mirrored this. We gated [Trivy](https://github.com/aquasecurity/trivy) and [Checkov](https://github.com/bridgecrewio/checkov) directly in the pipeline and surfaced their findings in pull request comments, not in a quarterly report. Findings showed up where the developer was already looking, before deploy, while the change was small and the context was fresh. By the time a workload reached production, the failure modes that used to dominate audit findings had been priced out at the PR level.
 
-The principle here is unsexy: the secure default has to be the *path of least resistance*, not the path of most virtue. If the developer has to type more, remember more, or wait more for the secure path, the side door wins.
+The principle here is unsexy: the secure default has to be the *path of least resistance*, not the path of most virtue. If the developer has to type more, remember more, or wait more for the secure path, the side door wins. The same logic applies one layer up the stack: TLS misconfigurations stop being a security problem the moment the cert lifecycle is automated by default, which is the lens I take in [TLS Has Three Jobs]({filename}tls-three-jobs.md).
 
 ## 2. The modules lived inside the security org
 
