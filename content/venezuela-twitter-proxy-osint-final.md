@@ -1,6 +1,6 @@
 Title: Catching a Nation-State Proxy: OSINT on Twitter
 Date: 2025-04-17
-Modified: 2026-05-12
+Modified: 2026-06-04
 Tags: osint, threat-intelligence, phishing, devsecops
 Category: Threat Intelligence
 Slug: venezuela-twitter-proxy-osint
@@ -89,7 +89,7 @@ At the time of discovery, this site **did not contain malicious code**, but the 
 
 ## Lessons for DevSecOps & Threat Intelligence Today
 
-- **Verify SSL and domain trust chains** during high-risk periods like elections.
+- **Verify SSL and domain trust chains** during high-risk periods like elections. The minimum mental model for what "trust chain" means in TLS is in [TLS Has Three Jobs]({filename}tls-three-jobs.md): hostname binding, validity window, signature chain to a trusted root, revocation, and key usage — each checked in order, each a place a state actor can intercept.
 - Use `host`, `whois`, and passive DNS to correlate domains and IP ranges. Modern tools like `amass` and certificate transparency logs expand this capability significantly.
 - Query infrastructure databases (Shodan, Censys) for historical records on suspicious IPs and exposed services.
 - Watch for **content delivery mismatches** (site appears normal, IP is not).

@@ -85,13 +85,13 @@ If the answer is "expired", you are done. If the answer is "no issuer found", an
 
 Mutual TLS just adds a second authentication step: the server requires the client to present a certificate, and the server validates that certificate against an internal CA. Same primitives, same chain logic, same revocation question — just now the client is also proving who it is.
 
-It matters because in a serverless or microservices fabric, mTLS is the cleanest replacement for "shared secrets in environment variables." Service identity becomes a certificate issued by an internal CA, rotated automatically by something like cert-manager or AWS Private CA. The handshake is doing the same three jobs; you just stopped trusting the network and started trusting the certificate.
+It matters because in a serverless or microservices fabric, mTLS is the cleanest replacement for "shared secrets in environment variables." Service identity becomes a certificate issued by an internal CA, rotated automatically by something like cert-manager or AWS Private CA. The handshake is doing the same three jobs; you just stopped trusting the network and started trusting the certificate. The "refuse the dangerous default unless the caller asks for it explicitly" pattern that makes that workable on the IAM side is the subject of [IAM Roles That Fail Loud]({filename}iam-safe-defaults-fail-loud.md).
 
 ## Where the operational work actually lives
 
 In a real design review, the handshake recitation is the wrong shape anyway. The interesting questions are operational:
 
-- **Certificate lifecycle.** Auto-rotation with ACM for AWS-fronted services, cert-manager for Kubernetes, internal CA for service-to-service mTLS. Most TLS outages are expiry-driven.
+- **Certificate lifecycle.** Auto-rotation with ACM for AWS-fronted services, cert-manager for Kubernetes, internal CA for service-to-service mTLS. Most TLS outages are expiry-driven, and the way out is the same paved-road pattern that fixes everything else: ship the rotation as a default, not as a checklist. I wrote about that program shape in [Adoption Is a Security Control]({filename}paved-road-adoption-as-control.md).
 - **Termination boundary.** Where does TLS terminate, where does it re-originate, what is in cleartext between those points. ALB-terminated traffic to an HTTP backend is a different threat model than end-to-end mTLS.
 - **Cipher policy.** TLS 1.2 minimum, AEAD-only, no RSA key exchange, no legacy versions. The defaults from a serious load balancer are usually fine; the failure mode is leaving 1.0 or 1.1 on for "compatibility" and forgetting.
 - **Trust store hygiene.** Pinning, revocation checking, intermediate cert distribution. The boring half of the protocol is where the real attacks land.

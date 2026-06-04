@@ -1,6 +1,6 @@
 Title: The Trust Decay: Why Modern Hiring Has Become an Adversarial System
 Date: 2026-05-04
-Modified: 2026-05-12
+Modified: 2026-06-04
 Category: DevSecOps
 Tags: careers, devsecops
 Slug: trust-decay-adversarial-hiring
@@ -64,8 +64,8 @@ If the market is a low-trust system, "Presentation" (how you describe yourself) 
 
 To bypass the defensive perimeter, engineers must move beyond the resume. The goal is to provide externally verifiable artifacts that don't require the pipeline to "believe" you.
 
-- **Architectural Transparency:** Don't just list technologies; publish (abstracted) system designs, trade-off analyses, and post-mortems of failure modes.
-- **Tangible Artifacts:** Real-world contributions - whether through open-source modules, infrastructure-as-code repos, or documented homelabs - serve as proof-of-work.
+- **Architectural Transparency:** Don't just list technologies; publish (abstracted) system designs, trade-off analyses, and post-mortems of failure modes. A worked example of the shape: [Adoption Is a Security Control]({filename}paved-road-adoption-as-control.md) - the program that produced -40% remediation time and -27% pipeline latency, plus the four-month adoption stall I caused myself.
+- **Tangible Artifacts:** Real-world contributions - whether through open-source modules, infrastructure-as-code repos, or documented homelabs - serve as proof-of-work. The artifact that survives your attention is the one that names the failure modes inline, not just the success path; the longest case study I have of that is [The Teensy That Failed in Public]({filename}teensy-efi-bruteforce-hours-late.md).
 - **Impact-Oriented Signaling:** Shift from "tasks completed" to "business outcomes achieved." Hard numbers on risk reduction, latency improvements, or cost savings are much harder to hallucinate effectively.
 
 ---

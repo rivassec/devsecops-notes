@@ -1,6 +1,6 @@
 Title: Never Lose Connection: Multi-Phone Bluetooth Tethering for Pwnagotchi
 Date: 2025-07-22
-Modified: 2026-05-12
+Modified: 2026-06-04
 Category: Projects
 Tags: pwnagotchi, bluetooth, networking, python
 Slug: pwnagotchi-bluetooth-tethering
@@ -71,7 +71,7 @@ The scan reported "Low Severity" warnings primarily related to the use of the `s
 * **Strict Input Validation:** All dynamic inputs (like `MAC addresses`, `phone names`, and `IP addresses`) coming from your `config.toml` are subjected to strict regular expression and `ipaddress` module validation *before* being passed to `subprocess` commands. This ensures that only well-formed and safe values are used.
 * **Controlled Environment:** Pwnagotchi runs in a specific, often isolated, environment. While caution is always advised, the risk surface is contained compared to a general-purpose server.
 
-The "Low Severity" warnings are primarily general advisories about the *potential* for misuse of `subprocess`, rather than indicative of a direct, exploitable vulnerability in this specific implementation, given the defensive measures taken.
+The "Low Severity" warnings are primarily general advisories about the *potential* for misuse of `subprocess`, rather than indicative of a direct, exploitable vulnerability in this specific implementation, given the defensive measures taken. The same "refuse the dangerous default unless the caller is explicit" pattern shows up at the cloud-IAM layer in [IAM Roles That Fail Loud]({filename}iam-safe-defaults-fail-loud.md) — different domain, same instinct.
 
 ## Final Thoughts
 
