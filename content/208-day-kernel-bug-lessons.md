@@ -8,7 +8,7 @@ Author: RivasSec
 Summary: A 2012 Linux kernel bug caused CPU lockups after 208.5 days of uptime due to an integer overflow in sched_clock(). RHEL 5/6 lesson: patch and observe uptime.
 Cover: images/covers/208-day-kernel-bug-lessons.png
 
-In 2012, a subtle but potentially catastrophic bug was discovered in older versions of the Linux kernel — particularly affecting Red Hat Enterprise Linux (RHEL) and its derivatives. Once a system reached **208.5 days of continuous uptime**, a flaw in the kernel’s `sched_clock()` function could trigger a soft lockup, freezing the CPU for an estimated **584 years**.
+In 2012, a subtle but potentially catastrophic bug was discovered in older versions of the Linux kernel, particularly affecting Red Hat Enterprise Linux (RHEL) and its derivatives. Once a system reached **208.5 days of continuous uptime**, a flaw in the kernel’s `sched_clock()` function could trigger a soft lockup, freezing the CPU for an estimated **584 years**.
 
 Yes, **584 years**.
 
@@ -22,13 +22,13 @@ ns += cyc * per_cpu(cyc2ns, cpu) >> CYC2NS_SCALE_FACTOR;
 return ns;
 ```
 
-Once the computed value exceeded `0xffffffffffffffff`, it wrapped around — leading to undefined behavior in the scheduler and an unrecoverable state requiring a manual reboot.
+Once the computed value exceeded `0xffffffffffffffff`, it wrapped around, leading to undefined behavior in the scheduler and an unrecoverable state requiring a manual reboot.
 
 ---
 
 ## Why This Matters to DevSecOps
 
-This bug is more than a curiosity — it's a classic case study in:
+This bug is more than a curiosity. It's a classic case study in:
 
 - **The operational danger of long uptimes**
 - **Why kernel patching should be automated and observable**
@@ -42,7 +42,7 @@ Affected systems included RHEL 5.0 through 5.5 and early RHEL 6 versions running
 
 - **Live patching tools** like Ksplice, KernelCare, and kpatch can reduce reboot pressure
 - **Observability stacks** should alert on uptime thresholds and kernel messages (`dmesg`, `uptime`, scheduler warnings)
-- **Compliance frameworks** often require timely OS patching — this bug illustrates why
+- **Compliance frameworks** often require timely OS patching, and this bug illustrates why
 - **CI/CD pipelines for OS-level components** should test for edge cases, including time-based and overflow scenarios
 
 ---

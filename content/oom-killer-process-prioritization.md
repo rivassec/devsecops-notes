@@ -10,7 +10,7 @@ Cover: images/covers/oom-killer-process-prioritization.png
 
 [TOC]
 
-In resource-constrained environments — especially virtual private servers, CI agents, and container hosts — the Linux kernel's **Out of Memory Killer (OOM Killer)** is a last-resort defense mechanism. When memory is exhausted, it begins terminating processes to keep the system alive.
+In resource-constrained environments (especially virtual private servers, CI agents, and container hosts) the Linux kernel's **Out of Memory Killer (OOM Killer)** is a last-resort defense mechanism. When memory is exhausted, it begins terminating processes to keep the system alive.
 
 The OOM Killer uses heuristics (like memory usage and the `oom_score_adj` value) to select processes it deems less essential. But you don’t have to leave that critical decision entirely to the kernel's default logic.
 
@@ -129,7 +129,7 @@ sudo systemctl enable --now oom-adjuster.service
 
 ## Security Considerations
 
-From a DevSecOps perspective, OOM prioritization is not just about uptime — it’s a security hardening technique:
+From a DevSecOps perspective, OOM prioritization is not just about uptime. It’s a security hardening technique:
 
 - **SSHD protection** prevents lockouts during memory exhaustion.
 - **Preserving portsentry or IDS processes** ensures defense mechanisms remain active.
