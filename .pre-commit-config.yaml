@@ -19,3 +19,11 @@ repos:
         # Pre-commit passes only the staged files matching `types`,
         # so the script's "if argv: scan those" path takes over.
         # No additional args needed.
+
+      - id: paradigm-shift-warn
+        name: warn on antithesis / paradigm-shift sentences
+        entry: scripts/check_paradigm_shift.py
+        language: python
+        types: [markdown]
+        # The script always exits 0 — output is informational, never blocking.
+        verbose: true
