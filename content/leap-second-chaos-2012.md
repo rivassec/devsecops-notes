@@ -12,7 +12,7 @@ Cover: images/covers/leap-second-chaos-2012.png
 
 ## What Happened?
 
-On June 30, 2012, a **leap second** was inserted into atomic time via NTP to keep UTC aligned with Earth’s rotation. At 23:59:60 UTC, global systems experienced a hiccup — a single extra second that caused widespread disruptions across Reddit, LinkedIn, Yelp, Google, FourSquare, and many more.
+On June 30, 2012, a **leap second** was inserted into atomic time via NTP to keep UTC aligned with Earth’s rotation. At 23:59:60 UTC, global systems experienced a hiccup, a single extra second that caused widespread disruptions across Reddit, LinkedIn, Yelp, Google, FourSquare, and many more.
 
 What followed were 500 errors, high latency, and CPU usage spikes that crippled backend services.
 
@@ -37,7 +37,7 @@ This bug hit nearly every high-scale Java-based system:
 - **Companies**: Reddit, Mozilla, Yelp, LinkedIn, Gawker, Facebook, StumbleUpon
 - **Behavior**: High CPU loops, 500 errors, frozen services, delayed recovery due to restart complexity
 
-In many cases, the kernel *didn't fail* — the chaos came from how services processed time at runtime.
+In many cases, the kernel *didn't fail*. The chaos came from how services processed time at runtime.
 
 ---
 
@@ -59,21 +59,21 @@ sudo /etc/init.d/ntp start
 
 ### Modern Resilience Strategies
 
-- **Leap Smearing**: Today’s `ntpd`, `chronyd`, and cloud providers use “leap smear” — slowly adjusting clocks over hours to avoid time jumps entirely.
+- **Leap Smearing**: Today’s `ntpd`, `chronyd`, and cloud providers use “leap smear”, slowly adjusting clocks over hours to avoid time jumps entirely.
 - **Use Monotonic Clocks**: Time-sensitive logic should rely on `CLOCK_MONOTONIC`, not wall-clock time, to measure durations safely.
 
 ![Wall Clock vs Monotonic Time During a Leap Second]({static}/images/leap_second_monotonic_vs_wall_clock.png)
-*Figure: Monotonic time continues uninterrupted while wall-clock time repeats a second — highlighting why monotonic clocks are preferred for duration tracking.*
+*Figure: Monotonic time continues uninterrupted while wall-clock time repeats a second, highlighting why monotonic clocks are preferred for duration tracking.*
 
 - **Monitor Clock Drift**: Observability pipelines should expose clock sync state and NTP drift as first-class metrics.
-- **Design for Temporal Anomalies**: Distributed systems should assume wall-clock time can regress, freeze, or desync — and gracefully degrade when it does.
+- **Design for Temporal Anomalies**: Distributed systems should assume wall-clock time can regress, freeze, or desync, and gracefully degrade when it does.
 - **Simulated Testing Isn’t Enough**: Always combine synthetic load with chaos testing under unusual real-world conditions (e.g., leap seconds, DNS failures, NTP skew).
 
 ---
 
 ## Epilogue
 
-The 2012 leap second chaos wasn’t caused by incompetence — many teams patched, prepared, and tested. But the leap second hit during degraded cloud capacity, exposed fragile JVM behavior, and stressed assumptions in time-sensitive code.
+The 2012 leap second chaos wasn’t caused by incompetence. Many teams patched, prepared, and tested. But the leap second hit during degraded cloud capacity, exposed fragile JVM behavior, and stressed assumptions in time-sensitive code.
 
 A single second exposed fault lines in the foundations of the modern internet.
 
