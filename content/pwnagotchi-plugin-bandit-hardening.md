@@ -10,9 +10,11 @@ Cover: images/covers/pwnagotchi-plugin-bandit-hardening.png
 
 [TOC]
 
+I ran Bandit on [`bt-tether-multi`](https://github.com/rivassec/pwnagotchi) as part of a routine pre-publish sweep. I expected zero findings. I got a handful — half of them on code I had already convinced myself was hardened. That gap, between "I think this is safe" and "Bandit's static analyzer can prove it is safe," is what this post is about.
+
 Pwnagotchi plugins are Python that ships next to a Wi-Fi monitor running as root. They shell out to `nmcli`, `bluetoothctl`, `iw`, `wpa_supplicant`, `curl`. Most plugins on GitHub treat `subprocess` like an `os.system` shortcut: shell strings, relative binary names, untrusted config values concatenated into command lines. None of that survives Bandit's defaults.
 
-This is the hardening pass I did on [`bt-tether-multi`](https://github.com/rivassec/pwnagotchi), the multi-phone Bluetooth tethering plugin I wrote about [last year]({filename}bluetooth-tethering-multi-phone-fallback-for-pwnagotchi.md). The functional behavior — fall back through a list of phones, verify WAN, retry on failure — is unchanged. What changed is that every subprocess call now has a story for why it cannot be tricked, every external value gets validated before reaching argv, and the plugin scans clean against Bandit 1.8.6.
+This is the hardening pass that took [`bt-tether-multi`](https://github.com/rivassec/pwnagotchi), the multi-phone Bluetooth tethering plugin I wrote about [last year]({filename}bluetooth-tethering-multi-phone-fallback-for-pwnagotchi.md), from "looked careful" to "scans clean against Bandit 1.8.6." The functional behavior — fall back through a list of phones, verify WAN, retry on failure — is unchanged. What changed is that every subprocess call now has a story for why it cannot be tricked, every external value gets validated before reaching argv, and the surprises Bandit caught along the way are why the post exists at all.
 
 The patterns generalize. If your Python ever calls a binary, the same checklist applies.
 
@@ -55,7 +57,9 @@ Six `# nosec` annotations, each one earned. We will get to those.
 
 ## Resolve binary paths with `shutil.which()` once, at init
 
-The first move is to stop typing literal binary names into argv lists at all. The plugin's `__init__` resolves every binary it will ever shell out to:
+This was where my first surprise lived. I had been careful — or thought I had — but Bandit B607 fired on a `subprocess.run(["bluetoothctl", "info"], ...)` deep in the UI update handler. I had typed the binary name as a string literal because at the time it felt safe: the value is hardcoded, no user input. Bandit doesn't care. B607 fires on any partial executable path, regardless of where the string came from, because at runtime it is `$PATH` that decides which `bluetoothctl` actually runs. On a Pwnagotchi whose disk has been out of your sight, that decision is not yours.
+
+The fix is to stop typing literal binary names into argv lists at all. The plugin's `__init__` now resolves every binary it will ever shell out to:
 
 ```python
 import shutil
@@ -92,7 +96,22 @@ The `# nosec B603` is there because Bandit's static analysis sees a variable in 
 
 The list form matters because it bypasses `/bin/sh` entirely. With `shell=True` you are concatenating strings and handing them to a shell that will tokenize them, expand globs, run subshells from `$(...)`, and follow whatever locale-specific rules apply. With a list, the kernel's `execve(2)` gets exactly the argv you passed. No tokenization. No expansion. No glob.
 
-If you find yourself reaching for `shell=True` because you wanted to pipe two commands together, the answer is to call them as two separate `subprocess.run()` invocations and stitch them in Python:
+I caught myself reaching for `shell=True` exactly once during this pass. I was sketching a follow-up plugin that enumerates saved handshake `.pcap` files, and my fingers typed `subprocess.run(f"ls /root/handshakes/*.pcap | head", shell=True)` before my brain caught up. The instinct was glob expansion — `*.pcap` is a shell pattern, the shell is what does the expansion, so reaching for `shell=True` felt like the natural way to get globbing. It is also exactly the path that turns a benign-looking config field into a code-execution hole, because the moment any part of that command line comes from outside the Python process, the shell will tokenize it.
+
+The right shape is to do the enumeration in Python and pass results as argv:
+
+```python
+# Wrong
+subprocess.run(f"ls /root/handshakes/*.pcap | head", shell=True)
+
+# Right
+from pathlib import Path
+pcaps = sorted(Path("/root/handshakes").glob("*.pcap"))[:10]
+```
+
+`Path.glob()` does the expansion in-process, returns a list of `Path` objects, and never touches a shell. Anything you would have piped into `head` is a Python slice. Anything you would have piped into another command becomes a list comprehension or a second `subprocess.run()` that takes the list as argv.
+
+The same shape applies if your reason for reaching at `shell=True` was a pipe rather than a glob:
 
 ```python
 # Wrong
