@@ -8,3 +8,14 @@ repos:
       - id: gitleaks
         name: gitleaks (staged secrets)
         args: ["protect", "--staged", "--redact"]
+
+  - repo: local
+    hooks:
+      - id: no-em-dashes
+        name: no em dashes in markdown
+        entry: scripts/check_em_dashes.py
+        language: python
+        types: [markdown]
+        # Pre-commit passes only the staged files matching `types`,
+        # so the script's "if argv: scan those" path takes over.
+        # No additional args needed.
