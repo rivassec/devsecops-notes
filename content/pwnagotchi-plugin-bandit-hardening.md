@@ -85,10 +85,10 @@ subprocess.run(
     stdout=subprocess.DEVNULL,
     stderr=subprocess.DEVNULL,
     check=False,
-)  # nosec
+)  # nosec B603
 ```
 
-The `# nosec` is there because Bandit cannot tell that `self.nmcli` is the result of a `shutil.which()` call and is therefore a literal absolute path at runtime. It still flags B603. The annotation acknowledges "I know what this is, here's the reason it's safe." Each of the six `# nosec` comments in the plugin sits next to a call that is provably bound to the resolved binary path and a list of strings, never a shell.
+The `# nosec B603` is there because Bandit's static analysis sees a variable in `argv[0]`, not a literal string, and it does not trace data flow to know that `self.nmcli` was populated by `shutil.which()` at startup. The annotation is a localized claim: "this argv[0] is a resolved absolute path, here's the structural reason." Each of the six `# nosec` comments in the plugin sits next to a call that is provably bound to a resolved binary path and a list of strings, never a shell.
 
 The list form matters because it bypasses `/bin/sh` entirely. With `shell=True` you are concatenating strings and handing them to a shell that will tokenize them, expand globs, run subshells from `$(...)`, and follow whatever locale-specific rules apply. With a list, the kernel's `execve(2)` gets exactly the argv you passed. No tokenization. No expansion. No glob.
 
@@ -124,7 +124,7 @@ def _sanitize_name(self, name):
     raise ValueError(f"Invalid phone name: {name}")
 ```
 
-The MAC regex is restrictive on purpose — six pairs of hex separated by colons, nothing else. The name regex allows word characters, spaces, hyphens, capped at 32 characters. Both of these reject inputs at config-load time so that the rest of the plugin can assume its values are already clean. The validation lives in `_validate_phones()`, which runs from `on_loaded` and `on_config_changed`. Phones that fail validation are dropped, logged, and never reach a subprocess call.
+The MAC regex is restrictive on purpose — six pairs of hex separated by colons, nothing else. The name regex allows word characters, spaces, and hyphens, capped at 32 characters. Both of these reject inputs at config-load time so that the rest of the plugin can assume its values are already clean. The validation lives in `_validate_phones()`, which runs from `on_loaded` and `on_config_changed`. Phones that fail validation are dropped, logged, and never reach a subprocess call.
 
 The pattern is "validate at the trust boundary, trust everything past it." The trust boundary in this plugin is the config-load handler. Past that, the rest of the code is allowed to assume `phone["mac"]` matches `^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$`. That assumption is enforced by the validator, not by hope.
 
