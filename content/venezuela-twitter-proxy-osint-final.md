@@ -18,7 +18,7 @@ In the lead-up to Venezuela’s 2012 regional elections, I observed unusual beha
 
 ## Key Finding
 
-A subdomain under `chavezcandanga.org.ve` — the official handle of then-President Hugo Chávez — was hosting a **transparent proxy to Twitter**.
+A subdomain under `chavezcandanga.org.ve` (the official handle of then-President Hugo Chávez) was hosting a **transparent proxy to Twitter**.
 A transparent proxy intercepts user traffic without modifying requests or requiring configuration, making it ideal for passive surveillance or phishing.
 
 While it initially showed no malicious behavior, it was:
@@ -46,7 +46,7 @@ Returned expected Twitter IPs (199.59.x.x), but users in Venezuela were silently
 
 This IP **served Twitter content** but was not operated by Twitter Inc.
 
-It’s unclear whether this redirection was caused by ISP DNS override, local resolver poisoning, or upstream hijack — but the net effect was consistent: Twitter domains were silently redirected to non-Twitter infrastructure under state control.
+It’s unclear whether this redirection was caused by ISP DNS override, local resolver poisoning, or upstream hijack, but the net effect was consistent: Twitter domains were silently redirected to non-Twitter infrastructure under state control.
 
 ---
 
@@ -56,7 +56,7 @@ It’s unclear whether this redirection was caused by ISP DNS override, local re
 whois chavezcandanga.org.ve
 ```
 
-Revealed that the domain was registered to **PSUV** (*Partido Socialista Unido de Venezuela*) and managed through CONATEL — Venezuela’s FCC-equivalent telecommunications regulator.
+Revealed that the domain was registered to **PSUV** (*Partido Socialista Unido de Venezuela*) and managed through CONATEL, Venezuela’s FCC-equivalent telecommunications regulator.
 
 ![WHOIS output showing chavzescandanga.org.ve registered to PSUV]({static}/images/who-is-chavezcandanga-com.jpg)
 *Figure: WHOIS lookup confirms chavzescandanga.org.ve is registered to PSUV, with administrative and technical contacts using @psuv.org.ve emails.*
@@ -73,7 +73,7 @@ The same server IP hosted:
 ![Screenshot of chavzescandanga.org.ve auto-retweet app]({static}/images/chavezcandanga-web.jpg)
 *Figure: The official chavzescandanga.org.ve campaign app asks users to authenticate with Twitter to enable automatic retweets of Chávez's posts.*
 
-At the time of discovery, this site **did not contain malicious code**, but the potential for **credential harvesting** during peak election activity was substantial. The authentication flow mimicked Twitter’s branding and prompted users to log in — creating a window for silent credential capture, token misuse, or targeted amplification based on follower behavior.
+At the time of discovery, this site **did not contain malicious code**, but the potential for **credential harvesting** during peak election activity was substantial. The authentication flow mimicked Twitter’s branding and prompted users to log in, creating a window for silent credential capture, token misuse, or targeted amplification based on follower behavior.
 
 ---
 
@@ -89,12 +89,12 @@ At the time of discovery, this site **did not contain malicious code**, but the 
 
 ## Lessons for DevSecOps & Threat Intelligence Today
 
-- **Verify SSL and domain trust chains** during high-risk periods like elections. The minimum mental model for what "trust chain" means in TLS is in [TLS Has Three Jobs]({filename}tls-three-jobs.md): hostname binding, validity window, signature chain to a trusted root, revocation, and key usage — each checked in order, each a place a state actor can intercept.
+- **Verify SSL and domain trust chains** during high-risk periods like elections. The minimum mental model for what "trust chain" means in TLS is in [TLS Has Three Jobs]({filename}tls-three-jobs.md): hostname binding, validity window, signature chain to a trusted root, revocation, and key usage. Each checked in order, each a place a state actor can intercept.
 - Use `host`, `whois`, and passive DNS to correlate domains and IP ranges. Modern tools like `amass` and certificate transparency logs expand this capability significantly.
 - Query infrastructure databases (Shodan, Censys) for historical records on suspicious IPs and exposed services.
 - Watch for **content delivery mismatches** (site appears normal, IP is not).
 - Document and archive suspicious infra using tools like the Wayback Machine.
-- Phishing infrastructure can be **state-sponsored and subtle** — early detection matters.
+- Phishing infrastructure can be **state-sponsored and subtle**, so early detection matters.
 
 ---
 
@@ -102,7 +102,7 @@ At the time of discovery, this site **did not contain malicious code**, but the 
 
 The proxy remained active until at least December 2012, shortly before elections. To this day, the archived proxy content and WHOIS records serve as a warning about the ease with which social media can be co-opted in hostile environments.
 
-This investigation was one of the earliest times I realized how fragile trusted infrastructure becomes in the hands of a motivated actor — and how critical open-source techniques are in defending it.
+This investigation was one of the earliest times I realized how fragile trusted infrastructure becomes in the hands of a motivated actor, and how critical open-source techniques are in defending it.
 
 ---
 

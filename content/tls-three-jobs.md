@@ -24,9 +24,9 @@ If you can hold those three in your head, the rest of the protocol is an impleme
 
 In TLS 1.3, the handshake takes one round trip:
 
-- **ClientHello** — supported ciphers, an ECDHE public key share, the server name (SNI).
-- **ServerHello** — chosen cipher, server's ECDHE public key share, server certificate, signature over the handshake transcript. From this point forward the handshake is encrypted.
-- **Client side** — verifies the certificate chain, uses its private ECDHE key plus the server's public ECDHE key to compute the shared secret. Both sides feed that secret through HKDF to derive symmetric keys.
+- **ClientHello**: supported ciphers, an ECDHE public key share, the server name (SNI).
+- **ServerHello**: chosen cipher, server's ECDHE public key share, server certificate, signature over the handshake transcript. From this point forward the handshake is encrypted.
+- **Client side**: verifies the certificate chain, uses its private ECDHE key plus the server's public ECDHE key to compute the shared secret. Both sides feed that secret through HKDF to derive symmetric keys.
 - **Finished** messages on both sides confirm nothing was tampered with mid-handshake. Application data starts.
 
 Three jobs, one round trip. Key agreement is ECDHE. Server authentication is the certificate plus the signature. Session-key derivation is HKDF. The version that does this in two round trips with optional unsafe modes is TLS 1.2.
@@ -36,7 +36,7 @@ Three jobs, one round trip. Key agreement is ECDHE. Server authentication is the
 The honest one-line difference is "TLS 1.3 deleted the parts that kept getting people compromised."
 
 - **RSA key exchange is gone.** In TLS 1.2 a server could choose to encrypt the pre-master secret to its own RSA public key. If that private key ever leaked, every recorded session that used it was retroactively decryptable. TLS 1.3 only allows ephemeral Diffie-Hellman, which gives you forward secrecy by default.
-- **CBC mode ciphers are gone.** BEAST, Lucky13, and the rest of the padding-oracle family lived here. TLS 1.3 only allows AEAD ciphers — AES-GCM and ChaCha20-Poly1305.
+- **CBC mode ciphers are gone.** BEAST, Lucky13, and the rest of the padding-oracle family lived here. TLS 1.3 only allows AEAD ciphers: AES-GCM and ChaCha20-Poly1305.
 - **MAC-then-encrypt is gone.** AEAD modes do authentication and encryption in one pass.
 - **Compression is gone.** CRIME exploited it.
 - **Renegotiation is gone.** It was a footgun for years.
@@ -83,7 +83,7 @@ If the answer is "expired", you are done. If the answer is "no issuer found", an
 
 ## mTLS is the same thing in both directions
 
-Mutual TLS just adds a second authentication step: the server requires the client to present a certificate, and the server validates that certificate against an internal CA. Same primitives, same chain logic, same revocation question — just now the client is also proving who it is.
+Mutual TLS just adds a second authentication step: the server requires the client to present a certificate, and the server validates that certificate against an internal CA. Same primitives, same chain logic, same revocation question, just now the client is also proving who it is.
 
 It matters because in a serverless or microservices fabric, mTLS is the cleanest replacement for "shared secrets in environment variables." Service identity becomes a certificate issued by an internal CA, rotated automatically by something like cert-manager or AWS Private CA. The handshake is doing the same three jobs; you just stopped trusting the network and started trusting the certificate. The "refuse the dangerous default unless the caller asks for it explicitly" pattern that makes that workable on the IAM side is the subject of [IAM Roles That Fail Loud]({filename}iam-safe-defaults-fail-loud.md).
 
