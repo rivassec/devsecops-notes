@@ -38,6 +38,37 @@ Dependabot opens weekly PRs bumping `requirements.in`; each needs a local pip-co
 
 CI installs with `pip install --require-hashes --no-deps -r requirements.txt`. The `--no-deps` flag is intentional: when an upstream like Pelican hard-pins a transitive (e.g. `Pygments<2.20.0`), we sometimes need to override that pin to patch a security advisory. Every transitive is already pinned with hashes in `requirements.txt`, so `--no-deps` is safe and the lockfile stays authoritative.
 
+## Anonymization (mandatory before publish)
+
+Every post must be scrubbed of work-identifying detail before merge. The blog is a personal artifact; nothing in it should let a reader reconstruct a current or former employer's environment.
+
+**Always strip or redact:**
+
+- Employer names, product names, internal team names, real coworker names
+- Jira project keys, ticket IDs, internal ticket URLs
+- AWS account IDs, instance IDs, VPC/subnet IDs, ARNs that include account numbers
+- Internal hostnames, IPs, DNS names
+- Internal Git/GitHub org and repo names
+- Slack channel names, email distribution lists, internal Confluence/wiki paths
+- Customer names, contract identifiers, regulator/assessor identities
+- Real config that names internal services (sanitize tool/path names if they leak structure)
+- Anything that could appear in a production breach disclosure: account IDs, role ARNs, OIDC subjects, key IDs
+
+**Always sanitize but may keep:**
+
+- Generic AWS service names, error strings, MITRE technique IDs, public IOCs already in threat-intel feeds
+- Open-source project names and public CVE IDs
+- Public mining pools, malware family names, public C2 infrastructure already named in vendor reports
+
+**Process before merging a draft:**
+
+1. `grep -iE '<employer>|<product>|<team>|<jira-prefix-1>|<jira-prefix-2>|i-[0-9a-f]|vpc-[0-9a-f]|arn:aws:[^:]+:[^:]*:[0-9]{12}'` against the new post; substitute the placeholders for your real employer, product, team, and Jira project prefixes, and review every hit
+2. Re-read the post imagining a reader who works at the redacted employer; would they recognize the system?
+3. For incident posts, get explicit publish approval from the relevant ticket owner before merging; preserve that approval somewhere durable
+4. If the post relies on a real number (host count, alert volume, dollar figure), confirm it is publicly disclosed already or round it to an order of magnitude
+
+When in doubt, redact. Republishing a sanitized version later is cheap; un-publishing a leak is not.
+
 ## Cover image generation
 
 Per-article 1200x630 social cards are rendered from Title + Category:
