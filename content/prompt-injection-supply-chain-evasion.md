@@ -4,6 +4,7 @@ Category: Threat Intelligence
 Tags: ai, supply-chain, prompt-injection, evasion, defensive-architecture
 Slug: prompt-injection-supply-chain-evasion
 Cover: images/covers/prompt-injection-supply-chain-evasion.png
+Cover_alt: Cover card with the post title "Prompt Injection Will Become a Supply Chain Evasion Technique" on a dark background, with a Threat Intelligence category badge and the rivassec.com signature.
 Summary: Prompt injection's threat model is older than the term. The mechanism is new, the objective is the evasion goal attackers have pursued for decades.
 
 Prompt injection's threat model is older than the term. This is a forecast about attacker evolution, not a claim about active campaigns observed in the wild today.
@@ -33,6 +34,8 @@ That class includes:
 These systems have something in common. They all interpret attacker-supplied text as part of a security decision. That is the trust boundary worth thinking about.
 
 ## The trust boundary, drawn
+
+<figure role="img" aria-label="Trust-boundary diagram. An untrusted package flows into an LLM scanner, which is the prompt-injection target. The LLM scanner emits a verdict with three states. A clean verdict continues to the next stage. An inconclusive or refusal verdict routes through a fallback router into static analysis, sandbox detonation, and human review. The diagram closes with the rule: inconclusive verdicts never mark the artifact clean." markdown="1">
 
 ```
                        untrusted package
@@ -64,6 +67,10 @@ These systems have something in common. They all interpret attacker-supplied tex
 
        inconclusive verdicts NEVER mark the artifact clean
 ```
+
+<figcaption>Failure-mode routing for an LLM-assisted supply-chain scanner. Clean verdicts pass through; everything else routes to non-LLM checks.</figcaption>
+
+</figure>
 
 A clean verdict moves the artifact downstream the same way any analyzer's clean verdict would. Everything else is the failure-mode routing the rest of this post is about.
 

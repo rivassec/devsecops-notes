@@ -19,10 +19,13 @@
   {% endfor %}
   {% if 'cover' in article.metadata %}
   <meta property="og:image" content="{{ SITEURL }}/{{ article.metadata['cover'] }}">
+  <meta property="og:image:alt" content="{{ article.metadata.get('cover_alt', article.title)|striptags|escape }}">
   {% elif OG_IMAGE %}
   <meta property="og:image" content="{{ SITEURL }}/{{ OG_IMAGE }}">
+  <meta property="og:image:alt" content="{{ SITENAME }}">
   {% else %}
   <meta property="og:image" content="{{ SITELOGO }}">
+  <meta property="og:image:alt" content="{{ SITENAME }}">
   {% endif %}
   <meta name="twitter:card" content="summary_large_image"/>
   <meta name="twitter:title" content="{{ article.title|striptags|escape }}"/>
@@ -33,9 +36,12 @@
   {% endif %}
   {% if 'cover' in article.metadata %}
   <meta name="twitter:image" content="{{ SITEURL }}/{{ article.metadata['cover'] }}"/>
+  <meta name="twitter:image:alt" content="{{ article.metadata.get('cover_alt', article.title)|striptags|escape }}"/>
   {% elif OG_IMAGE %}
   <meta name="twitter:image" content="{{ SITEURL }}/{{ OG_IMAGE }}"/>
+  <meta name="twitter:image:alt" content="{{ SITENAME }}"/>
   {% else %}
   <meta name="twitter:image" content="{{ SITELOGO }}"/>
+  <meta name="twitter:image:alt" content="{{ SITENAME }}"/>
   {% endif %}
 {% endif %}
