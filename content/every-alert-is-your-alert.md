@@ -10,7 +10,7 @@ Status: draft
 
 [TOC]
 
-During a recent container-forensics investigation, the EDR on my analyst laptop fired a true-positive against my own activity. The detection was a high-severity ingress-tool-transfer alert, MITRE T1105, against a process tree that started at my shell, descended through an LLM-driven coding assistant session running with elevated permissions, and ended at two `curl` calls fetching the attacker's dropper into `/tmp` for hash and content analysis.
+During a recent incident-response engagement, the EDR on my analyst laptop fired a true-positive against my own activity. The detection was a high-severity ingress-tool-transfer alert, MITRE T1105, against a process tree that started at my shell, descended through an LLM-driven coding assistant session running with elevated permissions, and ended at two `curl` calls fetching the attacker's dropper into `/tmp` for hash and content analysis.
 
 The detection was correct. The traffic was, by every shape the sensor examines, an ingress tool transfer.
 

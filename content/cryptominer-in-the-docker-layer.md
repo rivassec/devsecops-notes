@@ -11,7 +11,7 @@ Status: draft
 
 [TOC]
 
-During a recent container-forensics investigation, I worked through an incident where the on-disk picture and the runtime picture were saying different things. The cloud provider's runtime sensor fired several correlated findings on a production EC2 instance: two cryptomining DNS detections (one against the host, one against a container running on it), one VPC-resolver-level finding for the same lookups, and a correlation finding that stitched them all into a single critical-severity event. The destination was a public Monero mining pool. The instance was running a Java-based data-processing workload in a container.
+During a recent incident-response engagement, I worked through a case where the on-disk picture and the runtime picture were saying different things. The cloud provider's threat-detection service fired several correlated findings on a containerized workload: two cryptomining DNS detections (one against the host, one against a container running on it), one resolver-level finding for the same lookups, and a correlation finding that stitched them all into a single critical-severity event. The destination was a public Monero mining pool. The instance was running a Java-based data-processing application.
 
 I opened an SSM session onto the host, ran `ps -ef` inside the container, ran `ss -tunap`, and found nothing. No miner process. No outbound connection to the pool. No CPU pressure. The Java heap looked normal. The application was happily doing what the application was supposed to be doing.
 
@@ -19,7 +19,7 @@ For a while I was sure I was looking at a false-positive.
 
 I was not.
 
-The miner was on disk, in one of the image's overlay2 layers. The container's filesystem could see it through the union mount, but the binary was not in the process space at the moment I checked, which is what `ps` reports. Every container created from this image had the binary on disk from instant zero, and the persistence lived in a layer that survives `docker compose down -v`. This post is about the sweep that found it, what I now know to look at on the next one, and what I am still not sure about.
+The miner was on disk, in one of the image's overlay2 layers. The container's filesystem could see it through the union mount, but the binary was not in the process space at the moment I checked, which is what `ps` reports. The persistence lived in a layer that survives `docker compose down -v`, which meant any container created from the affected image would inherit the file if the image itself was the source of the persistence. This post is about the sweep that found it, what I now know to look at on the next one, and what I am still not sure about.
 
 ## The shape of the alert
 
@@ -41,7 +41,19 @@ That is when I went looking on the host.
 
 ## The path that mattered
 
-The container view is not the host view. Inside the running container, the binary path resolved to whatever the overlayfs union mount made visible at that moment. From the host, the same content lives in several overlay2 paths depending on what you are asking about. Two of them matter for this story.
+The container view is not the host view. Inside the running container, the binary path resolved to whatever the overlayfs union mount made visible at that moment. From the host, the same content lives in several overlay2 directories depending on what you are asking about. The four roles to know:
+
+| Directory | Role | Survives container exit? |
+|---|---|---|
+| `lowerdir` (`diff` on each lower layer) | Read-only contribution from a build-time image layer | Yes; only `docker rmi` removes it |
+| `merged` | Live union view the container sees as `/` | No, unmounted when container stops |
+| `upperdir` | Writable layer the container modifies at runtime | Yes (until container is removed) |
+| `workdir` | Overlay's internal scratch space | No |
+
+Two of these matter for the rest of this story:
+
+- the image's diff directory (where the binary actually lived)
+- the merged view (what the container saw)
 
 The first one is the image's diff directory:
 
@@ -57,11 +69,11 @@ The second one is the merged view, which is what the running container actually 
 
 These two paths are related but not equivalent, and the difference is the entire post.
 
-The `diff` directory is a layer's contribution to the union. If you wrote a Dockerfile and `COPY`'d a binary into the image at build time, that binary lives in some layer's `diff` directory forever. When you `docker pull` the image, those files arrive on disk. When you `docker rm` the container they stay there, attached to the image, not to any specific running container. The only way to get rid of them is `docker rmi`.
+The `diff` directory is a layer's contribution to the union. If you wrote a Dockerfile and `COPY`'d a binary into the image at build time, that binary lives in some layer's `diff` directory forever. When you `docker pull` the image, those files arrive on disk. When you `docker rm` the container they stay there, attached to the image, not to any specific running container.
 
 The `merged` directory is the union view of all layers stacked together. It is what the container sees as its filesystem root. When the container runs, processes inside it read from `merged`. When the container stops, `merged` is unmounted, but the underlying `diff` directories remain.
 
-The other two paths are `upperdir` (the writable layer the container can modify at runtime) and `workdir` (overlay's scratch space). I checked both. The malicious binary was in neither. It was in a lower layer's `diff` directory, the read-only foundation that came down with the image pull.
+I also checked `upperdir` and `workdir`. The malicious binary was in neither. It was in a lower layer's `diff` directory, the read-only foundation that came down with the image pull.
 
 To make sure I had the layer role right, I cross-referenced against `docker inspect <container>`. The `GraphDriver.Data.LowerDir` chain on the running container included this directory in its read-only stack, which is what marks it as a build-time image layer rather than the container's writable upper. `docker history` told me the image had `COPY` steps in its build (which is unsurprising for any non-trivial image) but `docker history` shows the instruction, not the per-file provenance, so I am not claiming it identified the specific binary. The shape of the evidence is "this layer is in the LowerDir chain, the LowerDir chain is read-only, the running container's writable space is empty for this path." That is enough to place the file in an image layer.
 
@@ -87,7 +99,7 @@ This is where the post stops being a clean story.
 
 Two explanations remained plausible. The first is a supply-chain compromise of the registry: OCI digests are content-addressed and cannot be mutated in place, but the *tag* a deployment tracks maps to a digest, and that mapping can be moved by anyone with push access to the repository. A fresh pull after a tag rewrite would surface a malicious layer without anything happening on the host. The second is on-disk tampering: a process on the host with root or `docker`-group access modifying the local layer storage directly.
 
-A digest comparison between the host's recorded image digest and the registry's currently-advertised digest for the tag will tell you the tag is *currently* mapped to the digest the host has. It does not tell you whether the tag was *ever* pointed at a different digest in the meantime. On-disk tampering is also harder to disprove than a `cp`-style edit, because Docker stores layer metadata in `imagedb` and a thorough tamperer would update both.
+A digest comparison between the host's recorded image digest and the registry's currently-advertised digest for the tag will tell you the tag is *currently* mapped to the digest the host has. It does not tell you whether the tag was *ever* pointed at a different digest in the meantime. The cleanest defense against this whole class of question is to deploy by immutable identifier (`repo@sha256:<digest>`) in your manifests, not by tag. The deployment record itself becomes the audit trail and a tag rewrite cannot retroactively change what got pulled. On-disk tampering is also harder to disprove than a `cp`-style edit, because Docker stores layer metadata in `imagedb` and a thorough tamperer would update both.
 
 Because containment took priority over historical reconstruction, attribution remained unresolved, and I am writing it that way on purpose. Most incident write-ups jump to attribution because attribution makes the story feel done. The middle of the story is "find the malware on disk." The end is "tell people how to find it." Attribution sits outside this scope.
 
@@ -101,21 +113,22 @@ The image got rebuilt from a known-good source, signed, and re-published. The ho
 
 Validation was the same forensic sweep that found the miner originally:
 
-- Run a `find /var/lib/docker/overlay2 -name '<binary-name>'` against the host (catches the specific binary; useful as a quick check, not durable since the next attacker will use a different name).
-- Compare every layer's `diff/<app-root>/` listing against the new clean image's expected contents.
-- SHA-256 every file in every diff directory and compare against an allow-list derived from the rebuilt image. This is the durable check.
+- Run a `find /var/lib/docker/overlay2 -name '<binary-name>'` against the host. Useful as a quick name-based check; not durable since the next attacker will use a different name.
+- Generate a file manifest from the rebuilt image and compare layer contents on the host against that expected manifest. Investigate any unexpected file, not just an exact name match.
 - Pull the new image's digest from the registry and compare against the on-disk digest record after the next deploy.
 
-A negative result on all four is the validation. The third one, the per-file SHA-256 sweep, is the one that would have caught a renamed variant of the same binary.
+A clean result on all three is the validation. The manifest comparison is the durable check; it catches a renamed variant of the same binary or anything else the attacker might add to the layer that the image's build does not produce.
 
 ## What I will do differently
 
 `ps` and `ss` are the wrong starting point for a containerized workload. They sample the running processes only and miss the persistence layer entirely. The forensic scope for a containerized IR has to include the image layers, the diff directories, the upperdir, and the registry digest record. Anything else and you are seeing only what the attacker wants visible at the moment you happen to look.
 
-A `find /var/lib/docker/overlay2 -type f -newer <T>` is a five-second query and it would have caught this in the first pass. That command is going into the runbook, alongside the bandit-hardening checklist I wrote up recently for a different threat model in [Bandit-Clean Pwnagotchi Plugins]({filename}pwnagotchi-plugin-bandit-hardening.md). That post was about an imagined attacker with one foothold. This one was a real one with the same foothold and a much bigger blast radius.
+A `find /var/lib/docker/overlay2 -type f -newer <T>` is a five-second query and it would have caught this in the first pass for runtime drops written into `upperdir`. The catch: if the binary was baked into the image at build time, its mtime inside the layer can reflect the image-build date, which could be weeks or months earlier than the incident. `-newer` would miss that. The manifest comparison from the previous section is what closes the gap; for layers built today, it would have flagged a binary that does not appear in the build's expected contents regardless of the binary's mtime.
 
 The other thing I am changing is the order in which I read cloud-detector findings. I read the correlation finding well after the per-signal findings, because I was sweeping them in chronological order and the correlation was the most recent. The next time, the correlation gets read first. It is the cheapest path to the highest-confidence signal in the inbox, and it would have handed me the binary path before I started believing the host was clean.
 
-There is a story to write about the other half of this investigation, which is what happened on my analyst laptop while I was working the host. The endpoint detector fired a true-positive on me partway through the work, because I `curl`'d the attacker's dropper into `/tmp` for hash analysis and that traffic looks identical to a real T1105 ingress tool transfer. That post is in the queue. The lesson there is that authorized analyst activity creates real EDR alerts and they need real attribution.
+The next incident I investigate will start with the image layers. The container starts looking clean exactly when you stop looking carefully.
 
-The container starts looking clean exactly when you stop looking carefully.
+## Related reading
+
+- [Bandit-Clean Pwnagotchi Plugins]({filename}pwnagotchi-plugin-bandit-hardening.md): different threat model, same lesson about how a binary's threat surface depends on where it lives, not what it claims to be.
