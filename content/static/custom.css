@@ -791,3 +791,15 @@ main article p img {
   max-width: 100%;
   display: block;
 }
+
+/* Flex's stylesheet sets figure { color: #6c757d } and
+   figcaption { color: #242121 }. Both fail WCAG AA against the dark
+   background (#242121 vs #1a1c20 is ~1.2:1). Override to use the
+   theme's regular foreground color so figcaptions are readable. */
+figure {
+  color: var(--fg);
+}
+figcaption {
+  color: var(--fg);
+  font-style: italic;
+}
