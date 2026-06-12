@@ -1,0 +1,20 @@
+{
+  "defaults": {
+    "standard": "WCAG2AA",
+    "timeout": 30000,
+    "wait": 500,
+    "runners": ["axe", "htmlcs"],
+    "chromeLaunchConfig": {
+      "args": ["--no-sandbox", "--disable-dev-shm-usage"]
+    }
+  },
+
+  "urls": [
+    "http://127.0.0.1:8000/",
+    "http://127.0.0.1:8000/prompt-injection-supply-chain-evasion.html",
+    "http://127.0.0.1:8000/iam-safe-defaults-fail-loud.html",
+    "http://127.0.0.1:8000/leap-second-chaos-2012.html",
+    "http://127.0.0.1:8000/teensy-efi-bruteforce-hours-late.html",
+    "http://127.0.0.1:8000/venezuela-twitter-proxy-osint.html"
+  ]
+}

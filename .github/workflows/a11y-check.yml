@@ -1,0 +1,60 @@
+name: Accessibility check (pa11y)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  pa11y:
+    name: pa11y-ci against built site
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 1
+
+      - name: Initialize submodules
+        run: git submodule update --init --depth=1
+
+      - name: Set up Python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.13"
+          cache: pip
+
+      - name: Install Pelican
+        # Same logic as deploy.yml: --require-hashes --no-deps because we
+        # override Pygments past Pelican's pin.
+        run: pip install --require-hashes --no-deps -r requirements.txt
+
+      - name: Build site
+        run: pelican content -o output -s publishconf.py
+
+      - name: Set up Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "20"
+
+      - name: Install pa11y-ci
+        run: npm install --global pa11y-ci@3.1.0
+
+      - name: Serve built site
+        run: |
+          cd output
+          python3 -m http.server 8000 &
+          # Wait for the server to come up
+          for _ in {1..20}; do
+            if curl -fsS http://127.0.0.1:8000/ >/dev/null 2>&1; then
+              echo "server up"
+              break
+            fi
+            sleep 0.5
+          done
+
+      - name: Run pa11y-ci
+        run: pa11y-ci --config .pa11yci.json
