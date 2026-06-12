@@ -18,8 +18,13 @@
   --border-strong: #3a3d44;
   --code-bg: #14161a;
   --tag-bg: #2d3340;
+  /* Hero gradient: kept dark enough that white text passes WCAG AA
+     across the full gradient. --hero-mid was #2d4f80 (lum ~0.075)
+     which made axe's contrast-on-gradient heuristic flag white-on-mid
+     even though the actual ratio is well over 4.5:1. Darkening to
+     #1e3a66 keeps the visual character without the false positive. */
   --hero-from: #1f3454;
-  --hero-mid: #2d4f80;
+  --hero-mid: #1e3a66;
   --hero-to: #1a3d6b;
 }
 
@@ -157,11 +162,18 @@ main article.single > header h1 {
 }
 main article.single > header p {
   margin: 0 0 12px;
-  color: #c9d4e3;
+  /* Bumped from #c9d4e3 to #e6edf6 (2026-06-12): the previous color
+     measured ~3.7:1 against the blue gradient mid-stop, failing WCAG AA. */
+  color: #e6edf6;
   font-size: 0.9em;
 }
-main article.single > header p a { color: #a2c4ff; }
-main article.single > header p a:hover { color: #d6e6ff; }
+/* Hero links: bumped color and added underline so they are
+   distinguishable by more than color alone (WCAG 1.4.1). */
+main article.single > header p a {
+  color: #d6e6ff;
+  text-decoration: underline;
+}
+main article.single > header p a:hover { color: #ffffff; }
 main article.single > div { grid-column: 1; min-width: 0; }
 main article.single > aside.article-toc { grid-column: 2; grid-row: 2; }
 main article.single .tag-cloud,
@@ -827,4 +839,29 @@ figure figcaption {
    styling. */
 main footer a {
   text-decoration: underline;
+}
+
+/* Pygments comment colors. Monokai's #75715e measures ~3.7:1 against
+   our custom code-block background #14161a, failing WCAG AA's 4.5:1
+   threshold for normal text. Bump comment classes to a lighter gray
+   (#a8a596, ~6:1) so code comments remain readable. Covers .c, .c1,
+   .ch, .cm, .cp, .cpf, .cs, and .gu (which monokai also styles as
+   commentary). */
+.highlight .c,
+.highlight .c1,
+.highlight .ch,
+.highlight .cm,
+.highlight .cp,
+.highlight .cpf,
+.highlight .cs,
+.highlight .gu,
+.literal-block .c,
+.literal-block .c1,
+.literal-block .ch,
+.literal-block .cm,
+.literal-block .cp,
+.literal-block .cpf,
+.literal-block .cs,
+.literal-block .gu {
+  color: #a8a596;
 }
