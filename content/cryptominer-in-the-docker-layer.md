@@ -8,6 +8,7 @@ Slug: cryptominer-in-the-docker-layer
 Summary: A runtime detector said the host was mining. `ps` and `ss` came back clean. The miner was hiding one layer lower, baked into the image's overlay2 diff directory and re-dropped on every container restart. A walk through the IR sweep that almost called it a false-positive.
 Cover: images/covers/cryptominer-in-the-docker-layer.png
 Status: draft
+Published_after: 2026-06-19
 
 [TOC]
 
