@@ -1,6 +1,5 @@
 Title: Prompt Injection Will Become a Supply Chain Evasion Technique
 Date: 2026-06-12
-Status: draft
 Category: Threat Intelligence
 Tags: ai, supply-chain, prompt-injection, evasion, defensive-architecture
 Slug: prompt-injection-supply-chain-evasion
