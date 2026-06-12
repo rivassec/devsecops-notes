@@ -1,26 +1,26 @@
-Title: Every Alert Is Your Alert: When IR Tooling Trips EDR
+Title: Every Alert Is Your Alert: When IR Tooling Trips Your Own EDR
 Date: 2026-07-01
 Modified: 2026-07-01
 Author: RivasSec
 Category: DevSecOps
-Tags: incident-response, edr, falcon, mitre-attack, t1105, runbook, ai-tooling
+Tags: incident-response, edr, mitre-attack, t1105, runbook, ai-tooling
 Slug: every-alert-is-your-alert
 Summary: An EDR fired a true-positive on my analyst laptop while I was investigating a real cryptominer. The traffic pattern was a textbook T1105 ingress tool transfer because that is exactly what I was doing. The runbook gap is older than the LLM coding assistant that triggered it.
 Status: draft
 
 [TOC]
 
-While I was investigating a real cryptominer compromise on a production EC2 instance, my analyst laptop's EDR fired on me. The detection was a high-severity `MacOSIngressToolTransfer`, MITRE T1105, against a process tree that started at my shell, descended through a Claude Code session running with elevated permissions, and ended at two `curl` calls fetching the attacker's dropper into `/tmp` for hash and content analysis.
+During a recent container-forensics investigation, the EDR on my analyst laptop fired a true-positive against my own activity. The detection was a high-severity ingress-tool-transfer alert, MITRE T1105, against a process tree that started at my shell, descended through an LLM-driven coding assistant session running with elevated permissions, and ended at two `curl` calls fetching the attacker's dropper into `/tmp` for hash and content analysis.
 
 The detection was correct. The traffic was, by every shape the sensor examines, an ingress tool transfer.
 
 It was also me, deliberately, doing my job.
 
-This post is not about defending myself to the SOC. The SOC was right and the EDR was right. This post is about the gap the detection exposes: most IR runbooks still assume the suspicious transfer came from the adversary or the user. Authorized analyst tooling that mirrors adversary behavior is a third category, and almost nobody's runbook handles it.
+This post is not about defending myself to a SOC. The SOC was right and the EDR was right. This post is about the gap the detection exposes: most IR runbooks still assume the suspicious transfer came from the adversary or the user. Authorized analyst tooling that mirrors adversary behavior is a third category, and almost nobody's runbook handles it.
 
 ## The setup
 
-The parent ticket was a confirmed compromise of a Flink job server. GuardDuty fired four findings inside a minute, the AttackSequence finding gave me the binary path, and I had it pulled out of the image's overlay2 layer within an hour. I covered the host-side investigation in a separate post: [The Miner Was In The Image Layer, Not In Memory]({filename}cryptominer-in-the-docker-layer.md). Read that first if you want the technical narrative; this post is the meta-incident that ran in parallel.
+The parent investigation was a confirmed cryptominer running in a containerized workload. The cloud detector's correlation finding gave me the binary path, and I had it pulled out of the image's overlay2 layer within an hour. I covered the host-side investigation in a separate post: [How I Learned to Investigate Docker Image Layers During Incident Response]({filename}cryptominer-in-the-docker-layer.md). Read that first if you want the technical narrative; this post is the meta-incident that ran in parallel.
 
 While the host investigation was active, I needed two things off the attacker's infrastructure:
 
@@ -31,7 +31,7 @@ I had two reasonable options. I could open both URLs in a browser on a sandbox V
 
 I chose the second. Faster. No VM context switch. The files were data, not executables; I had no intent to run them. The point was a hash comparison and a static read.
 
-The Claude Code session I was running already had shell permissions for the investigation. I told it to fetch both URLs into `/tmp/prisec-XXXX-evidence/payloads/` and SHA-256 them. It did. Falcon noticed.
+The agent session I was running already had shell permissions for the investigation. I told it to fetch both URLs into a per-incident evidence directory and SHA-256 them. It did. The EDR noticed.
 
 ## What the EDR saw
 
@@ -45,7 +45,7 @@ From the sensor's perspective the picture was unambiguous:
 
 That is, line for line, the ATT&CK definition of T1105: `Adversaries may transfer tools or other files from an external system into a compromised environment.` The sensor doesn't get to know whether "the compromised environment" is "my laptop during a real IR engagement, used by the analyst conducting the IR." It gets the syscalls, and the syscalls were textbook.
 
-The EDR fired. A ticket auto-generated in Jira. Within the hour the SOC's outsourced detection-and-response team had escalated and closed it `true_positive`.
+The EDR fired. A ticket auto-generated in the issue tracker. Within the hour the detection-and-response team had escalated and closed it `true_positive`.
 
 That last word is the interesting one. By the platform's taxonomy, the disposition was correct. The sensor was not wrong. The behavior was real. The label, however, doesn't capture the structural fact: the source was an authorized analyst, the activity was sanctioned, and the resulting telemetry needs a different kind of close than a real intrusion.
 
@@ -76,7 +76,7 @@ This incident would have happened in 2018 too. An analyst who decided to `curl` 
 
 In 2018, the analyst who reached for `curl` knew they were about to make their own laptop look briefly like a compromise. They paused. They opened a sandbox VM. They didn't, often.
 
-In 2026, the analyst with a Claude Code session running has shell access already extended out to `--dangerously-skip-permissions`, and the easiest path from "I need to read that payload" to "the payload is on disk and hashed" is to type the request into the agent. The agent doesn't know that pulling the dropper looks identical to the malware pulling the dropper. The agent hasn't read the EDR's MITRE coverage matrix. It just executes.
+In 2026, the analyst with an LLM coding-assistant session running has shell access already extended out via the assistant's permissive flag, and the easiest path from "I need to read that payload" to "the payload is on disk and hashed" is to type the request into the agent. The agent doesn't know that pulling the dropper looks identical to the malware pulling the dropper. The agent hasn't read the EDR's MITRE coverage matrix. It just executes.
 
 This is not a problem with the agent. The agent is doing exactly what an analyst would do without one. The agent makes the friction lower, which means the same path gets taken more often, which means the same EDR alerts get fired more often, by more analysts, on more endpoints.
 
@@ -84,15 +84,15 @@ If your team has any LLM-driven shell access on managed laptops, your EDR is abo
 
 ## What I changed in my own runbook
 
-The closure I ended up writing on the Jira ticket had three parts. I am keeping all three for the next time:
+The closure I ended up writing on the auto-created ticket had three parts. I am keeping all three for the next time:
 
-**1. Self-attribution.** The first comment on the auto-created ticket linked it to the parent IR ticket and named the URLs and paths. Specifically: "this detection was triggered by my own IR work on PRISEC-XXXX. The agent session fetched the dropper at ... and the pastebin payload at ... into /tmp/.../payloads/ for hash and content analysis. Network behavior matches T1105 as expected; source was authorized analyst activity, not a compromise of <hostname>."
+**1. Self-attribution comment.** The first comment on the auto-created ticket linked it to the parent IR ticket and named the URLs and paths. The skeleton looks like: "this detection was triggered by my own IR work on `<parent ticket>`. The agent session fetched `<URL 1>` and `<URL 2>` into `<evidence path>` for hash and content analysis. Network behavior matches T1105 as expected; source was authorized analyst activity, not a compromise of `<hostname>`."
 
 The wording matters. "Self-attributed" is more durable than "false positive" because it acknowledges the alert was correct and locates the source. Future-me reading the ticket history can reconstruct what happened without ambiguity.
 
-**2. Parent-link.** I created a Jira "relates to" link from the EDR ticket back to the parent IR ticket. The parent describes what we were investigating and why; the EDR ticket describes what the sensor saw. The pair is the full picture.
+**2. Parent-link.** Create a "relates to" link from the EDR ticket back to the parent IR ticket. The parent describes what was being investigated and why; the EDR ticket describes what the sensor saw. The pair is the full picture.
 
-**3. Match-the-platform-disposition.** Falcon Complete had already closed the ticket as `true_positive`. Rather than dispute that, I closed the Jira mirror as Done with my self-attribution comment in place. The platform tracks the right thing for the platform; my Jira closure tracks the right thing for the audit history.
+**3. Match-the-platform-disposition.** The vendor side had already closed the ticket as `true_positive`. Rather than dispute that, I closed the issue-tracker mirror as Done with my self-attribution comment in place. The platform tracks the right thing for the platform; the issue-tracker closure tracks the right thing for the audit history.
 
 ## What I'd want my team's runbook to add
 
