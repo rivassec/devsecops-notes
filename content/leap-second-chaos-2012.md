@@ -62,7 +62,7 @@ sudo /etc/init.d/ntp start
 - **Leap Smearing**: Today’s `ntpd`, `chronyd`, and cloud providers use “leap smear”, slowly adjusting clocks over hours to avoid time jumps entirely.
 - **Use Monotonic Clocks**: Time-sensitive logic should rely on `CLOCK_MONOTONIC`, not wall-clock time, to measure durations safely.
 
-![Wall Clock vs Monotonic Time During a Leap Second]({static}/images/leap_second_monotonic_vs_wall_clock.png)
+![Line chart titled "Leap Second: Wall Clock vs Monotonic Time" plotting reported time against elapsed monotonic time. Both lines rise together from 0 through 4. At the leap-second insertion (annotated 23:59:60), wall-clock time flattens for one second while monotonic time keeps climbing. Wall-clock then resumes its climb one tick behind monotonic for the rest of the chart.]({static}/images/leap_second_monotonic_vs_wall_clock.png)
 *Figure: Monotonic time continues uninterrupted while wall-clock time repeats a second, highlighting why monotonic clocks are preferred for duration tracking.*
 
 - **Monitor Clock Drift**: Observability pipelines should expose clock sync state and NTP drift as first-class metrics.
