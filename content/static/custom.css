@@ -792,14 +792,17 @@ main article p img {
   display: block;
 }
 
-/* Flex's stylesheet sets figure { color: #6c757d } and
-   figcaption { color: #242121 }. Both fail WCAG AA against the dark
-   background (#242121 vs #1a1c20 is ~1.2:1). Override to use the
-   theme's regular foreground color so figcaptions are readable. */
+/* Flex's stylesheet sets `div.figure figcaption, figure figcaption {
+   color: #242121 }`. That selector has specificity 0,0,2, so a bare
+   `figcaption` rule loses the cascade against the dark theme. Match
+   the same specificity to actually take effect. Both fail WCAG AA
+   against the dark background (#242121 vs #1a1c20 is ~1.2:1). */
+div.figure,
 figure {
   color: var(--fg);
 }
-figcaption {
+div.figure figcaption,
+figure figcaption {
   color: var(--fg);
   font-style: italic;
 }
