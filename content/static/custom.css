@@ -815,3 +815,13 @@ figcaption {
   font-size: 1.36em;
   margin: 20px 0 10px;
 }
+
+/* Footer attribution links must be distinguishable by more than color
+   (WCAG 1.4.1, Level A). The global `a { text-decoration: none }` rule
+   leaves them indistinguishable from surrounding text in a paragraph
+   that is already colored gray. Add an underline only inside the
+   footer to fix the audit finding without changing site-wide link
+   styling. */
+main footer a {
+  text-decoration: underline;
+}
