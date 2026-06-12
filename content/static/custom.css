@@ -803,3 +803,15 @@ figcaption {
   color: var(--fg);
   font-style: italic;
 }
+
+/* Heading-level fix: the article TOC, related-posts, and series headings
+   were h4 in the Flex theme, which skipped levels (h1 -> h4) and broke
+   WCAG outline-order. They are now h2, peer to the body's h2 sections.
+   Preserve the smaller visual size with these class overrides so the
+   semantic change does not blow up the layout. */
+.aside-heading,
+.related-heading,
+.series-heading {
+  font-size: 1.36em;
+  margin: 20px 0 10px;
+}

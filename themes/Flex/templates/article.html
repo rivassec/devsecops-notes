@@ -39,7 +39,7 @@
 
   {% if article.toc %}
   <aside class="article-toc" aria-label="Table of contents">
-    <h4>On this page</h4>
+    <h2 class="aside-heading">On this page</h2>
     {{ article.toc }}
   </aside>
   {% endif %}
@@ -70,7 +70,7 @@
 
   {% if article.related_posts %}
   <div class="related-posts">
-    <h4>{{ _('You might enjoy') }}</h4>
+    <h2 class="related-heading">{{ _('You might enjoy') }}</h2>
     <ul class="related-posts">
     {% for related_post in article.related_posts %}
       <li><a href="{{ SITEURL }}/{{ related_post.url }}">{{ related_post.title }}</a></li>
@@ -84,7 +84,7 @@
   {% if article.series %}
   <div class="related-posts">
    {% set text = SERIES_TEXT|default('Part %(index)s of the %(name)s series') %}
-    <h4>{{ text|format(index=article.series.index, name=article.series.name) }}</h4>
+    <h2 class="series-heading">{{ text|format(index=article.series.index, name=article.series.name) }}</h2>
     {% if article.series.all_previous %}
        <h5>Previous articles</h5>
        <ul>
