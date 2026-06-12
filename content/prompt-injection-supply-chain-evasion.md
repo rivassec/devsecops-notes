@@ -3,6 +3,7 @@ Date: 2026-06-12
 Category: Threat Intelligence
 Tags: ai, supply-chain, prompt-injection, evasion, defensive-architecture
 Slug: prompt-injection-supply-chain-evasion
+Cover: images/covers/prompt-injection-supply-chain-evasion.png
 Summary: Prompt injection's threat model is older than the term. The mechanism is new, the objective is the evasion goal attackers have pursued for decades.
 
 Prompt injection's threat model is older than the term. This is a forecast about attacker evolution, not a claim about active campaigns observed in the wild today.
@@ -30,6 +31,41 @@ That class includes:
 - Multi-agent supply-chain workflows that feed untrusted package text directly into LLMs
 
 These systems have something in common. They all interpret attacker-supplied text as part of a security decision. That is the trust boundary worth thinking about.
+
+## The trust boundary, drawn
+
+```
+                       untrusted package
+                              |
+                              v
+                  +-------------------------+
+                  |    LLM scanner          | <- prompt-injection
+                  |    (parser surface)     |    target
+                  +-------------------------+
+                              |
+                              v
+                     verdict (LLM only)
+                              |
+              +---------------+----------------+
+              |                                |
+              v                                v
+            clean                  inconclusive | refusal
+              |                                |
+              v                                v
+       continue to                     +----------------+
+       next stage                      | fallback       |
+                                       | router         |
+                                       +----------------+
+                                                |
+                                +---------------+----------------+
+                                v               v                v
+                            static          sandbox            human
+                            analysis        detonation         review
+
+       inconclusive verdicts NEVER mark the artifact clean
+```
+
+A clean verdict moves the artifact downstream the same way any analyzer's clean verdict would. Everything else is the failure-mode routing the rest of this post is about.
 
 ## Degraded visibility is the goal
 
