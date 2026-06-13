@@ -36,6 +36,22 @@ MD_IMAGE_RE = re.compile(r"!\[([^\]]*)\]\(([^)]+)\)")
 HTML_IMG_RE = re.compile(r"<img\b([^>]*)>", re.IGNORECASE)
 HTML_ALT_RE = re.compile(r"""\balt\s*=\s*(["'])(.*?)\1""", re.IGNORECASE | re.DOTALL)
 
+# Inline-code spans, longest-fence-first so `` `text with backtick` ``
+# is matched as one span before the inner single backticks.
+# Markdown lets you use any number of backticks, but 1 and 2 cover
+# almost everything in practice for prose.
+INLINE_CODE_RE = re.compile(r"``[^`]+``|`[^`\n]+`")
+
+
+def _strip_inline_code(line: str) -> str:
+    """Replace inline-code spans with spaces of equal length.
+
+    Equal length keeps column numbers in error annotations correct
+    against the original line. We blank out the spans rather than
+    delete them so that `<img>` mentioned in inline code does not
+    trip the HTML image regex below."""
+    return INLINE_CODE_RE.sub(lambda m: " " * len(m.group(0)), line)
+
 
 def tracked_markdown() -> list[Path]:
     """All *.md tracked in git under content/."""
@@ -73,6 +89,11 @@ def scan(path: Path) -> tuple[list[tuple[int, int, str, str]], list[tuple[int, i
             continue
         if in_code_fence:
             continue
+
+        # Blank out inline-code spans. `<img>` inside backticks is
+        # rendered as code, not a real image tag, and should not
+        # trip the HTML image regex.
+        line = _strip_inline_code(line)
 
         for m in MD_IMAGE_RE.finditer(line):
             alt = m.group(1)

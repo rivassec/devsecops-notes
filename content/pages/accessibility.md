@@ -13,7 +13,7 @@ This site targets [WCAG 2.1 Level AA](https://www.w3.org/WAI/WCAG21/quickref/) c
 
 ## What is in place
 
-- Alt text on all informational images, enforced at commit time by a script that fails CI on any image missing an alt attribute.
+- Alt text on all informational images, enforced at commit time by a script that fails CI on any `<img>` missing the `alt` attribute.
 - Color contrast targeting WCAG AA (4.5:1 for normal text, 3:1 for large text), verified with Pa11y running axe-core and HTML CodeSniffer against representative pages on every push.
 - Semantic heading order (`h1` → `h2` → `h3`) without skips.
 - Link distinguishability beyond color (underlines on hero and footer links).
