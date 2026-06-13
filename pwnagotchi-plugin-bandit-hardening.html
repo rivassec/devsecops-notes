@@ -1,0 +1,355 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="" />
+
+
+  <link rel="stylesheet" type="text/css" href="https://rivassec.com/theme/stylesheet/style.min.css">
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="https://rivassec.com/theme/pygments/monokai.min.css">
+
+
+
+  <link rel="stylesheet" type="text/css" href="https://rivassec.com/static/custom.css">
+
+  <link rel="icon" href="https://rivassec.com/favicon.ico" sizes="any">
+  <link rel="icon" href="https://rivassec.com/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="https://rivassec.com/favicon-16.png" type="image/png" sizes="16x16">
+  <link rel="apple-touch-icon" href="https://rivassec.com/apple-touch-icon.png" sizes="180x180">
+
+  <!-- Chrome, Firefox OS and Opera -->
+  <meta name="theme-color" content="#222222">
+  <!-- Windows Phone -->
+  <meta name="msapplication-navbutton-color" content="#222222">
+  <!-- iOS Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!-- Microsoft EDGE -->
+  <meta name="msapplication-TileColor" content="#222222">
+
+  <link href="https://rivassec.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="RivasSec | DevSecOps, Kubernetes, AWS IAM Atom">
+
+
+
+
+
+
+<meta name="author" content="RivasSec" />
+<meta name="description" content="Pwnagotchi plugins live one shell=True away from local code execution. Walking through the hardening of bt-tether-multi against Bandit B602/B603/B607: full-path resolution with shutil.which(), argv-list invocations, MAC and name validation, and the # nosec discipline. The patterns generalize to anything that shells out from Python." />
+<meta name="keywords" content="pwnagotchi, python, bandit, subprocess, security, supply-chain, hardening">
+
+
+  <meta property="og:site_name" content="RivasSec | DevSecOps, Kubernetes, AWS IAM"/>
+  <meta property="og:title" content="Bandit-Clean Pwnagotchi Plugins: How `subprocess` Goes From Risk to Routine"/>
+  <meta property="og:description" content="Pwnagotchi plugins live one shell=True away from local code execution. Walking through the hardening of bt-tether-multi against Bandit B602/B603/B607: full-path resolution with shutil.which(), argv-list invocations, MAC and name validation, and the # nosec discipline. The patterns generalize to anything that shells out from Python."/>
+  <meta property="og:locale" content="en_US"/>
+  <meta property="og:url" content="https://rivassec.com/pwnagotchi-plugin-bandit-hardening.html"/>
+  <meta property="og:type" content="article"/>
+  <meta property="article:published_time" content="2026-06-10 00:00:00-07:00"/>
+  <meta property="article:modified_time" content="2026-06-10 00:00:00-07:00"/>
+  <meta property="article:author" content="https://rivassec.com/author/rivassec.html">
+  <meta property="article:section" content="DevSecOps"/>
+  <meta property="article:tag" content="pwnagotchi"/>
+  <meta property="article:tag" content="python"/>
+  <meta property="article:tag" content="bandit"/>
+  <meta property="article:tag" content="subprocess"/>
+  <meta property="article:tag" content="security"/>
+  <meta property="article:tag" content="supply-chain"/>
+  <meta property="article:tag" content="hardening"/>
+  <meta property="og:image" content="https://rivassec.com/images/covers/pwnagotchi-plugin-bandit-hardening.png">
+  <meta property="og:image:alt" content="Bandit-Clean Pwnagotchi Plugins: How `subprocess` Goes From Risk to Routine">
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="Bandit-Clean Pwnagotchi Plugins: How `subprocess` Goes From Risk to Routine"/>
+  <meta name="twitter:description" content="Pwnagotchi plugins live one shell=True away from local code execution. Walking through the hardening of bt-tether-multi against Bandit B602/B603/B607: full-path resolution with shutil.which(), argv-list invocations, MAC and name validation, and the # nosec discipline. The patterns generalize to anything that shells out from Python."/>
+  <meta name="twitter:site" content="@rivassec"/>
+  <meta name="twitter:creator" content="@rivassec"/>
+  <meta name="twitter:image" content="https://rivassec.com/images/covers/pwnagotchi-plugin-bandit-hardening.png"/>
+  <meta name="twitter:image:alt" content="Bandit-Clean Pwnagotchi Plugins: How `subprocess` Goes From Risk to Routine"/>
+  <script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "name": "Bandit-Clean Pwnagotchi Plugins: How `subprocess` Goes From Risk to Routine",
+    "headline": "Bandit-Clean Pwnagotchi Plugins: How `subprocess` Goes From Risk to Routine",
+    "datePublished": "2026-06-10 00:00:00-07:00",
+    "dateModified": "2026-06-10 00:00:00-07:00",
+    "author": {
+      "@type": "Person",
+      "name": "RivasSec",
+      "url": "https://rivassec.com/author/rivassec.html"
+    },
+    "image": "https://rivassec.com/images/covers/pwnagotchi-plugin-bandit-hardening.png",
+    "url": "https://rivassec.com/pwnagotchi-plugin-bandit-hardening.html",
+    "description": "Pwnagotchi plugins live one shell=True away from local code execution. Walking through the hardening of bt-tether-multi against Bandit B602/B603/B607: full-path resolution with shutil.which(), argv-list invocations, MAC and name validation, and the # nosec discipline. The patterns generalize to anything that shells out from Python."
+  }
+  </script>
+
+  <title>RivasSec | DevSecOps, Kubernetes, AWS IAM &ndash; Bandit-Clean Pwnagotchi Plugins: How `subprocess` Goes From Risk to Routine</title>
+</head>
+<body class="light-theme">
+<aside>
+  <div>
+    <a href="https://rivassec.com/">
+      <img src="images/avatar.png" alt="RivasSec" title="RivasSec">
+    </a>
+
+    <h1>
+      <a href="https://rivassec.com/">RivasSec</a>
+    </h1>
+
+    <p>Infrastructure. Security. Insight.</p>
+
+
+
+    <ul class="social">
+      <li>
+        <a class="sc-github"
+           aria-label="GitHub"
+           href="https://github.com/rivassec"
+           target="_blank">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512" aria-hidden="true" focusable="false"><path fill="currentColor" d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3 .3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5 .3-6.2 2.3zm44.2-1.7c-2.9 .7-4.9 2.6-4.6 4.9 .3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3 .7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3 .3 2.9 2.3 3.9 1.6 1 3.6 .7 4.3-.7 .7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3 .7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3 .7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>        </a>
+      </li>
+    </ul>
+  </div>
+
+</aside>
+  <main>
+<nav>
+  <a href="https://rivassec.com/">Home</a>
+
+  <a href="https://rivassec.com/pages/about.html">About</a>
+  <a href="https://rivassec.com/categories.html">Categories</a>
+  <a href="https://github.com/rivassec">GitHub</a>
+
+  <a href="https://rivassec.com/feeds/all.atom.xml">Atom</a>
+
+</nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="pwnagotchi-plugin-bandit-hardening">Bandit-Clean Pwnagotchi Plugins: How `subprocess` Goes From Risk to Routine</h1>
+    <p>
+      Posted on Wed 10 June 2026 in <a href="https://rivassec.com/category/devsecops.html">DevSecOps</a>
+
+        &#8226; 9 min read
+    </p>
+  </header>
+
+  <aside class="article-toc" aria-label="Table of contents">
+    <h2 class="aside-heading">On this page</h2>
+    <div class="toc">
+<ul>
+<li><a href="#the-threat-model-is-local-not-remote">The threat model is local, not remote</a></li>
+<li><a href="#what-bandit-catches-that-linters-miss">What Bandit catches that linters miss</a></li>
+<li><a href="#resolve-binary-paths-with-shutilwhich-once-at-init">Resolve binary paths with shutil.which() once, at init</a></li>
+<li><a href="#always-pass-argv-as-a-list-never-shelltrue">Always pass argv as a list. Never shell=True.</a></li>
+<li><a href="#validate-the-inputs-that-become-argv">Validate the inputs that become argv</a></li>
+<li><a href="#the-nosec-discipline">The # nosec discipline</a></li>
+<li><a href="#what-this-looks-like-in-ci">What this looks like in CI</a></li>
+<li><a href="#the-pattern-generalizes">The pattern generalizes</a></li>
+</ul>
+</div>
+  </aside>
+
+  <div>
+    
+<p>I ran Bandit on <a href="https://github.com/rivassec/pwnagotchi"><code>bt-tether-multi</code></a> as part of a routine pre-publish sweep. I expected zero findings. I got a handful, half of them on code I had already convinced myself was hardened. That gap, between "I think this is safe" and "Bandit's static analyzer can prove it is safe," is what this post is about.</p>
+<p>Pwnagotchi plugins are Python that ships next to a Wi-Fi monitor running as root. They shell out to <code>nmcli</code>, <code>bluetoothctl</code>, <code>iw</code>, <code>wpa_supplicant</code>, <code>curl</code>. Most plugins on GitHub treat <code>subprocess</code> like an <code>os.system</code> shortcut: shell strings, relative binary names, untrusted config values concatenated into command lines. None of that survives Bandit's defaults.</p>
+<p>This is the hardening pass that took <a href="https://github.com/rivassec/pwnagotchi"><code>bt-tether-multi</code></a>, the multi-phone Bluetooth tethering plugin I wrote about <a href="https://rivassec.com/pwnagotchi-bluetooth-tethering.html">last year</a>, from "looked careful" to "scans clean against Bandit 1.8.6." The functional behavior (fall back through a list of phones, verify WAN, retry on failure) is unchanged. What changed is that every subprocess call now has a story for why it cannot be tricked, every external value gets validated before reaching argv, and the surprises Bandit caught along the way are why the post exists at all.</p>
+<p>The patterns generalize. If your Python ever calls a binary, the same checklist applies.</p>
+<h2 id="the-threat-model-is-local-not-remote">The threat model is local, not remote</h2>
+<p>The plugin reads phones from <code>config.toml</code> on the same disk Pwnagotchi is running from. There is no network input that becomes a shell argument. So why bother?</p>
+<p>Two reasons.</p>
+<p>First, the Pwnagotchi config file is the highest-leverage attack surface on the device. It is human-edited, it gets shared, plugins copy snippets between machines, and the moment one plugin treats a <code>name</code> field as a shell-safe string the whole device class inherits the gap. A field intended to be <code>"Pixel 8"</code> that ends up as <code>"Pixel 8; rm -rf /"</code> is the entire kill chain. Defense-in-depth says you assume that field is hostile.</p>
+<p>Second, you are running as root next to a Wi-Fi adapter. The blast radius of a bug here is the radio. "Local-only" stops being a comforting word the moment you imagine a stranger handed your Pwnagotchi back to you with a "fixed" <code>config.toml</code>.</p>
+<h2 id="what-bandit-catches-that-linters-miss">What Bandit catches that linters miss</h2>
+<p>Bandit is <code>pip install bandit</code> and it ships with rules numbered B602, B603, B607 that are the entire ballgame for <code>subprocess</code>:</p>
+<ul>
+<li><strong>B602</strong>: <code>subprocess</code> with <code>shell=True</code>. Hard fail unless explicitly suppressed and justified.</li>
+<li><strong>B603</strong>: <code>subprocess</code> without an explicit shell, but the binary path comes from a variable rather than a literal. Bandit can't tell whether that variable is trusted.</li>
+<li><strong>B607</strong>: starting a process with a partial executable path. <code>subprocess.run(["nmcli", "..."])</code> triggers this because <code>nmcli</code> is resolved through <code>$PATH</code>, and <code>$PATH</code> is something you should not trust on a device whose disk has been out of your sight.</li>
+</ul>
+<p>Pyflakes, Ruff, mypy will not flag any of these. They are not type or syntax errors. They are policy.</p>
+<p>A clean Bandit run on a hardened plugin looks like this:</p>
+<div class="highlight"><pre><span></span><code>$ bandit -r bt-tether-multi.py
+Run started: ...
+Total lines of code: 219
+Total lines skipped (#nosec): 6
+
+Total issues (by severity):
+        Undefined: 0
+        Low: 0
+        Medium: 0
+        High: 0
+</code></pre></div>
+<p>Six <code># nosec</code> annotations, each one earned. We will get to those.</p>
+<h2 id="resolve-binary-paths-with-shutilwhich-once-at-init">Resolve binary paths with <code>shutil.which()</code> once, at init</h2>
+<p>This was where my first surprise lived. I had been careful, or thought I had, but Bandit B607 fired on a <code>subprocess.run(["bluetoothctl", "info"], ...)</code> deep in the UI update handler. I had typed the binary name as a string literal because at the time it felt safe: the value is hardcoded, no user input. Bandit doesn't care. B607 fires on any partial executable path, regardless of where the string came from, because at runtime it is <code>$PATH</code> that decides which <code>bluetoothctl</code> actually runs. On a Pwnagotchi whose disk has been out of your sight, that decision is not yours.</p>
+<p>The fix is to stop typing literal binary names into argv lists at all. The plugin's <code>__init__</code> now resolves every binary it will ever shell out to:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">BTTetherMulti</span><span class="p">(</span><span class="n">plugins</span><span class="o">.</span><span class="n">Plugin</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nmcli</span> <span class="o">=</span> <span class="n">shutil</span><span class="o">.</span><span class="n">which</span><span class="p">(</span><span class="s2">"nmcli"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bluetoothctl</span> <span class="o">=</span> <span class="n">shutil</span><span class="o">.</span><span class="n">which</span><span class="p">(</span><span class="s2">"bluetoothctl"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">curl</span> <span class="o">=</span> <span class="n">shutil</span><span class="o">.</span><span class="n">which</span><span class="p">(</span><span class="s2">"curl"</span><span class="p">)</span>
+</code></pre></div>
+<p><code>shutil.which()</code> returns the absolute path of the first match in <code>$PATH</code>, or <code>None</code> if it is not found. Three things this buys you:</p>
+<ol>
+<li><strong>B607 goes away.</strong> Every later subprocess call uses <code>self.nmcli</code>, which is <code>/usr/bin/nmcli</code>. Bandit sees a literal-looking path argument and shuts up.</li>
+<li><strong>Every code path that needs the binary gets a typed "is it installed?" check for free.</strong> Just <code>if not self.nmcli: return False</code>. The plugin degrades cleanly when the underlying tool is missing instead of producing a confusing <code>FileNotFoundError</code> from inside an event handler.</li>
+<li><strong>The path is locked at startup.</strong> If something rewrites <code>$PATH</code> later (a malicious systemd drop-in, a rogue plugin, your own shell config), the plugin keeps using the version that existed when it loaded.</li>
+</ol>
+<p>The cost is one <code>if</code> check per call site. Tiny.</p>
+<h2 id="always-pass-argv-as-a-list-never-shelltrue">Always pass argv as a list. Never <code>shell=True</code>.</h2>
+<p>Every subprocess call in the plugin uses the list form:</p>
+<div class="highlight"><pre><span></span><code><span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+    <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">nmcli</span><span class="p">,</span> <span class="s2">"connection"</span><span class="p">,</span> <span class="s2">"delete"</span><span class="p">,</span> <span class="n">phone_name</span><span class="p">],</span>
+    <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">DEVNULL</span><span class="p">,</span>
+    <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">DEVNULL</span><span class="p">,</span>
+    <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span>  <span class="c1"># nosec B603</span>
+</code></pre></div>
+<p>The <code># nosec B603</code> is there because Bandit's static analysis sees a variable in <code>argv[0]</code>, not a literal string, and it does not trace data flow to know that <code>self.nmcli</code> was populated by <code>shutil.which()</code> at startup. The annotation is a localized claim: "this argv[0] is a resolved absolute path, here's the structural reason." Each of the six <code># nosec</code> comments in the plugin sits next to a call that is provably bound to a resolved binary path and a list of strings, never a shell.</p>
+<p>The list form matters because it bypasses <code>/bin/sh</code> entirely. With <code>shell=True</code> you are concatenating strings and handing them to a shell that will tokenize them, expand globs, run subshells from <code>$(...)</code>, and follow whatever locale-specific rules apply. With a list, the kernel's <code>execve(2)</code> gets exactly the argv you passed. No tokenization. No expansion. No glob.</p>
+<p>I caught myself reaching for <code>shell=True</code> exactly once during this pass. I was sketching a follow-up plugin that enumerates saved handshake <code>.pcap</code> files, and my fingers typed <code>subprocess.run(f"ls /root/handshakes/*.pcap | head", shell=True)</code> before my brain caught up. The instinct was glob expansion: <code>*.pcap</code> is a shell pattern, the shell is what does the expansion, so reaching for <code>shell=True</code> felt like the natural way to get globbing. It is also exactly the path that turns a benign-looking config field into a code-execution hole, because the moment any part of that command line comes from outside the Python process, the shell will tokenize it.</p>
+<p>The right shape is to do the enumeration in Python and pass results as argv:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Wrong</span>
+<span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="sa">f</span><span class="s2">"ls /root/handshakes/*.pcap | head"</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Right</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="n">pcaps</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="s2">"/root/handshakes"</span><span class="p">)</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">"*.pcap"</span><span class="p">))[:</span><span class="mi">10</span><span class="p">]</span>
+</code></pre></div>
+<p><code>Path.glob()</code> does the expansion in-process, returns a list of <code>Path</code> objects, and never touches a shell. Anything you would have piped into <code>head</code> is a Python slice. Anything you would have piped into another command becomes a list comprehension or a second <code>subprocess.run()</code> that takes the list as argv.</p>
+<p>The same shape applies if your reason for reaching at <code>shell=True</code> was a pipe rather than a glob:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Wrong</span>
+<span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">"ip link show | grep wlan0"</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Right</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="s2">"link"</span><span class="p">,</span> <span class="s2">"show"</span><span class="p">],</span> <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">matches</span> <span class="o">=</span> <span class="p">[</span><span class="n">l</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">out</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span> <span class="k">if</span> <span class="s2">"wlan0"</span> <span class="ow">in</span> <span class="n">l</span><span class="p">]</span>
+</code></pre></div>
+<p>The list form is also the only form that makes sense once any argument becomes a variable. The moment a <code>phone_name</code> from config goes into a string interpolation that goes into a shell, you have a remote-config-execution bug. The list form turns that same value into a single argv slot the shell never sees.</p>
+<h2 id="validate-the-inputs-that-become-argv">Validate the inputs that become argv</h2>
+<p><code>shutil.which()</code> and the list form make the call site safe. They do not make the <em>arguments</em> safe. A <code>phone_name</code> of <code>"Pixel 8 Network; reboot"</code> does not break out of <code>subprocess</code>, but it does become a NetworkManager connection profile name with a semicolon in it, which is its own ugly debugging story.</p>
+<p>Two validators run before any value reaches argv:</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">_sanitize_mac</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mac</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">"^([0-9A-Fa-f]</span><span class="si">{2}</span><span class="s2">:)</span><span class="si">{5}</span><span class="s2">[0-9A-Fa-f]</span><span class="si">{2}</span><span class="s2">$"</span><span class="p">,</span> <span class="n">mac</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">mac</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Invalid MAC address: </span><span class="si">{</span><span class="n">mac</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_sanitize_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">"^[\w\s\-]{1,32}$"</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">name</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Invalid phone name: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<p>The MAC regex is restrictive on purpose: six pairs of hex separated by colons, nothing else. The name regex allows word characters, spaces, and hyphens, capped at 32 characters. Both of these reject inputs at config-load time so that the rest of the plugin can assume its values are already clean. The validation lives in <code>_validate_phones()</code>, which runs from <code>on_loaded</code> and <code>on_config_changed</code>. Phones that fail validation are dropped, logged, and never reach a subprocess call.</p>
+<p>The pattern is "validate at the trust boundary, trust everything past it." The trust boundary in this plugin is the config-load handler. Past that, the rest of the code is allowed to assume <code>phone["mac"]</code> matches <code>^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$</code>. That assumption is enforced by the validator, not by hope.</p>
+<h2 id="the-nosec-discipline">The <code># nosec</code> discipline</h2>
+<p>Six <code># nosec</code> annotations is six fewer than zero, but it is still six places where you are telling the auditor "trust me." The discipline that keeps that honest:</p>
+<ol>
+<li><strong>Every <code># nosec</code> annotates exactly one call.</strong> No file-level suppressions, no broad ignores. If three calls need it, three <code># nosec</code> comments. Each one is a localized claim.</li>
+<li><strong>The reason is structural, not "it works."</strong> The plugin's <code># nosec</code> comments all sit next to calls where the binary path came from <code>shutil.which()</code> and the arguments are either literals or inputs that have already passed <code>_sanitize_*</code>. That is the structural reason Bandit's flag is a false positive.</li>
+<li><strong><code># nosec</code> annotations are reviewed as code.</strong> When a plugin update changes how an argument flows into a subprocess call, the <code># nosec</code> next to that call gets re-evaluated. If the structural reason no longer holds, the annotation comes off and the call gets fixed.</li>
+</ol>
+<p>Bandit also accepts targeted suppressions like <code># nosec B603</code> instead of bare <code># nosec</code>. Targeted is better. It documents which rule you are silencing and avoids accidentally hiding a different finding the next time a rule fires on the same line.</p>
+<h2 id="what-this-looks-like-in-ci">What this looks like in CI</h2>
+<p>The plugin's repo runs Bandit on push. The relevant fragment of GitHub Actions:</p>
+<div class="highlight"><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Bandit security scan</span>
+<span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">    </span><span class="no">pip install bandit==1.8.6</span>
+<span class="w">    </span><span class="no">bandit -r bt-tether-multi.py --severity-level low --confidence-level low</span>
+</code></pre></div>
+<p><code>--severity-level low --confidence-level low</code> is the strictest setting. Anything less and you are filtering out the exact class of finding you want to see. The plugin is small enough that this runs in seconds. The GitHub Actions workflow fails the PR if Bandit returns non-zero, which happens on any unsuppressed finding at any severity.</p>
+<p>Pin the Bandit version. Bandit's rule set evolves; an unpinned <code>bandit</code> in CI means a future point release can fail your PR for reasons you have not seen before. Bump deliberately, not on every install.</p>
+<h2 id="the-pattern-generalizes">The pattern generalizes</h2>
+<p>The four moves (resolve binaries with <code>shutil.which()</code> at init, pass argv as lists, validate inputs at the trust boundary, annotate <code># nosec</code> per-call with a structural reason) are not Pwnagotchi-specific. They are the entire defense for any Python that shells out:</p>
+<ul>
+<li>A homelab MCP server that runs <code>docker exec</code> on user-supplied container names.</li>
+<li>A CI script that calls <code>kubectl</code> against a cluster name from environment.</li>
+<li>A Pelican plugin that runs <code>convert</code> on filenames from frontmatter.</li>
+<li>A Discord bot that calls <code>ffmpeg</code> on URLs.</li>
+</ul>
+<p>Each of these is one <code>shell=True</code> away from a shell-injection bug. Each is one resolved-binary-path away from being safe by construction.</p>
+<p>The Pwnagotchi case is small enough to be a clean worked example. The plugin is 283 lines. The hardening pass added maybe 40, and most of it is the validators that make the rest of the code shorter because it stops needing defensive checks. Six <code># nosec</code> comments, each one explainable in a sentence. Bandit clean. The radio still tethers.</p>
+<p>The reason this matters is not Bandit. Bandit is a tool. The reason is that the same patterns Bandit teaches you in 200 lines of plugin code are the patterns that hold up at 200,000 lines of cloud infrastructure. The IAM equivalent of "validate at the trust boundary, trust everything past it" is what <a href="https://rivassec.com/iam-safe-defaults-fail-loud.html">IAM Roles That Fail Loud</a> is about. The shell-injection equivalent at the cluster scope is the <a href="https://rivassec.com/paved-road-adoption-as-control.html">paved-road adoption pattern</a>. Plugin hardening is just where you can see the whole pattern at once.</p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://rivassec.com/tag/pwnagotchi.html">pwnagotchi</a>
+      <a href="https://rivassec.com/tag/python.html">python</a>
+      <a href="https://rivassec.com/tag/bandit.html">bandit</a>
+      <a href="https://rivassec.com/tag/subprocess.html">subprocess</a>
+      <a href="https://rivassec.com/tag/security.html">security</a>
+      <a href="https://rivassec.com/tag/supply-chain.html">supply-chain</a>
+      <a href="https://rivassec.com/tag/hardening.html">hardening</a>
+    </p>
+  </div>
+
+
+  <div class="neighbors">
+    <a class="btn float-left" href="https://rivassec.com/tls-three-jobs.html" title="TLS Has Three Jobs. Forget the Rest.">
+      <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512" aria-hidden="true" focusable="false"><path fill="currentColor" d="M192 448c-8.188 0-16.38-3.125-22.62-9.375l-160-160c-12.5-12.5-12.5-32.75 0-45.25l160-160c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25L77.25 256l137.4 137.4c12.5 12.5 12.5 32.75 0 45.25C208.4 444.9 200.2 448 192 448z"/></svg>
+      Previous Post
+    </a>
+    <a class="btn float-right" href="https://rivassec.com/prompt-injection-supply-chain-evasion.html" title="Prompt Injection Will Become a Supply Chain Evasion Technique">
+      Next Post
+      <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512" aria-hidden="true" focusable="false"><path fill="currentColor" d="M64 448c-8.188 0-16.38-3.125-22.62-9.375c-12.5-12.5-12.5-32.75 0-45.25L178.8 256L41.38 118.6c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0l160 160c12.5 12.5 12.5 32.75 0 45.25l-160 160C80.38 444.9 72.19 448 64 448z"/></svg>
+    </a>
+  </div>
+
+  <div class="related-posts">
+    <h2 class="related-heading">You might enjoy</h2>
+    <ul class="related-posts">
+      <li><a href="https://rivassec.com/pwnagotchi-bluetooth-tethering.html">Never Lose Connection: Multi-Phone Bluetooth Tethering for Pwnagotchi</a></li>
+      <li><a href="https://rivassec.com/iam-safe-defaults-fail-loud.html">IAM Roles That Fail Loud: Small Defaults, Big Difference</a></li>
+      <li><a href="https://rivassec.com/tls-three-jobs.html">TLS Has Three Jobs. Forget the Rest.</a></li>
+      <li><a href="https://rivassec.com/prompt-injection-supply-chain-evasion.html">Prompt Injection Will Become a Supply Chain Evasion Technique</a></li>
+      <li><a href="https://rivassec.com/hardening-k8s.html">Hardening Kubernetes Deployments</a></li>
+    </ul>
+  </div>
+
+
+</article>
+
+<footer>
+    <p class="footer-feeds">
+      Subscribe:
+      <a href="https://rivassec.com/feeds/all.atom.xml" rel="alternate" type="application/atom+xml">Atom</a>
+    </p>
+<p>&copy;  RivasSec</p>
+<p class="footer-meta">
+  <a href="https://rivassec.com/accessibility/">Accessibility</a>
+</p>
+<p>
+Built with <a href="https://getpelican.com" target="_blank" rel="noopener">Pelican</a> using <a href="https://github.com/alexandrevicenzi/Flex" target="_blank" rel="noopener">Flex</a> theme
+</p></footer>  </main>
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "WebSite",
+  "name": "RivasSec | DevSecOps, Kubernetes, AWS IAM",
+  "url" : "https://rivassec.com",
+  "image": "https://rivassec.com/images/og-default.png",
+  "description": "Field notes on infrastructure security, cloud hardening, Kubernetes, IAM, and OSINT by RivasSec.",
+  "author": {
+    "@type": "Person",
+    "name": "RivasSec",
+    "url": "https://rivassec.com"    ,"sameAs": [      "https://github.com/rivassec"    ]  }
+}
+</script>
+  <script defer src="https://rivassec.com/static/copy-code.js"></script>
+
+</body>
+</html>

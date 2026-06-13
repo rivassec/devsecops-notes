@@ -1,0 +1,242 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="" />
+
+
+  <link rel="stylesheet" type="text/css" href="https://rivassec.com/theme/stylesheet/style.min.css">
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="https://rivassec.com/theme/pygments/monokai.min.css">
+
+
+
+  <link rel="stylesheet" type="text/css" href="https://rivassec.com/static/custom.css">
+
+  <link rel="icon" href="https://rivassec.com/favicon.ico" sizes="any">
+  <link rel="icon" href="https://rivassec.com/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="https://rivassec.com/favicon-16.png" type="image/png" sizes="16x16">
+  <link rel="apple-touch-icon" href="https://rivassec.com/apple-touch-icon.png" sizes="180x180">
+
+  <!-- Chrome, Firefox OS and Opera -->
+  <meta name="theme-color" content="#222222">
+  <!-- Windows Phone -->
+  <meta name="msapplication-navbutton-color" content="#222222">
+  <!-- iOS Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!-- Microsoft EDGE -->
+  <meta name="msapplication-TileColor" content="#222222">
+
+  <link href="https://rivassec.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="RivasSec | DevSecOps, Kubernetes, AWS IAM Atom">
+
+
+
+
+
+
+<meta name="author" content="RivasSec" />
+<meta name="description" content="A 2012 Linux kernel bug caused CPU lockups after 208.5 days of uptime due to an integer overflow in sched_clock(). RHEL 5/6 lesson: patch and observe uptime." />
+<meta name="keywords" content="kernel, linux, bug, devsecops">
+
+
+  <meta property="og:site_name" content="RivasSec | DevSecOps, Kubernetes, AWS IAM"/>
+  <meta property="og:title" content="The 208.5-Day Kernel Bug: Uptime, Overflow, and Risk"/>
+  <meta property="og:description" content="A 2012 Linux kernel bug caused CPU lockups after 208.5 days of uptime due to an integer overflow in sched_clock(). RHEL 5/6 lesson: patch and observe uptime."/>
+  <meta property="og:locale" content="en_US"/>
+  <meta property="og:url" content="https://rivassec.com/208-day-kernel-bug-lessons.html"/>
+  <meta property="og:type" content="article"/>
+  <meta property="article:published_time" content="2025-04-16 00:00:00-07:00"/>
+  <meta property="article:modified_time" content="2026-05-12 00:00:00-07:00"/>
+  <meta property="article:author" content="https://rivassec.com/author/rivassec.html">
+  <meta property="article:section" content="DevSecOps"/>
+  <meta property="article:tag" content="kernel"/>
+  <meta property="article:tag" content="linux"/>
+  <meta property="article:tag" content="bug"/>
+  <meta property="article:tag" content="devsecops"/>
+  <meta property="og:image" content="https://rivassec.com/images/covers/208-day-kernel-bug-lessons.png">
+  <meta property="og:image:alt" content="The 208.5-Day Kernel Bug: Uptime, Overflow, and Risk">
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="The 208.5-Day Kernel Bug: Uptime, Overflow, and Risk"/>
+  <meta name="twitter:description" content="A 2012 Linux kernel bug caused CPU lockups after 208.5 days of uptime due to an integer overflow in sched_clock(). RHEL 5/6 lesson: patch and observe uptime."/>
+  <meta name="twitter:site" content="@rivassec"/>
+  <meta name="twitter:creator" content="@rivassec"/>
+  <meta name="twitter:image" content="https://rivassec.com/images/covers/208-day-kernel-bug-lessons.png"/>
+  <meta name="twitter:image:alt" content="The 208.5-Day Kernel Bug: Uptime, Overflow, and Risk"/>
+  <script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "name": "The 208.5-Day Kernel Bug: Uptime, Overflow, and Risk",
+    "headline": "The 208.5-Day Kernel Bug: Uptime, Overflow, and Risk",
+    "datePublished": "2025-04-16 00:00:00-07:00",
+    "dateModified": "2026-05-12 00:00:00-07:00",
+    "author": {
+      "@type": "Person",
+      "name": "RivasSec",
+      "url": "https://rivassec.com/author/rivassec.html"
+    },
+    "image": "https://rivassec.com/images/covers/208-day-kernel-bug-lessons.png",
+    "url": "https://rivassec.com/208-day-kernel-bug-lessons.html",
+    "description": "A 2012 Linux kernel bug caused CPU lockups after 208.5 days of uptime due to an integer overflow in sched_clock(). RHEL 5/6 lesson: patch and observe uptime."
+  }
+  </script>
+
+  <title>RivasSec | DevSecOps, Kubernetes, AWS IAM &ndash; The 208.5-Day Kernel Bug: Uptime, Overflow, and Risk</title>
+</head>
+<body class="light-theme">
+<aside>
+  <div>
+    <a href="https://rivassec.com/">
+      <img src="images/avatar.png" alt="RivasSec" title="RivasSec">
+    </a>
+
+    <h1>
+      <a href="https://rivassec.com/">RivasSec</a>
+    </h1>
+
+    <p>Infrastructure. Security. Insight.</p>
+
+
+
+    <ul class="social">
+      <li>
+        <a class="sc-github"
+           aria-label="GitHub"
+           href="https://github.com/rivassec"
+           target="_blank">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512" aria-hidden="true" focusable="false"><path fill="currentColor" d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3 .3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5 .3-6.2 2.3zm44.2-1.7c-2.9 .7-4.9 2.6-4.6 4.9 .3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3 .7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3 .3 2.9 2.3 3.9 1.6 1 3.6 .7 4.3-.7 .7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3 .7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3 .7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>        </a>
+      </li>
+    </ul>
+  </div>
+
+</aside>
+  <main>
+<nav>
+  <a href="https://rivassec.com/">Home</a>
+
+  <a href="https://rivassec.com/pages/about.html">About</a>
+  <a href="https://rivassec.com/categories.html">Categories</a>
+  <a href="https://github.com/rivassec">GitHub</a>
+
+  <a href="https://rivassec.com/feeds/all.atom.xml">Atom</a>
+
+</nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="208-day-kernel-bug-lessons">The 208.5-Day Kernel Bug: Uptime, Overflow, and Risk</h1>
+    <p>
+      Posted on Wed 16 April 2025 in <a href="https://rivassec.com/category/devsecops.html">DevSecOps</a>
+
+        &#8226; 2 min read
+    </p>
+  </header>
+
+
+  <div>
+    <p>In 2012, a subtle but potentially catastrophic bug was discovered in older versions of the Linux kernel, particularly affecting Red Hat Enterprise Linux (RHEL) and its derivatives. Once a system reached <strong>208.5 days of continuous uptime</strong>, a flaw in the kernel’s <code>sched_clock()</code> function could trigger a soft lockup, freezing the CPU for an estimated <strong>584 years</strong>.</p>
+<p>Yes, <strong>584 years</strong>.</p>
+<p>The root cause? An <strong>unsigned 64-bit integer overflow</strong>. The kernel attempted to compute elapsed nanoseconds based on CPU cycles, using this logic:</p>
+<div class="highlight"><pre><span></span><code><span class="cm">/* Simplified representation of the overflow-prone calculation */</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">cpu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">smp_processor_id</span><span class="p">();</span>
+<span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">ns</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">per_cpu</span><span class="p">(</span><span class="n">cyc2ns_offset</span><span class="p">,</span><span class="w"> </span><span class="n">cpu</span><span class="p">);</span>
+<span class="n">ns</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">cyc</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">per_cpu</span><span class="p">(</span><span class="n">cyc2ns</span><span class="p">,</span><span class="w"> </span><span class="n">cpu</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">CYC2NS_SCALE_FACTOR</span><span class="p">;</span>
+<span class="k">return</span><span class="w"> </span><span class="n">ns</span><span class="p">;</span>
+</code></pre></div>
+
+<p>Once the computed value exceeded <code>0xffffffffffffffff</code>, it wrapped around, leading to undefined behavior in the scheduler and an unrecoverable state requiring a manual reboot.</p>
+<hr>
+<h2 id="why-this-matters-to-devsecops">Why This Matters to DevSecOps</h2>
+<p>This bug is more than a curiosity. It's a classic case study in:</p>
+<ul>
+<li><strong>The operational danger of long uptimes</strong></li>
+<li><strong>Why kernel patching should be automated and observable</strong></li>
+<li><strong>How integer overflows can lead to severe availability risks</strong></li>
+</ul>
+<p>Affected systems included RHEL 5.0 through 5.5 and early RHEL 6 versions running kernels below <code>2.6.32-220.4.*</code>. Some Debian-based distributions were likely impacted, though documentation was less complete.</p>
+<hr>
+<h2 id="takeaways-for-modern-systems">Takeaways for Modern Systems</h2>
+<ul>
+<li><strong>Live patching tools</strong> like Ksplice, KernelCare, and kpatch can reduce reboot pressure</li>
+<li><strong>Observability stacks</strong> should alert on uptime thresholds and kernel messages (<code>dmesg</code>, <code>uptime</code>, scheduler warnings)</li>
+<li><strong>Compliance frameworks</strong> often require timely OS patching, and this bug illustrates why</li>
+<li><strong>CI/CD pipelines for OS-level components</strong> should test for edge cases, including time-based and overflow scenarios</li>
+</ul>
+<hr>
+<p>Even today, this incident reminds us that uptime isn't always a badge of honor. In some cases, it's a quiet countdown to failure. For another time-math failure at cloud scale, see <a href="https://rivassec.com/leap-second-chaos-2012.html">The Chaos of the Leap Second (2012)</a>.</p>
+<p><em>Originally inspired by a 2012 analysis of the <code>sched_clock()</code> bug affecting Linux systems with prolonged uptime.</em></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://rivassec.com/tag/kernel.html">kernel</a>
+      <a href="https://rivassec.com/tag/linux.html">linux</a>
+      <a href="https://rivassec.com/tag/bug.html">bug</a>
+      <a href="https://rivassec.com/tag/devsecops.html">devsecops</a>
+    </p>
+  </div>
+
+
+  <div class="neighbors">
+    <a class="btn float-left" href="https://rivassec.com/leap-second-chaos-2012.html" title="The 2012 Leap Second: When Time Broke Java and the Cloud">
+      <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512" aria-hidden="true" focusable="false"><path fill="currentColor" d="M192 448c-8.188 0-16.38-3.125-22.62-9.375l-160-160c-12.5-12.5-12.5-32.75 0-45.25l160-160c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25L77.25 256l137.4 137.4c12.5 12.5 12.5 32.75 0 45.25C208.4 444.9 200.2 448 192 448z"/></svg>
+      Previous Post
+    </a>
+    <a class="btn float-right" href="https://rivassec.com/venezuela-twitter-proxy-osint.html" title="Catching a Nation-State Proxy: OSINT on Twitter">
+      Next Post
+      <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512" aria-hidden="true" focusable="false"><path fill="currentColor" d="M64 448c-8.188 0-16.38-3.125-22.62-9.375c-12.5-12.5-12.5-32.75 0-45.25L178.8 256L41.38 118.6c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0l160 160c12.5 12.5 12.5 32.75 0 45.25l-160 160C80.38 444.9 72.19 448 64 448z"/></svg>
+    </a>
+  </div>
+
+  <div class="related-posts">
+    <h2 class="related-heading">You might enjoy</h2>
+    <ul class="related-posts">
+      <li><a href="https://rivassec.com/leap-second-chaos-2012.html">The 2012 Leap Second: When Time Broke Java and the Cloud</a></li>
+      <li><a href="https://rivassec.com/oom-killer-process-prioritization.html">Taming the OOM Killer: Process Priorities on Linux</a></li>
+      <li><a href="https://rivassec.com/paved-road-adoption-as-control.html">Adoption Is a Security Control: Notes from Paving a Road</a></li>
+      <li><a href="https://rivassec.com/iam-safe-defaults-fail-loud.html">IAM Roles That Fail Loud: Small Defaults, Big Difference</a></li>
+      <li><a href="https://rivassec.com/trust-decay-adversarial-hiring.html">The Trust Decay: Why Modern Hiring Has Become an Adversarial System</a></li>
+    </ul>
+  </div>
+
+
+</article>
+
+<footer>
+    <p class="footer-feeds">
+      Subscribe:
+      <a href="https://rivassec.com/feeds/all.atom.xml" rel="alternate" type="application/atom+xml">Atom</a>
+    </p>
+<p>&copy;  RivasSec</p>
+<p class="footer-meta">
+  <a href="https://rivassec.com/accessibility/">Accessibility</a>
+</p>
+<p>
+Built with <a href="https://getpelican.com" target="_blank" rel="noopener">Pelican</a> using <a href="https://github.com/alexandrevicenzi/Flex" target="_blank" rel="noopener">Flex</a> theme
+</p></footer>  </main>
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "WebSite",
+  "name": "RivasSec | DevSecOps, Kubernetes, AWS IAM",
+  "url" : "https://rivassec.com",
+  "image": "https://rivassec.com/images/og-default.png",
+  "description": "Field notes on infrastructure security, cloud hardening, Kubernetes, IAM, and OSINT by RivasSec.",
+  "author": {
+    "@type": "Person",
+    "name": "RivasSec",
+    "url": "https://rivassec.com"    ,"sameAs": [      "https://github.com/rivassec"    ]  }
+}
+</script>
+  <script defer src="https://rivassec.com/static/copy-code.js"></script>
+
+</body>
+</html>

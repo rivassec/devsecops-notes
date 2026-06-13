@@ -1,0 +1,270 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="" />
+
+
+  <link rel="stylesheet" type="text/css" href="https://rivassec.com/theme/stylesheet/style.min.css">
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="https://rivassec.com/theme/pygments/monokai.min.css">
+
+
+
+  <link rel="stylesheet" type="text/css" href="https://rivassec.com/static/custom.css">
+
+  <link rel="icon" href="https://rivassec.com/favicon.ico" sizes="any">
+  <link rel="icon" href="https://rivassec.com/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="https://rivassec.com/favicon-16.png" type="image/png" sizes="16x16">
+  <link rel="apple-touch-icon" href="https://rivassec.com/apple-touch-icon.png" sizes="180x180">
+
+  <!-- Chrome, Firefox OS and Opera -->
+  <meta name="theme-color" content="#222222">
+  <!-- Windows Phone -->
+  <meta name="msapplication-navbutton-color" content="#222222">
+  <!-- iOS Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!-- Microsoft EDGE -->
+  <meta name="msapplication-TileColor" content="#222222">
+
+  <link href="https://rivassec.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="RivasSec | DevSecOps, Kubernetes, AWS IAM Atom">
+
+
+
+
+
+
+<meta name="author" content="RivasSec" />
+<meta name="description" content="Prompt injection&#39;s threat model is older than the term. The mechanism is new, the objective is the evasion goal attackers have pursued for decades." />
+<meta name="keywords" content="ai, supply-chain, prompt-injection, evasion, defensive-architecture">
+
+
+  <meta property="og:site_name" content="RivasSec | DevSecOps, Kubernetes, AWS IAM"/>
+  <meta property="og:title" content="Prompt Injection Will Become a Supply Chain Evasion Technique"/>
+  <meta property="og:description" content="Prompt injection&#39;s threat model is older than the term. The mechanism is new, the objective is the evasion goal attackers have pursued for decades."/>
+  <meta property="og:locale" content="en_US"/>
+  <meta property="og:url" content="https://rivassec.com/prompt-injection-supply-chain-evasion.html"/>
+  <meta property="og:type" content="article"/>
+  <meta property="article:published_time" content="2026-06-12 00:00:00-07:00"/>
+  <meta property="article:modified_time" content=""/>
+  <meta property="article:author" content="https://rivassec.com/author/rivassec.html">
+  <meta property="article:section" content="Threat Intelligence"/>
+  <meta property="article:tag" content="ai"/>
+  <meta property="article:tag" content="supply-chain"/>
+  <meta property="article:tag" content="prompt-injection"/>
+  <meta property="article:tag" content="evasion"/>
+  <meta property="article:tag" content="defensive-architecture"/>
+  <meta property="og:image" content="https://rivassec.com/images/covers/prompt-injection-supply-chain-evasion.png">
+  <meta property="og:image:alt" content="Cover card with the post title &#34;Prompt Injection Will Become a Supply Chain Evasion Technique&#34; on a dark background, with a Threat Intelligence category badge and the rivassec.com signature.">
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="Prompt Injection Will Become a Supply Chain Evasion Technique"/>
+  <meta name="twitter:description" content="Prompt injection&#39;s threat model is older than the term. The mechanism is new, the objective is the evasion goal attackers have pursued for decades."/>
+  <meta name="twitter:site" content="@rivassec"/>
+  <meta name="twitter:creator" content="@rivassec"/>
+  <meta name="twitter:image" content="https://rivassec.com/images/covers/prompt-injection-supply-chain-evasion.png"/>
+  <meta name="twitter:image:alt" content="Cover card with the post title &#34;Prompt Injection Will Become a Supply Chain Evasion Technique&#34; on a dark background, with a Threat Intelligence category badge and the rivassec.com signature."/>
+  <script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "name": "Prompt Injection Will Become a Supply Chain Evasion Technique",
+    "headline": "Prompt Injection Will Become a Supply Chain Evasion Technique",
+    "datePublished": "2026-06-12 00:00:00-07:00",
+    "dateModified": "",
+    "author": {
+      "@type": "Person",
+      "name": "RivasSec",
+      "url": "https://rivassec.com/author/rivassec.html"
+    },
+    "image": "https://rivassec.com/images/covers/prompt-injection-supply-chain-evasion.png",
+    "url": "https://rivassec.com/prompt-injection-supply-chain-evasion.html",
+    "description": "Prompt injection's threat model is older than the term. The mechanism is new, the objective is the evasion goal attackers have pursued for decades."
+  }
+  </script>
+
+  <title>RivasSec | DevSecOps, Kubernetes, AWS IAM &ndash; Prompt Injection Will Become a Supply Chain Evasion Technique</title>
+</head>
+<body class="light-theme">
+<aside>
+  <div>
+    <a href="https://rivassec.com/">
+      <img src="images/avatar.png" alt="RivasSec" title="RivasSec">
+    </a>
+
+    <h1>
+      <a href="https://rivassec.com/">RivasSec</a>
+    </h1>
+
+    <p>Infrastructure. Security. Insight.</p>
+
+
+
+    <ul class="social">
+      <li>
+        <a class="sc-github"
+           aria-label="GitHub"
+           href="https://github.com/rivassec"
+           target="_blank">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512" aria-hidden="true" focusable="false"><path fill="currentColor" d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3 .3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5 .3-6.2 2.3zm44.2-1.7c-2.9 .7-4.9 2.6-4.6 4.9 .3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3 .7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3 .3 2.9 2.3 3.9 1.6 1 3.6 .7 4.3-.7 .7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3 .7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3 .7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>        </a>
+      </li>
+    </ul>
+  </div>
+
+</aside>
+  <main>
+<nav>
+  <a href="https://rivassec.com/">Home</a>
+
+  <a href="https://rivassec.com/pages/about.html">About</a>
+  <a href="https://rivassec.com/categories.html">Categories</a>
+  <a href="https://github.com/rivassec">GitHub</a>
+
+  <a href="https://rivassec.com/feeds/all.atom.xml">Atom</a>
+
+</nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="prompt-injection-supply-chain-evasion">Prompt Injection Will Become a Supply Chain Evasion Technique</h1>
+    <p>
+      Posted on Fri 12 June 2026 in <a href="https://rivassec.com/category/threat-intelligence.html">Threat Intelligence</a>
+
+        &#8226; 4 min read
+    </p>
+  </header>
+
+
+  <div>
+    <p>Prompt injection's threat model is older than the term. This is a forecast about attacker evolution, not a claim about active campaigns observed in the wild today.</p>
+<p>Security tooling has spent decades learning the same lesson: never trust untrusted input.</p>
+<p>Web browsers isolate content from different origins. Antivirus engines execute suspicious files in controlled environments. Static analysis tools treat source code as data. They inspect it; they don't execute its comments.</p>
+<p>Organizations are now adding large language models to security workflows. That introduces a new parser into the pipeline, and like every parser before it, it can be influenced by attacker-controlled input.</p>
+<p>Malware authors have spent decades bypassing signatures, confusing parsers, detecting sandboxes, delaying execution, and avoiding behavioral detection. The objective has always been the same: reduce the defender's visibility. AI-assisted security tooling creates a new opportunity to pursue that objective.</p>
+<h2 id="a-worked-example">A worked example</h2>
+<p>Imagine a malicious PyPI package whose README contains text aimed at automated review agents rather than humans. The README might include sections that look like instructions to a model, designed to cause an LLM-based reviewer to stop analyzing, classify the package as benign, or skip specific files.</p>
+<p>Traditional scanners parse code according to deterministic rules. Trivy, Semgrep, CodeQL, and Checkov may honor tool-specific suppressions like <code>nosemgrep</code> or Checkov skip directives, but they do not treat arbitrary natural-language README text as operational instructions. The newer class of tooling is the interesting target.</p>
+<p>That class includes:</p>
+<ul>
+<li>AI-assisted package risk scoring and triage</li>
+<li>AI malware classifiers ingesting package metadata</li>
+<li>AI-augmented YARA and capa pipelines</li>
+<li>Vulnerability-triage agents that summarize package contents to reach a verdict</li>
+<li>Multi-agent supply-chain workflows that feed untrusted package text directly into LLMs</li>
+</ul>
+<p>These systems have something in common. They all interpret attacker-supplied text as part of a security decision. That is the trust boundary worth thinking about.</p>
+<h2 id="the-trust-boundary-drawn">The trust boundary, drawn</h2>
+<figure aria-label="Trust-boundary diagram. An untrusted package flows into an LLM scanner, which is the prompt-injection target. The LLM scanner emits a verdict with three states. A clean verdict continues to the next stage. An inconclusive or refusal verdict routes through a fallback router into static analysis, sandbox detonation, and human review. The diagram closes with the rule: inconclusive verdicts never mark the artifact clean." role="img">
+<div class="highlight"><pre><span></span><code><span class="w">                       </span><span class="n">untrusted</span><span class="w"> </span><span class="n">package</span>
+<span class="w">                              </span><span class="o">|</span>
+<span class="w">                              </span><span class="n">v</span>
+<span class="w">                  </span><span class="o">+-------------------------+</span>
+<span class="w">                  </span><span class="o">|</span><span class="w">    </span><span class="n">LLM</span><span class="w"> </span><span class="n">scanner</span><span class="w">          </span><span class="o">|</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">prompt</span><span class="o">-</span><span class="n">injection</span>
+<span class="w">                  </span><span class="o">|</span><span class="w">    </span><span class="p">(</span><span class="n">parser</span><span class="w"> </span><span class="n">surface</span><span class="p">)</span><span class="w">     </span><span class="o">|</span><span class="w">    </span><span class="n">target</span>
+<span class="w">                  </span><span class="o">+-------------------------+</span>
+<span class="w">                              </span><span class="o">|</span>
+<span class="w">                              </span><span class="n">v</span>
+<span class="w">                     </span><span class="nf">verdict </span><span class="p">(</span><span class="n">LLM</span><span class="w"> </span><span class="n">only</span><span class="p">)</span>
+<span class="w">                              </span><span class="o">|</span>
+<span class="w">              </span><span class="o">+---------------+----------------+</span>
+<span class="w">              </span><span class="o">|</span><span class="w">                                </span><span class="o">|</span>
+<span class="w">              </span><span class="n">v</span><span class="w">                                </span><span class="n">v</span>
+<span class="w">            </span><span class="n">clean</span><span class="w">                  </span><span class="n">inconclusive</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">refusal</span>
+<span class="w">              </span><span class="o">|</span><span class="w">                                </span><span class="o">|</span>
+<span class="w">              </span><span class="n">v</span><span class="w">                                </span><span class="n">v</span>
+<span class="w">       </span><span class="n">continue</span><span class="w"> </span><span class="n">to</span><span class="w">                     </span><span class="o">+----------------+</span>
+<span class="w">       </span><span class="kr">next</span><span class="w"> </span><span class="n">stage</span><span class="w">                      </span><span class="o">|</span><span class="w"> </span><span class="n">fallback</span><span class="w">       </span><span class="o">|</span>
+<span class="w">                                       </span><span class="o">|</span><span class="w"> </span><span class="n">router</span><span class="w">         </span><span class="o">|</span>
+<span class="w">                                       </span><span class="o">+----------------+</span>
+<span class="w">                                                </span><span class="o">|</span>
+<span class="w">                                </span><span class="o">+---------------+----------------+</span>
+<span class="w">                                </span><span class="n">v</span><span class="w">               </span><span class="n">v</span><span class="w">                </span><span class="n">v</span>
+<span class="w">                            </span><span class="n">static</span><span class="w">          </span><span class="n">sandbox</span><span class="w">            </span><span class="n">human</span>
+<span class="w">                            </span><span class="n">analysis</span><span class="w">        </span><span class="n">detonation</span><span class="w">         </span><span class="n">review</span>
+
+<span class="w">       </span><span class="n">inconclusive</span><span class="w"> </span><span class="n">verdicts</span><span class="w"> </span><span class="n">NEVER</span><span class="w"> </span><span class="n">mark</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">artifact</span><span class="w"> </span><span class="n">clean</span>
+</code></pre></div>
+
+<figcaption>Failure-mode routing for an LLM-assisted supply-chain scanner. Clean verdicts pass through; everything else routes to non-LLM checks.</figcaption>
+</figure>
+<p>A clean verdict moves the artifact downstream the same way any analyzer's clean verdict would. Everything else is the failure-mode routing the rest of this post is about.</p>
+<h2 id="degraded-visibility-is-the-goal">Degraded visibility is the goal</h2>
+<p>When an attacker causes the model to stop analyzing, skip files, or return incomplete results, the goal is familiar. Defender visibility has been reduced.</p>
+<p>Many current discussions focus on the behavior of the model rather than the behavior of the security system around it. A security pipeline should not assume that an LLM will always produce a useful answer. Models hallucinate, refuse requests, hit context limits, trigger policy restrictions, and fail for reasons unrelated to adversarial activity. Adversarial influence is one more reason for the same failure mode the pipeline already needed to handle.</p>
+<h2 id="designing-for-model-failure">Designing for model failure</h2>
+<p>Design for resilience. If an AI-assisted scanner cannot complete its analysis, the workflow should continue through alternative paths.</p>
+<p>Concretely, treat an inconclusive LLM verdict as a routing signal. If the model returns a refusal, exhausts context before completing, or produces output the surrounding system cannot parse, the artifact routes to the non-LLM checks appropriate for that artifact. The LLM verdict is recorded as inconclusive. The artifact is not marked clean.</p>
+<p>Static analysis, sandbox execution, reputation checks, and human review remain available regardless of what the model decides to do. Evidence from the failed run should be preserved so an analyst can later determine whether the failure was benign or adversarial. Model failure is a condition that requires investigation. The artifact stays in flight.</p>
+<p>This matters most in supply chain security, where defenders routinely process content from unknown and potentially hostile sources. Public packages, third-party dependencies, pull requests, and container images should all be assumed capable of carrying content designed to influence automated analysis systems.</p>
+<h2 id="treat-llm-output-as-evidence">Treat LLM output as evidence</h2>
+<p>Treat LLM scanner output as evidence, the same way you would treat any other analyzer output. When the model returns a refusal or incomplete analysis, log the artifact, raise the priority, and route the package to the non-LLM checks appropriate for it. The scan continues. The artifact does not pass on a refusal.</p>
+<h2 id="a-new-trust-boundary">A new trust boundary</h2>
+<p>Every time defenders add a new interpreter to a security workflow, they create a new trust boundary. Large language models are now part of that path.</p>
+<p>The reason this matters to me: I write security tooling for a living, and the tools I trust most are the ones that fail loud and route around themselves when they get confused. That is the property prompt injection takes away from your scanner. Get it back.</p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://rivassec.com/tag/ai.html">ai</a>
+      <a href="https://rivassec.com/tag/supply-chain.html">supply-chain</a>
+      <a href="https://rivassec.com/tag/prompt-injection.html">prompt-injection</a>
+      <a href="https://rivassec.com/tag/evasion.html">evasion</a>
+      <a href="https://rivassec.com/tag/defensive-architecture.html">defensive-architecture</a>
+    </p>
+  </div>
+
+
+  <div class="neighbors">
+    <a class="btn float-left" href="https://rivassec.com/pwnagotchi-plugin-bandit-hardening.html" title="Bandit-Clean Pwnagotchi Plugins: How `subprocess` Goes From Risk to Routine">
+      <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512" aria-hidden="true" focusable="false"><path fill="currentColor" d="M192 448c-8.188 0-16.38-3.125-22.62-9.375l-160-160c-12.5-12.5-12.5-32.75 0-45.25l160-160c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25L77.25 256l137.4 137.4c12.5 12.5 12.5 32.75 0 45.25C208.4 444.9 200.2 448 192 448z"/></svg>
+      Previous Post
+    </a>
+  </div>
+
+  <div class="related-posts">
+    <h2 class="related-heading">You might enjoy</h2>
+    <ul class="related-posts">
+      <li><a href="https://rivassec.com/pwnagotchi-plugin-bandit-hardening.html">Bandit-Clean Pwnagotchi Plugins: How `subprocess` Goes From Risk to Routine</a></li>
+    </ul>
+  </div>
+
+
+</article>
+
+<footer>
+    <p class="footer-feeds">
+      Subscribe:
+      <a href="https://rivassec.com/feeds/all.atom.xml" rel="alternate" type="application/atom+xml">Atom</a>
+    </p>
+<p>&copy;  RivasSec</p>
+<p class="footer-meta">
+  <a href="https://rivassec.com/accessibility/">Accessibility</a>
+</p>
+<p>
+Built with <a href="https://getpelican.com" target="_blank" rel="noopener">Pelican</a> using <a href="https://github.com/alexandrevicenzi/Flex" target="_blank" rel="noopener">Flex</a> theme
+</p></footer>  </main>
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "WebSite",
+  "name": "RivasSec | DevSecOps, Kubernetes, AWS IAM",
+  "url" : "https://rivassec.com",
+  "image": "https://rivassec.com/images/og-default.png",
+  "description": "Field notes on infrastructure security, cloud hardening, Kubernetes, IAM, and OSINT by RivasSec.",
+  "author": {
+    "@type": "Person",
+    "name": "RivasSec",
+    "url": "https://rivassec.com"    ,"sameAs": [      "https://github.com/rivassec"    ]  }
+}
+</script>
+  <script defer src="https://rivassec.com/static/copy-code.js"></script>
+
+</body>
+</html>

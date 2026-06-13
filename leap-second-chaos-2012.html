@@ -1,0 +1,279 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="" />
+
+
+  <link rel="stylesheet" type="text/css" href="https://rivassec.com/theme/stylesheet/style.min.css">
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="https://rivassec.com/theme/pygments/monokai.min.css">
+
+
+
+  <link rel="stylesheet" type="text/css" href="https://rivassec.com/static/custom.css">
+
+  <link rel="icon" href="https://rivassec.com/favicon.ico" sizes="any">
+  <link rel="icon" href="https://rivassec.com/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="https://rivassec.com/favicon-16.png" type="image/png" sizes="16x16">
+  <link rel="apple-touch-icon" href="https://rivassec.com/apple-touch-icon.png" sizes="180x180">
+
+  <!-- Chrome, Firefox OS and Opera -->
+  <meta name="theme-color" content="#222222">
+  <!-- Windows Phone -->
+  <meta name="msapplication-navbutton-color" content="#222222">
+  <!-- iOS Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!-- Microsoft EDGE -->
+  <meta name="msapplication-TileColor" content="#222222">
+
+  <link href="https://rivassec.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="RivasSec | DevSecOps, Kubernetes, AWS IAM Atom">
+
+
+
+
+
+
+<meta name="author" content="RivasSec" />
+<meta name="description" content="The 2012 leap second broke Reddit, Yelp, Java apps, and more. A retrospective on how fragile timekeeping bit the cloud, and what SRE teams should do today." />
+<meta name="keywords" content="kernel, linux, java, ntp, sre">
+
+
+  <meta property="og:site_name" content="RivasSec | DevSecOps, Kubernetes, AWS IAM"/>
+  <meta property="og:title" content="The 2012 Leap Second: When Time Broke Java and the Cloud"/>
+  <meta property="og:description" content="The 2012 leap second broke Reddit, Yelp, Java apps, and more. A retrospective on how fragile timekeeping bit the cloud, and what SRE teams should do today."/>
+  <meta property="og:locale" content="en_US"/>
+  <meta property="og:url" content="https://rivassec.com/leap-second-chaos-2012.html"/>
+  <meta property="og:type" content="article"/>
+  <meta property="article:published_time" content="2025-04-15 00:00:00-07:00"/>
+  <meta property="article:modified_time" content="2026-05-12 00:00:00-07:00"/>
+  <meta property="article:author" content="https://rivassec.com/author/rivassec.html">
+  <meta property="article:section" content="Incident Retrospectives"/>
+  <meta property="article:tag" content="kernel"/>
+  <meta property="article:tag" content="linux"/>
+  <meta property="article:tag" content="java"/>
+  <meta property="article:tag" content="ntp"/>
+  <meta property="article:tag" content="sre"/>
+  <meta property="og:image" content="https://rivassec.com/images/covers/leap-second-chaos-2012.png">
+  <meta property="og:image:alt" content="The 2012 Leap Second: When Time Broke Java and the Cloud">
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="The 2012 Leap Second: When Time Broke Java and the Cloud"/>
+  <meta name="twitter:description" content="The 2012 leap second broke Reddit, Yelp, Java apps, and more. A retrospective on how fragile timekeeping bit the cloud, and what SRE teams should do today."/>
+  <meta name="twitter:site" content="@rivassec"/>
+  <meta name="twitter:creator" content="@rivassec"/>
+  <meta name="twitter:image" content="https://rivassec.com/images/covers/leap-second-chaos-2012.png"/>
+  <meta name="twitter:image:alt" content="The 2012 Leap Second: When Time Broke Java and the Cloud"/>
+  <script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "name": "The 2012 Leap Second: When Time Broke Java and the Cloud",
+    "headline": "The 2012 Leap Second: When Time Broke Java and the Cloud",
+    "datePublished": "2025-04-15 00:00:00-07:00",
+    "dateModified": "2026-05-12 00:00:00-07:00",
+    "author": {
+      "@type": "Person",
+      "name": "RivasSec",
+      "url": "https://rivassec.com/author/rivassec.html"
+    },
+    "image": "https://rivassec.com/images/covers/leap-second-chaos-2012.png",
+    "url": "https://rivassec.com/leap-second-chaos-2012.html",
+    "description": "The 2012 leap second broke Reddit, Yelp, Java apps, and more. A retrospective on how fragile timekeeping bit the cloud, and what SRE teams should do today."
+  }
+  </script>
+
+  <title>RivasSec | DevSecOps, Kubernetes, AWS IAM &ndash; The 2012 Leap Second: When Time Broke Java and the Cloud</title>
+</head>
+<body class="light-theme">
+<aside>
+  <div>
+    <a href="https://rivassec.com/">
+      <img src="images/avatar.png" alt="RivasSec" title="RivasSec">
+    </a>
+
+    <h1>
+      <a href="https://rivassec.com/">RivasSec</a>
+    </h1>
+
+    <p>Infrastructure. Security. Insight.</p>
+
+
+
+    <ul class="social">
+      <li>
+        <a class="sc-github"
+           aria-label="GitHub"
+           href="https://github.com/rivassec"
+           target="_blank">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512" aria-hidden="true" focusable="false"><path fill="currentColor" d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3 .3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5 .3-6.2 2.3zm44.2-1.7c-2.9 .7-4.9 2.6-4.6 4.9 .3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3 .7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3 .3 2.9 2.3 3.9 1.6 1 3.6 .7 4.3-.7 .7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3 .7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3 .7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>        </a>
+      </li>
+    </ul>
+  </div>
+
+</aside>
+  <main>
+<nav>
+  <a href="https://rivassec.com/">Home</a>
+
+  <a href="https://rivassec.com/pages/about.html">About</a>
+  <a href="https://rivassec.com/categories.html">Categories</a>
+  <a href="https://github.com/rivassec">GitHub</a>
+
+  <a href="https://rivassec.com/feeds/all.atom.xml">Atom</a>
+
+</nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="leap-second-chaos-2012">The 2012 Leap Second: When Time Broke Java and the Cloud</h1>
+    <p>
+      Posted on Tue 15 April 2025 in <a href="https://rivassec.com/category/incident-retrospectives.html">Incident Retrospectives</a>
+
+        &#8226; 3 min read
+    </p>
+  </header>
+
+  <aside class="article-toc" aria-label="Table of contents">
+    <h2 class="aside-heading">On this page</h2>
+    <div class="toc">
+<ul>
+<li><a href="#what-happened">What Happened?</a></li>
+<li><a href="#why-did-it-break">Why Did It Break?</a></li>
+<li><a href="#real-world-impact">Real-World Impact</a></li>
+<li><a href="#mitigation-takeaways">Mitigation &amp; Takeaways</a><ul>
+<li><a href="#immediate-fixes-in-2012">Immediate Fixes in 2012</a></li>
+<li><a href="#modern-resilience-strategies">Modern Resilience Strategies</a></li>
+</ul>
+</li>
+<li><a href="#epilogue">Epilogue</a></li>
+</ul>
+</div>
+  </aside>
+
+  <div>
+    
+<h2 id="what-happened">What Happened?</h2>
+<p>On June 30, 2012, a <strong>leap second</strong> was inserted into atomic time via NTP to keep UTC aligned with Earth’s rotation. At 23:59:60 UTC, global systems experienced a hiccup, a single extra second that caused widespread disruptions across Reddit, LinkedIn, Yelp, Google, FourSquare, and many more.</p>
+<p>What followed were 500 errors, high latency, and CPU usage spikes that crippled backend services.</p>
+<hr/>
+<h2 id="why-did-it-break">Why Did It Break?</h2>
+<p>Though seemingly minor, the leap second broke systems in subtle and severe ways:</p>
+<ul>
+<li><strong>Java Runtime Sensitivity:</strong> Popular JVM versions at the time failed to handle the repeated 23:59:59 correctly. This triggered runaway CPU usage via thread timing bugs, particularly in services running Hadoop, Cassandra, and Elasticsearch.</li>
+<li><strong>Userland Misbehavior:</strong> While many Linux kernels handled the leap second without panic, userland libraries and runtimes (especially Java) choked under non-monotonic time changes.</li>
+<li><strong>Cloud Weakness Exposure:</strong> An Amazon EC2 outage the day before had already left infrastructure strained. With fewer available instances, systems were more vulnerable when the leap second hit.</li>
+<li><strong>Limited Real-World Testing:</strong> Simulating leap seconds under actual load, in full-stack distributed systems, proved nearly impossible. Pre-patch validations missed edge behavior.</li>
+</ul>
+<hr/>
+<h2 id="real-world-impact">Real-World Impact</h2>
+<p>This bug hit nearly every high-scale Java-based system:</p>
+<ul>
+<li><strong>Stacks</strong>: Cassandra, Hadoop, Elasticsearch, JVM-based schedulers</li>
+<li><strong>Companies</strong>: Reddit, Mozilla, Yelp, LinkedIn, Gawker, Facebook, StumbleUpon</li>
+<li><strong>Behavior</strong>: High CPU loops, 500 errors, frozen services, delayed recovery due to restart complexity</li>
+</ul>
+<p>In many cases, the kernel <em>didn't fail</em>. The chaos came from how services processed time at runtime.</p>
+<hr/>
+<h2 id="mitigation-takeaways">Mitigation &amp; Takeaways</h2>
+<h3 id="immediate-fixes-in-2012">Immediate Fixes in 2012</h3>
+<ul>
+<li><strong>Rolling Restarts</strong>: Restarting affected Java services often cleared the CPU lock-up, though distributed services like Cassandra made this time-consuming.</li>
+<li><strong>Manual Clock Reset</strong>: Some environments required forcibly resetting system time post-leap second. This fix was often applied via config tools like Puppet:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1"># CAUTION: Only use in environments that can tolerate manual time reset.</span>
+sudo<span class="w"> </span>/etc/init.d/ntp<span class="w"> </span>stop
+date
+date<span class="w"> </span><span class="sb">`</span>date<span class="w"> </span>+<span class="s2">"%m%d%H%M%C%y.%S"</span><span class="sb">`</span>
+date
+sudo<span class="w"> </span>/etc/init.d/ntp<span class="w"> </span>start
+</code></pre></div>
+<h3 id="modern-resilience-strategies">Modern Resilience Strategies</h3>
+<ul>
+<li><strong>Leap Smearing</strong>: Today’s <code>ntpd</code>, <code>chronyd</code>, and cloud providers use “leap smear”, slowly adjusting clocks over hours to avoid time jumps entirely.</li>
+<li><strong>Use Monotonic Clocks</strong>: Time-sensitive logic should rely on <code>CLOCK_MONOTONIC</code>, not wall-clock time, to measure durations safely.</li>
+</ul>
+<p><img alt='Line chart titled "Leap Second: Wall Clock vs Monotonic Time" plotting reported time against elapsed monotonic time. Both lines rise together from 0 through 4. At the leap-second insertion (annotated 23:59:60), wall-clock time flattens for one second while monotonic time keeps climbing. Wall-clock then resumes its climb one tick behind monotonic for the rest of the chart.' src="https://rivassec.com/images/leap_second_monotonic_vs_wall_clock.png"/>
+<em>Figure: Monotonic time continues uninterrupted while wall-clock time repeats a second, highlighting why monotonic clocks are preferred for duration tracking.</em></p>
+<ul>
+<li><strong>Monitor Clock Drift</strong>: Observability pipelines should expose clock sync state and NTP drift as first-class metrics.</li>
+<li><strong>Design for Temporal Anomalies</strong>: Distributed systems should assume wall-clock time can regress, freeze, or desync, and gracefully degrade when it does.</li>
+<li><strong>Simulated Testing Isn’t Enough</strong>: Always combine synthetic load with chaos testing under unusual real-world conditions (e.g., leap seconds, DNS failures, NTP skew).</li>
+</ul>
+<hr/>
+<h2 id="epilogue">Epilogue</h2>
+<p>The 2012 leap second chaos wasn’t caused by incompetence. Many teams patched, prepared, and tested. But the leap second hit during degraded cloud capacity, exposed fragile JVM behavior, and stressed assumptions in time-sensitive code.</p>
+<p>A single second exposed fault lines in the foundations of the modern internet.</p>
+<p>In 2022, the ITU voted to abolish leap seconds by 2035, largely driven by incidents like this one. Until then, the mitigations above remain essential for any system that touches wall-clock time.</p>
+<hr/>
+<p><strong>What other “just time” failures have caught you off guard in production? Let’s share war stories.</strong></p>
+<p>Related reading: the <a href="https://rivassec.com/208-day-kernel-bug-lessons.html">208.5-day kernel bug</a> - another case where a piece of time math, left unpatched, was a silent countdown to an outage.</p>
+<p><em>(Originally published in 2012. Revisited and revised in 2025 for modern SREs, DevOps, and distributed systems engineers.)</em></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://rivassec.com/tag/kernel.html">kernel</a>
+      <a href="https://rivassec.com/tag/linux.html">linux</a>
+      <a href="https://rivassec.com/tag/java.html">java</a>
+      <a href="https://rivassec.com/tag/ntp.html">ntp</a>
+      <a href="https://rivassec.com/tag/sre.html">sre</a>
+    </p>
+  </div>
+
+
+  <div class="neighbors">
+    <a class="btn float-right" href="https://rivassec.com/208-day-kernel-bug-lessons.html" title="The 208.5-Day Kernel Bug: Uptime, Overflow, and Risk">
+      Next Post
+      <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512" aria-hidden="true" focusable="false"><path fill="currentColor" d="M64 448c-8.188 0-16.38-3.125-22.62-9.375c-12.5-12.5-12.5-32.75 0-45.25L178.8 256L41.38 118.6c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0l160 160c12.5 12.5 12.5 32.75 0 45.25l-160 160C80.38 444.9 72.19 448 64 448z"/></svg>
+    </a>
+  </div>
+
+  <div class="related-posts">
+    <h2 class="related-heading">You might enjoy</h2>
+    <ul class="related-posts">
+      <li><a href="https://rivassec.com/208-day-kernel-bug-lessons.html">The 208.5-Day Kernel Bug: Uptime, Overflow, and Risk</a></li>
+      <li><a href="https://rivassec.com/oom-killer-process-prioritization.html">Taming the OOM Killer: Process Priorities on Linux</a></li>
+    </ul>
+  </div>
+
+
+</article>
+
+<footer>
+    <p class="footer-feeds">
+      Subscribe:
+      <a href="https://rivassec.com/feeds/all.atom.xml" rel="alternate" type="application/atom+xml">Atom</a>
+    </p>
+<p>&copy;  RivasSec</p>
+<p class="footer-meta">
+  <a href="https://rivassec.com/accessibility/">Accessibility</a>
+</p>
+<p>
+Built with <a href="https://getpelican.com" target="_blank" rel="noopener">Pelican</a> using <a href="https://github.com/alexandrevicenzi/Flex" target="_blank" rel="noopener">Flex</a> theme
+</p></footer>  </main>
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "WebSite",
+  "name": "RivasSec | DevSecOps, Kubernetes, AWS IAM",
+  "url" : "https://rivassec.com",
+  "image": "https://rivassec.com/images/og-default.png",
+  "description": "Field notes on infrastructure security, cloud hardening, Kubernetes, IAM, and OSINT by RivasSec.",
+  "author": {
+    "@type": "Person",
+    "name": "RivasSec",
+    "url": "https://rivassec.com"    ,"sameAs": [      "https://github.com/rivassec"    ]  }
+}
+</script>
+  <script defer src="https://rivassec.com/static/copy-code.js"></script>
+
+</body>
+</html>

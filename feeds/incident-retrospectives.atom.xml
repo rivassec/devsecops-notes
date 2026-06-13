@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>RivasSec | DevSecOps, Kubernetes, AWS IAM - Incident Retrospectives</title><link href="https://rivassec.com/" rel="alternate"/><link href="https://rivassec.com/feeds/incident-retrospectives.atom.xml" rel="self"/><id>https://rivassec.com/</id><updated>2026-05-12T00:00:00-07:00</updated><subtitle>Infrastructure. Security. Insight.</subtitle><entry><title>The 2012 Leap Second: When Time Broke Java and the Cloud</title><link href="https://rivassec.com/leap-second-chaos-2012.html" rel="alternate"/><published>2025-04-15T00:00:00-07:00</published><updated>2026-05-12T00:00:00-07:00</updated><author><name>RivasSec</name></author><id>tag:rivassec.com,2025-04-15:/leap-second-chaos-2012.html</id><summary type="html">&lt;p&gt;The 2012 leap second broke Reddit, Yelp, Java apps, and more. A retrospective on how fragile timekeeping bit the cloud, and what SRE teams should do today.&lt;/p&gt;</summary><content type="html">
+&lt;h2 id="what-happened"&gt;What Happened?&lt;/h2&gt;
+&lt;p&gt;On June 30, 2012, a &lt;strong&gt;leap second&lt;/strong&gt; was inserted into atomic time via NTP to keep UTC aligned with Earth’s rotation. At 23:59:60 UTC, global systems experienced a hiccup, a single extra second that caused widespread disruptions across Reddit, LinkedIn, Yelp, Google, FourSquare, and many more.&lt;/p&gt;
+&lt;p&gt;What followed were 500 errors, high latency, and CPU usage spikes that crippled backend services.&lt;/p&gt;
+&lt;hr/&gt;
+&lt;h2 id="why-did-it-break"&gt;Why Did It Break?&lt;/h2&gt;
+&lt;p&gt;Though seemingly minor, the leap second broke systems in subtle and severe ways:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Java Runtime Sensitivity:&lt;/strong&gt; Popular JVM versions at the time failed to handle the repeated 23:59:59 correctly. This triggered runaway CPU usage via thread timing bugs, particularly in services running Hadoop, Cassandra, and Elasticsearch.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Userland Misbehavior:&lt;/strong&gt; While many Linux kernels handled the leap second without panic, userland libraries and runtimes (especially Java) choked under non-monotonic time changes.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Cloud Weakness Exposure:&lt;/strong&gt; An Amazon EC2 outage the day before had already left infrastructure strained. With fewer available instances, systems were more vulnerable when the leap second hit.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Limited Real-World Testing:&lt;/strong&gt; Simulating leap seconds under actual load, in full-stack distributed systems, proved nearly impossible. Pre-patch validations missed edge behavior.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr/&gt;
+&lt;h2 id="real-world-impact"&gt;Real-World Impact&lt;/h2&gt;
+&lt;p&gt;This bug hit nearly every high-scale Java-based system:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Stacks&lt;/strong&gt;: Cassandra, Hadoop, Elasticsearch, JVM-based schedulers&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Companies&lt;/strong&gt;: Reddit, Mozilla, Yelp, LinkedIn, Gawker, Facebook, StumbleUpon&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Behavior&lt;/strong&gt;: High CPU loops, 500 errors, frozen services, delayed recovery due to restart complexity&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;In many cases, the kernel &lt;em&gt;didn't fail&lt;/em&gt;. The chaos came from how services processed time at runtime.&lt;/p&gt;
+&lt;hr/&gt;
+&lt;h2 id="mitigation-takeaways"&gt;Mitigation &amp;amp; Takeaways&lt;/h2&gt;
+&lt;h3 id="immediate-fixes-in-2012"&gt;Immediate Fixes in 2012&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Rolling Restarts&lt;/strong&gt;: Restarting affected Java services often cleared the CPU lock-up, though distributed services like Cassandra made this time-consuming.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Manual Clock Reset&lt;/strong&gt;: Some environments required forcibly resetting system time post-leap second. This fix was often applied via config tools like Puppet:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# CAUTION: Only use in environments that can tolerate manual time reset.&lt;/span&gt;
+sudo&lt;span class="w"&gt; &lt;/span&gt;/etc/init.d/ntp&lt;span class="w"&gt; &lt;/span&gt;stop
+date
+date&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;date&lt;span class="w"&gt; &lt;/span&gt;+&lt;span class="s2"&gt;"%m%d%H%M%C%y.%S"&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;
+date
+sudo&lt;span class="w"&gt; &lt;/span&gt;/etc/init.d/ntp&lt;span class="w"&gt; &lt;/span&gt;start
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3 id="modern-resilience-strategies"&gt;Modern Resilience Strategies&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Leap Smearing&lt;/strong&gt;: Today’s &lt;code&gt;ntpd&lt;/code&gt;, &lt;code&gt;chronyd&lt;/code&gt;, and cloud providers use “leap smear”, slowly adjusting clocks over hours to avoid time jumps entirely.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Use Monotonic Clocks&lt;/strong&gt;: Time-sensitive logic should rely on &lt;code&gt;CLOCK_MONOTONIC&lt;/code&gt;, not wall-clock time, to measure durations safely.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img alt='Line chart titled "Leap Second: Wall Clock vs Monotonic Time" plotting reported time against elapsed monotonic time. Both lines rise together from 0 through 4. At the leap-second insertion (annotated 23:59:60), wall-clock time flattens for one second while monotonic time keeps climbing. Wall-clock then resumes its climb one tick behind monotonic for the rest of the chart.' src="https://rivassec.com/images/leap_second_monotonic_vs_wall_clock.png"/&gt;
+&lt;em&gt;Figure: Monotonic time continues uninterrupted while wall-clock time repeats a second, highlighting why monotonic clocks are preferred for duration tracking.&lt;/em&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Monitor Clock Drift&lt;/strong&gt;: Observability pipelines should expose clock sync state and NTP drift as first-class metrics.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Design for Temporal Anomalies&lt;/strong&gt;: Distributed systems should assume wall-clock time can regress, freeze, or desync, and gracefully degrade when it does.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Simulated Testing Isn’t Enough&lt;/strong&gt;: Always combine synthetic load with chaos testing under unusual real-world conditions (e.g., leap seconds, DNS failures, NTP skew).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr/&gt;
+&lt;h2 id="epilogue"&gt;Epilogue&lt;/h2&gt;
+&lt;p&gt;The 2012 leap second chaos wasn’t caused by incompetence. Many teams patched, prepared, and tested. But the leap second hit during degraded cloud capacity, exposed fragile JVM behavior, and stressed assumptions in time-sensitive code.&lt;/p&gt;
+&lt;p&gt;A single second exposed fault lines in the foundations of the modern internet.&lt;/p&gt;
+&lt;p&gt;In 2022, the ITU voted to abolish leap seconds by 2035, largely driven by incidents like this one. Until then, the mitigations above remain essential for any system that touches wall-clock time.&lt;/p&gt;
+&lt;hr/&gt;
+&lt;p&gt;&lt;strong&gt;What other “just time” failures have caught you off guard in production? Let’s share war stories.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Related reading: the &lt;a href="https://rivassec.com/208-day-kernel-bug-lessons.html"&gt;208.5-day kernel bug&lt;/a&gt; - another case where a piece of time math, left unpatched, was a silent countdown to an outage.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;(Originally published in 2012. Revisited and revised in 2025 for modern SREs, DevOps, and distributed systems engineers.)&lt;/em&gt;&lt;/p&gt;</content><category term="Incident Retrospectives"/><category term="kernel"/><category term="linux"/><category term="java"/><category term="ntp"/><category term="sre"/></entry></feed>

@@ -1,0 +1,285 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="" />
+
+
+  <link rel="stylesheet" type="text/css" href="https://rivassec.com/theme/stylesheet/style.min.css">
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="https://rivassec.com/theme/pygments/monokai.min.css">
+
+
+
+  <link rel="stylesheet" type="text/css" href="https://rivassec.com/static/custom.css">
+
+  <link rel="icon" href="https://rivassec.com/favicon.ico" sizes="any">
+  <link rel="icon" href="https://rivassec.com/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="https://rivassec.com/favicon-16.png" type="image/png" sizes="16x16">
+  <link rel="apple-touch-icon" href="https://rivassec.com/apple-touch-icon.png" sizes="180x180">
+
+  <!-- Chrome, Firefox OS and Opera -->
+  <meta name="theme-color" content="#222222">
+  <!-- Windows Phone -->
+  <meta name="msapplication-navbutton-color" content="#222222">
+  <!-- iOS Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!-- Microsoft EDGE -->
+  <meta name="msapplication-TileColor" content="#222222">
+
+  <link href="https://rivassec.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="RivasSec | DevSecOps, Kubernetes, AWS IAM Atom">
+
+
+
+
+
+
+<meta name="author" content="RivasSec" />
+<meta name="description" content="An EDR fired a true-positive on my analyst laptop while I was investigating a real cryptominer. The traffic pattern was a textbook T1105 ingress tool transfer because that is exactly what I was doing. The runbook gap is older than the LLM coding assistant that triggered it." />
+<meta name="keywords" content="incident-response, edr, mitre-attack, t1105, runbook, ai-tooling">
+
+
+  <meta property="og:site_name" content="RivasSec | DevSecOps, Kubernetes, AWS IAM"/>
+  <meta property="og:title" content="Every Alert Is Your Alert: When IR Tooling Trips Your Own EDR"/>
+  <meta property="og:description" content="An EDR fired a true-positive on my analyst laptop while I was investigating a real cryptominer. The traffic pattern was a textbook T1105 ingress tool transfer because that is exactly what I was doing. The runbook gap is older than the LLM coding assistant that triggered it."/>
+  <meta property="og:locale" content="en_US"/>
+  <meta property="og:url" content="https://rivassec.com/drafts/every-alert-is-your-alert.html"/>
+  <meta property="og:type" content="article"/>
+  <meta property="article:published_time" content="2026-07-01 00:00:00-07:00"/>
+  <meta property="article:modified_time" content="2026-07-01 00:00:00-07:00"/>
+  <meta property="article:author" content="https://rivassec.com/author/rivassec.html">
+  <meta property="article:section" content="DevSecOps"/>
+  <meta property="article:tag" content="incident-response"/>
+  <meta property="article:tag" content="edr"/>
+  <meta property="article:tag" content="mitre-attack"/>
+  <meta property="article:tag" content="t1105"/>
+  <meta property="article:tag" content="runbook"/>
+  <meta property="article:tag" content="ai-tooling"/>
+  <meta property="og:image" content="https://rivassec.com/images/og-default.png">
+  <meta property="og:image:alt" content="RivasSec | DevSecOps, Kubernetes, AWS IAM">
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="Every Alert Is Your Alert: When IR Tooling Trips Your Own EDR"/>
+  <meta name="twitter:description" content="An EDR fired a true-positive on my analyst laptop while I was investigating a real cryptominer. The traffic pattern was a textbook T1105 ingress tool transfer because that is exactly what I was doing. The runbook gap is older than the LLM coding assistant that triggered it."/>
+  <meta name="twitter:site" content="@rivassec"/>
+  <meta name="twitter:creator" content="@rivassec"/>
+  <meta name="twitter:image" content="https://rivassec.com/images/og-default.png"/>
+  <meta name="twitter:image:alt" content="RivasSec | DevSecOps, Kubernetes, AWS IAM"/>
+  <script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "name": "Every Alert Is Your Alert: When IR Tooling Trips Your Own EDR",
+    "headline": "Every Alert Is Your Alert: When IR Tooling Trips Your Own EDR",
+    "datePublished": "2026-07-01 00:00:00-07:00",
+    "dateModified": "2026-07-01 00:00:00-07:00",
+    "author": {
+      "@type": "Person",
+      "name": "RivasSec",
+      "url": "https://rivassec.com/author/rivassec.html"
+    },
+    "image": "https://rivassec.com/images/og-default.png",
+    "url": "https://rivassec.com/drafts/every-alert-is-your-alert.html",
+    "description": "An EDR fired a true-positive on my analyst laptop while I was investigating a real cryptominer. The traffic pattern was a textbook T1105 ingress tool transfer because that is exactly what I was doing. The runbook gap is older than the LLM coding assistant that triggered it."
+  }
+  </script>
+
+  <title>RivasSec | DevSecOps, Kubernetes, AWS IAM &ndash; Every Alert Is Your Alert: When IR Tooling Trips Your Own EDR</title>
+</head>
+<body class="light-theme">
+<aside>
+  <div>
+    <a href="https://rivassec.com/">
+      <img src="images/avatar.png" alt="RivasSec" title="RivasSec">
+    </a>
+
+    <h1>
+      <a href="https://rivassec.com/">RivasSec</a>
+    </h1>
+
+    <p>Infrastructure. Security. Insight.</p>
+
+
+
+    <ul class="social">
+      <li>
+        <a class="sc-github"
+           aria-label="GitHub"
+           href="https://github.com/rivassec"
+           target="_blank">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512" aria-hidden="true" focusable="false"><path fill="currentColor" d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3 .3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5 .3-6.2 2.3zm44.2-1.7c-2.9 .7-4.9 2.6-4.6 4.9 .3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3 .7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3 .3 2.9 2.3 3.9 1.6 1 3.6 .7 4.3-.7 .7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3 .7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3 .7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>        </a>
+      </li>
+    </ul>
+  </div>
+
+</aside>
+  <main>
+<nav>
+  <a href="https://rivassec.com/">Home</a>
+
+  <a href="https://rivassec.com/pages/about.html">About</a>
+  <a href="https://rivassec.com/categories.html">Categories</a>
+  <a href="https://github.com/rivassec">GitHub</a>
+
+  <a href="https://rivassec.com/feeds/all.atom.xml">Atom</a>
+
+</nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="every-alert-is-your-alert">Every Alert Is Your Alert: When IR Tooling Trips Your Own EDR</h1>
+    <p>
+      Posted on Wed 01 July 2026 in <a href="https://rivassec.com/category/devsecops.html">DevSecOps</a>
+
+        &#8226; 7 min read
+    </p>
+  </header>
+
+  <aside class="article-toc" aria-label="Table of contents">
+    <h2 class="aside-heading">On this page</h2>
+    <div class="toc">
+<ul>
+<li><a href="#the-setup">The setup</a></li>
+<li><a href="#what-the-edr-saw">What the EDR saw</a></li>
+<li><a href="#the-category-most-runbooks-miss">The category most runbooks miss</a></li>
+<li><a href="#why-this-matters-more-in-2026">Why this matters more in 2026</a></li>
+<li><a href="#what-i-changed-in-my-own-runbook">What I changed in my own runbook</a></li>
+<li><a href="#what-id-want-my-teams-runbook-to-add">What I'd want my team's runbook to add</a></li>
+<li><a href="#closing-thought">Closing thought</a></li>
+</ul>
+</div>
+  </aside>
+
+  <div>
+    
+<p>During a recent incident-response engagement, the EDR on my analyst laptop fired a true-positive against my own activity. The detection was a high-severity ingress-tool-transfer alert, MITRE T1105, against a process tree that started at my shell, descended through an LLM-driven coding assistant session running with elevated permissions, and ended at two <code>curl</code> calls fetching the attacker's dropper into <code>/tmp</code> for hash and content analysis.</p>
+<p>The detection was correct. The traffic was, by every shape the sensor examines, an ingress tool transfer.</p>
+<p>It was also me, deliberately, doing my job.</p>
+<p>This post is not about defending myself to a SOC. The SOC was right and the EDR was right. This post is about the gap the detection exposes: most IR runbooks still assume the suspicious transfer came from the adversary or the user. Authorized analyst tooling that mirrors adversary behavior is a third category, and almost nobody's runbook handles it.</p>
+<h2 id="the-setup">The setup</h2>
+<p>The parent investigation was a confirmed cryptominer running in a containerized workload. The cloud detector's correlation finding gave me the binary path, and I had it pulled out of the image's overlay2 layer within an hour. I covered the host-side investigation in a separate post: <a href="https://rivassec.com/drafts/cryptominer-in-the-docker-layer.html">How I Learned to Investigate Docker Image Layers During Incident Response</a>. Read that first if you want the technical narrative; this post is the meta-incident that ran in parallel.</p>
+<p>While the host investigation was active, I needed two things off the attacker's infrastructure:</p>
+<ol>
+<li>The dropper script the binary was pulling from a content-delivery URL.</li>
+<li>A second-stage payload referenced in the dropper, hosted on a public paste service.</li>
+</ol>
+<p>I had two reasonable options. I could open both URLs in a browser on a sandbox VM, or I could <code>curl</code> them into <code>/tmp</code> from my laptop for hashing and side-by-side comparison with the on-disk artifacts I had already extracted.</p>
+<p>I chose the second. Faster. No VM context switch. The files were data, not executables; I had no intent to run them. The point was a hash comparison and a static read.</p>
+<p>The agent session I was running already had shell permissions for the investigation. I told it to fetch both URLs into a per-incident evidence directory and SHA-256 them. It did. The EDR noticed.</p>
+<h2 id="what-the-edr-saw">What the EDR saw</h2>
+<p>From the sensor's perspective the picture was unambiguous:</p>
+<ul>
+<li>A user-space shell was running with elevated privileges</li>
+<li>A child process was issuing outbound HTTPS to a content-delivery domain that had not been seen on this host before</li>
+<li>The remote endpoints' content-types were not browsable HTML; they were script and text payloads</li>
+<li>The destination paths were under <code>/tmp/</code>, written for later read or execute</li>
+<li>The User-Agent was <code>curl/x.y.z</code>, not a browser</li>
+</ul>
+<p>That is, line for line, the ATT&amp;CK definition of T1105: <code>Adversaries may transfer tools or other files from an external system into a compromised environment.</code> The sensor doesn't get to know whether "the compromised environment" is "my laptop during a real IR engagement, used by the analyst conducting the IR." It gets the syscalls, and the syscalls were textbook.</p>
+<p>The EDR fired. A ticket auto-generated in the issue tracker. Within the hour the detection-and-response team had escalated and closed it <code>true_positive</code>.</p>
+<p>That last word is the interesting one. By the platform's taxonomy, the disposition was correct. The sensor was not wrong. The behavior was real. The label, however, doesn't capture the structural fact: the source was an authorized analyst, the activity was sanctioned, and the resulting telemetry needs a different kind of close than a real intrusion.</p>
+<h2 id="the-category-most-runbooks-miss">The category most runbooks miss</h2>
+<p>When I look at IR runbooks, including the ones I have written, the dispositions tend to fall into three buckets:</p>
+<ul>
+<li><strong>False positive.</strong> The detection fired, but the underlying behavior is benign. Tune the detection.</li>
+<li><strong>True positive, malicious.</strong> The detection fired, the behavior is real, and an adversary is responsible. Run the IR playbook.</li>
+<li><strong>True positive, user-attributed.</strong> The detection fired, the behavior is real, and a non-adversary user did it (a developer testing something, an admin running an unfamiliar tool). Document and close.</li>
+</ul>
+<p>What was missing for me on this incident is a fourth bucket:</p>
+<ul>
+<li><strong>True positive, analyst-attributed.</strong> The detection fired, the behavior is real, and an analyst (me, in this case) did it as part of an authorized investigation that explicitly involved adversary infrastructure.</li>
+</ul>
+<p>The fourth bucket is not the third with a different word. Analyst-attributed events have specific properties that user-attributed events don't:</p>
+<ul>
+<li>The activity is <strong>expected to look malicious</strong> because the analyst is, by definition, interacting with adversary infrastructure</li>
+<li>The activity is <strong>logged with a specific ticket</strong> that should be the disposition's parent</li>
+<li>The audit trail should preserve <strong>the link between the parent IR ticket and the EDR alert</strong> so the same incident can be reconstructed end-to-end later</li>
+<li>Closure should not require the SOC to investigate the analyst's activity from scratch; the closure note should reference the parent</li>
+</ul>
+<p>I have never seen a runbook with that bucket spelled out.</p>
+<h2 id="why-this-matters-more-in-2026">Why this matters more in 2026</h2>
+<p>This incident would have happened in 2018 too. An analyst who decided to <code>curl</code> an attacker URL from a managed laptop has always been a possible source of true-positive EDR traffic. What changed is the volume.</p>
+<p>In 2018, the analyst who reached for <code>curl</code> knew they were about to make their own laptop look briefly like a compromise. They paused. They opened a sandbox VM. They didn't, often.</p>
+<p>In 2026, the analyst with an LLM coding-assistant session running has shell access already extended out via the assistant's permissive flag, and the easiest path from "I need to read that payload" to "the payload is on disk and hashed" is to type the request into the agent. The agent doesn't know that pulling the dropper looks identical to the malware pulling the dropper. The agent hasn't read the EDR's MITRE coverage matrix. It just executes.</p>
+<p>This is not a problem with the agent. The agent is doing exactly what an analyst would do without one. The agent makes the friction lower, which means the same path gets taken more often, which means the same EDR alerts get fired more often, by more analysts, on more endpoints.</p>
+<p>If your team has any LLM-driven shell access on managed laptops, your EDR is about to start logging a class of true positives that your runbook does not handle gracefully. Mine wasn't. I had to invent the closure procedure on the spot and write it down after.</p>
+<h2 id="what-i-changed-in-my-own-runbook">What I changed in my own runbook</h2>
+<p>The closure I ended up writing on the auto-created ticket had three parts. I am keeping all three for the next time:</p>
+<p><strong>1. Self-attribution comment.</strong> The first comment on the auto-created ticket linked it to the parent IR ticket and named the URLs and paths. The skeleton looks like: "this detection was triggered by my own IR work on <code>&lt;parent ticket&gt;</code>. The agent session fetched <code>&lt;URL 1&gt;</code> and <code>&lt;URL 2&gt;</code> into <code>&lt;evidence path&gt;</code> for hash and content analysis. Network behavior matches T1105 as expected; source was authorized analyst activity, not a compromise of <code>&lt;hostname&gt;</code>."</p>
+<p>The wording matters. "Self-attributed" is more durable than "false positive" because it acknowledges the alert was correct and locates the source. Future-me reading the ticket history can reconstruct what happened without ambiguity.</p>
+<p><strong>2. Parent-link.</strong> Create a "relates to" link from the EDR ticket back to the parent IR ticket. The parent describes what was being investigated and why; the EDR ticket describes what the sensor saw. The pair is the full picture.</p>
+<p><strong>3. Match-the-platform-disposition.</strong> The vendor side had already closed the ticket as <code>true_positive</code>. Rather than dispute that, I closed the issue-tracker mirror as Done with my self-attribution comment in place. The platform tracks the right thing for the platform; the issue-tracker closure tracks the right thing for the audit history.</p>
+<h2 id="what-id-want-my-teams-runbook-to-add">What I'd want my team's runbook to add</h2>
+<p>If I were writing this into a team-level runbook (and I am, separately), the section would look like:</p>
+<blockquote>
+<p>When an EDR alert fires on an analyst's authorized IR endpoint and the analyst recognizes their own activity as the source, the disposition is "self-attributed authorized analysis," not "false positive." The closure must:</p>
+<ol>
+<li>Link the alert to the parent IR ticket</li>
+<li>Name the specific tool, command, or agent session that originated the traffic</li>
+<li>Acknowledge that the underlying detection logic was correct</li>
+<li>Match the EDR platform's disposition (do not argue for a different one)</li>
+<li>Be reviewed by a second analyst within 24 hours so we are not relying on a single analyst's word</li>
+</ol>
+</blockquote>
+<p>Step five is the one I want to flag. The fourth bucket has a real abuse vector: an attacker who compromises an analyst account can post a fake self-attribution comment on a real intrusion ticket and walk away. Two-analyst review is the cheapest control I can think of that closes that gap without slowing the analyst down on a real investigation.</p>
+<h2 id="closing-thought">Closing thought</h2>
+<p>Every alert that fires on your endpoint is your alert. The phrase reads like a corporate poster, and the SOC version of it is fine: take ownership, don't punt, don't let alerts orphan. But the underneath of it, for analysts running modern tooling, is more specific. It means: the runbook for "your EDR pinged on you because you were doing IR" is your runbook to write, because nobody at the EDR vendor wrote it for you. The sensor was right. The disposition is yours.</p>
+<p>For the host-side detail of the parent incident, see <a href="https://rivassec.com/drafts/cryptominer-in-the-docker-layer.html">The Miner Was In The Image Layer, Not In Memory</a>.</p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://rivassec.com/tag/incident-response.html">incident-response</a>
+      <a href="https://rivassec.com/tag/edr.html">edr</a>
+      <a href="https://rivassec.com/tag/mitre-attack.html">mitre-attack</a>
+      <a href="https://rivassec.com/tag/t1105.html">t1105</a>
+      <a href="https://rivassec.com/tag/runbook.html">runbook</a>
+      <a href="https://rivassec.com/tag/ai-tooling.html">ai-tooling</a>
+    </p>
+  </div>
+
+
+  <div class="neighbors">
+  </div>
+
+
+
+</article>
+
+<footer>
+    <p class="footer-feeds">
+      Subscribe:
+      <a href="https://rivassec.com/feeds/all.atom.xml" rel="alternate" type="application/atom+xml">Atom</a>
+    </p>
+<p>&copy;  RivasSec</p>
+<p class="footer-meta">
+  <a href="https://rivassec.com/accessibility/">Accessibility</a>
+</p>
+<p>
+Built with <a href="https://getpelican.com" target="_blank" rel="noopener">Pelican</a> using <a href="https://github.com/alexandrevicenzi/Flex" target="_blank" rel="noopener">Flex</a> theme
+</p></footer>  </main>
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "WebSite",
+  "name": "RivasSec | DevSecOps, Kubernetes, AWS IAM",
+  "url" : "https://rivassec.com",
+  "image": "https://rivassec.com/images/og-default.png",
+  "description": "Field notes on infrastructure security, cloud hardening, Kubernetes, IAM, and OSINT by RivasSec.",
+  "author": {
+    "@type": "Person",
+    "name": "RivasSec",
+    "url": "https://rivassec.com"    ,"sameAs": [      "https://github.com/rivassec"    ]  }
+}
+</script>
+  <script defer src="https://rivassec.com/static/copy-code.js"></script>
+
+</body>
+</html>
