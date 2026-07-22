@@ -1,0 +1,310 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="" />
+
+
+  <link rel="stylesheet" type="text/css" href="https://rivassec.com/theme/stylesheet/style.min.css">
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="https://rivassec.com/theme/pygments/monokai.min.css">
+
+
+
+  <link rel="stylesheet" type="text/css" href="https://rivassec.com/static/custom.css">
+
+  <link rel="icon" href="https://rivassec.com/favicon.ico" sizes="any">
+  <link rel="icon" href="https://rivassec.com/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="https://rivassec.com/favicon-16.png" type="image/png" sizes="16x16">
+  <link rel="apple-touch-icon" href="https://rivassec.com/apple-touch-icon.png" sizes="180x180">
+
+  <!-- Chrome, Firefox OS and Opera -->
+  <meta name="theme-color" content="#222222">
+  <!-- Windows Phone -->
+  <meta name="msapplication-navbutton-color" content="#222222">
+  <!-- iOS Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!-- Microsoft EDGE -->
+  <meta name="msapplication-TileColor" content="#222222">
+
+  <link href="https://rivassec.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="RivasSec | DevSecOps, Kubernetes, AWS IAM Atom">
+
+
+
+
+
+
+<meta name="author" content="RivasSec" />
+<meta name="description" content="Pod-level Kubernetes guardrails aligned with the Pod Security Standards Restricted profile: non-root, no caps, read-only FS, NetworkPolicies, SA hardening." />
+<meta name="keywords" content="kubernetes, hardening, devsecops">
+
+
+  <meta property="og:site_name" content="RivasSec | DevSecOps, Kubernetes, AWS IAM"/>
+  <meta property="og:title" content="Hardening Kubernetes Deployments"/>
+  <meta property="og:description" content="Pod-level Kubernetes guardrails aligned with the Pod Security Standards Restricted profile: non-root, no caps, read-only FS, NetworkPolicies, SA hardening."/>
+  <meta property="og:locale" content="en_US"/>
+  <meta property="og:url" content="https://rivassec.com/hardening-k8s.html"/>
+  <meta property="og:type" content="article"/>
+  <meta property="article:published_time" content="2025-04-19 00:00:00-07:00"/>
+  <meta property="article:modified_time" content="2026-05-12 00:00:00-07:00"/>
+  <meta property="article:author" content="https://rivassec.com/author/rivassec.html">
+  <meta property="article:section" content="Kubernetes Security"/>
+  <meta property="article:tag" content="kubernetes"/>
+  <meta property="article:tag" content="hardening"/>
+  <meta property="article:tag" content="devsecops"/>
+  <meta property="og:image" content="https://rivassec.com/images/covers/hardening-k8s.png">
+  <meta property="og:image:alt" content="Hardening Kubernetes Deployments">
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="Hardening Kubernetes Deployments"/>
+  <meta name="twitter:description" content="Pod-level Kubernetes guardrails aligned with the Pod Security Standards Restricted profile: non-root, no caps, read-only FS, NetworkPolicies, SA hardening."/>
+  <meta name="twitter:site" content="@rivassec"/>
+  <meta name="twitter:creator" content="@rivassec"/>
+  <meta name="twitter:image" content="https://rivassec.com/images/covers/hardening-k8s.png"/>
+  <meta name="twitter:image:alt" content="Hardening Kubernetes Deployments"/>
+  <script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "name": "Hardening Kubernetes Deployments",
+    "headline": "Hardening Kubernetes Deployments",
+    "datePublished": "2025-04-19 00:00:00-07:00",
+    "dateModified": "2026-05-12 00:00:00-07:00",
+    "author": {
+      "@type": "Person",
+      "name": "RivasSec",
+      "url": "https://rivassec.com/author/rivassec.html"
+    },
+    "image": "https://rivassec.com/images/covers/hardening-k8s.png",
+    "url": "https://rivassec.com/hardening-k8s.html",
+    "description": "Pod-level Kubernetes guardrails aligned with the Pod Security Standards Restricted profile: non-root, no caps, read-only FS, NetworkPolicies, SA hardening."
+  }
+  </script>
+
+  <title>RivasSec | DevSecOps, Kubernetes, AWS IAM &ndash; Hardening Kubernetes Deployments</title>
+</head>
+<body class="light-theme">
+<aside>
+  <div>
+    <a href="https://rivassec.com/">
+      <img src="images/avatar.png" alt="RivasSec" title="RivasSec">
+    </a>
+
+    <h1>
+      <a href="https://rivassec.com/">RivasSec</a>
+    </h1>
+
+    <p>Infrastructure. Security. Insight.</p>
+
+
+
+    <ul class="social">
+      <li>
+        <a class="sc-github"
+           aria-label="GitHub"
+           href="https://github.com/rivassec"
+           target="_blank">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512" aria-hidden="true" focusable="false"><path fill="currentColor" d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3 .3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5 .3-6.2 2.3zm44.2-1.7c-2.9 .7-4.9 2.6-4.6 4.9 .3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3 .7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3 .3 2.9 2.3 3.9 1.6 1 3.6 .7 4.3-.7 .7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3 .7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3 .7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>        </a>
+      </li>
+    </ul>
+  </div>
+
+</aside>
+  <main>
+<nav>
+  <a href="https://rivassec.com/">Home</a>
+
+  <a href="https://rivassec.com/pages/about.html">About</a>
+  <a href="https://rivassec.com/categories.html">Categories</a>
+  <a href="https://github.com/rivassec">GitHub</a>
+
+  <a href="https://rivassec.com/feeds/all.atom.xml">Atom</a>
+
+</nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="hardening-k8s">Hardening Kubernetes Deployments</h1>
+    <p>
+      Posted on Sat 19 April 2025 in <a href="https://rivassec.com/category/kubernetes-security.html">Kubernetes Security</a>
+
+        &#8226; 2 min read
+    </p>
+  </header>
+
+  <aside class="article-toc" aria-label="Table of contents">
+    <h2 class="aside-heading">On this page</h2>
+    <div class="toc">
+<ul>
+<li><a href="#key-practices-for-hardening-kubernetes-deployments">Key Practices for Hardening Kubernetes Deployments</a><ul>
+<li><a href="#1-run-containers-as-non-root">1. Run Containers as Non-Root</a></li>
+<li><a href="#2-drop-all-linux-capabilities">2. Drop All Linux Capabilities</a></li>
+<li><a href="#3-disable-privilege-escalation">3. Disable Privilege Escalation</a></li>
+<li><a href="#4-use-read-only-filesystem">4. Use Read-Only Filesystem</a></li>
+<li><a href="#5-avoid-host-access">5. Avoid Host Access</a></li>
+<li><a href="#6-use-trusted-images-and-scan-them">6. Use Trusted Images and Scan Them</a></li>
+<li><a href="#7-handle-secrets-via-volumes-not-env-vars">7. Handle Secrets via Volumes (Not Env Vars)</a></li>
+<li><a href="#8-restrict-network-traffic-with-networkpolicies">8. Restrict Network Traffic with NetworkPolicies</a></li>
+<li><a href="#9-harden-serviceaccount-usage">9. Harden ServiceAccount Usage</a></li>
+</ul>
+</li>
+<li><a href="#final-thoughts">Final Thoughts</a></li>
+</ul>
+</div>
+  </aside>
+
+  <div>
+    
+<p>Securing Kubernetes workloads isn't just about scanning images or tweaking RBAC, it's about enforcing the right guardrails at the pod level to minimize risk by default. This post shares field-tested strategies aligned with the Pod Security Standards (Restricted profile) to help you build safer, production-grade deployments.</p>
+<h2 id="key-practices-for-hardening-kubernetes-deployments">Key Practices for Hardening Kubernetes Deployments</h2>
+<h3 id="1-run-containers-as-non-root">1. Run Containers as Non-Root</h3>
+<div class="highlight"><pre><span></span><code><span class="nt">securityContext</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">runAsNonRoot</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">runAsUser</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span>
+<span class="w">  </span><span class="nt">runAsGroup</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3000</span>
+</code></pre></div>
+<p>This enforces that containers don’t run as UID 0, reducing the blast radius of any compromise.</p>
+<hr/>
+<h3 id="2-drop-all-linux-capabilities">2. Drop All Linux Capabilities</h3>
+<div class="highlight"><pre><span></span><code><span class="nt">securityContext</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">capabilities</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">drop</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ALL</span>
+<span class="w">    </span><span class="nt">add</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">NET_BIND_SERVICE</span><span class="w">  </span><span class="c1"># Only if your app needs it (e.g., for ports &lt;1024)</span>
+</code></pre></div>
+<p>Drop all capabilities by default, then add only what you need.</p>
+<hr/>
+<h3 id="3-disable-privilege-escalation">3. Disable Privilege Escalation</h3>
+<div class="highlight"><pre><span></span><code><span class="nt">securityContext</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">allowPrivilegeEscalation</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+</code></pre></div>
+<p>This prevents processes inside the container from gaining additional privileges, even if compromised.</p>
+<hr/>
+<h3 id="4-use-read-only-filesystem">4. Use Read-Only Filesystem</h3>
+<div class="highlight"><pre><span></span><code><span class="nt">securityContext</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">readOnlyRootFilesystem</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</code></pre></div>
+<p>This blocks attackers from writing malicious files or installing tools inside the container.</p>
+<hr/>
+<h3 id="5-avoid-host-access">5. Avoid Host Access</h3>
+<div class="highlight"><pre><span></span><code><span class="nt">hostNetwork</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="nt">hostPID</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="nt">hostIPC</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+</code></pre></div>
+<p>Avoid <code>hostPath</code> volumes unless absolutely required. These settings ensure your workloads remain isolated from the host.</p>
+<hr/>
+<h3 id="6-use-trusted-images-and-scan-them">6. Use Trusted Images and Scan Them</h3>
+<p>Use minimal base images (Alpine, Distroless) and trusted registries. Always scan them:</p>
+<div class="highlight"><pre><span></span><code>trivy<span class="w"> </span>image<span class="w"> </span>your-registry/app:tag
+</code></pre></div>
+<p>This helps catch known CVEs before deployment.</p>
+<hr/>
+<h3 id="7-handle-secrets-via-volumes-not-env-vars">7. Handle Secrets via Volumes (Not Env Vars)</h3>
+<div class="highlight"><pre><span></span><code><span class="nt">volumes</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">secret-volume</span>
+<span class="w">    </span><span class="nt">secret</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">secretName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-secret</span>
+
+<span class="nt">containers</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">myapp</span>
+<span class="w">    </span><span class="nt">volumeMounts</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">secret-volume</span>
+<span class="w">        </span><span class="nt">mountPath</span><span class="p">:</span><span class="w"> </span><span class="s">"/etc/secret"</span>
+<span class="w">        </span><span class="nt">readOnly</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</code></pre></div>
+<p>Mounting secrets as volumes avoids accidental exposure via logs or <code>/proc</code>.</p>
+<hr/>
+<h3 id="8-restrict-network-traffic-with-networkpolicies">8. Restrict Network Traffic with NetworkPolicies</h3>
+<div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">networking.k8s.io/v1</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">NetworkPolicy</span>
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">deny-all-ingress</span>
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">podSelector</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+<span class="w">  </span><span class="nt">policyTypes</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Ingress</span>
+</code></pre></div>
+<p>Start with a default-deny policy per namespace, then explicitly allow only the traffic your services need. Without NetworkPolicies, any pod can communicate with any other pod in the cluster.</p>
+<hr/>
+<h3 id="9-harden-serviceaccount-usage">9. Harden ServiceAccount Usage</h3>
+<div class="highlight"><pre><span></span><code><span class="nt">automountServiceAccountToken</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+</code></pre></div>
+<p>Disable automatic token mounting for pods that don’t need API server access. Create dedicated ServiceAccounts with minimal RBAC bindings rather than relying on the <code>default</code> account, which often accumulates unnecessary permissions.</p>
+<hr/>
+<h2 id="final-thoughts">Final Thoughts</h2>
+<p>Security isn’t just about tools, it’s about secure defaults. These practices help harden your Kubernetes workloads using the Restricted Pod Security Standard and reduce risks across the board.</p>
+<p>If you’re managing production clusters or sensitive environments, these changes are low-hanging fruit with a high return on security posture. The same "safe by default" mindset applied to AWS IAM is the subject of <a href="https://rivassec.com/iam-safe-defaults-fail-loud.html">IAM Roles That Fail Loud</a>; for the node side of memory pressure, see <a href="https://rivassec.com/oom-killer-process-prioritization.html">Taming the OOM Killer</a>.</p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://rivassec.com/tag/kubernetes.html">kubernetes</a>
+      <a href="https://rivassec.com/tag/hardening.html">hardening</a>
+      <a href="https://rivassec.com/tag/devsecops.html">devsecops</a>
+    </p>
+  </div>
+
+
+  <div class="neighbors">
+    <a class="btn float-left" href="https://rivassec.com/oom-killer-process-prioritization.html" title="Taming the OOM Killer: Process Priorities on Linux">
+      <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512" aria-hidden="true" focusable="false"><path fill="currentColor" d="M192 448c-8.188 0-16.38-3.125-22.62-9.375l-160-160c-12.5-12.5-12.5-32.75 0-45.25l160-160c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25L77.25 256l137.4 137.4c12.5 12.5 12.5 32.75 0 45.25C208.4 444.9 200.2 448 192 448z"/></svg>
+      Previous Post
+    </a>
+    <a class="btn float-right" href="https://rivassec.com/elasticsearch-secure-snapshot-verification.html" title="Elasticsearch Snapshot Verification, Minimal Privileges">
+      Next Post
+      <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512" aria-hidden="true" focusable="false"><path fill="currentColor" d="M64 448c-8.188 0-16.38-3.125-22.62-9.375c-12.5-12.5-12.5-32.75 0-45.25L178.8 256L41.38 118.6c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0l160 160c12.5 12.5 12.5 32.75 0 45.25l-160 160C80.38 444.9 72.19 448 64 448z"/></svg>
+    </a>
+  </div>
+
+  <div class="related-posts">
+    <h2 class="related-heading">You might enjoy</h2>
+    <ul class="related-posts">
+      <li><a href="https://rivassec.com/oom-killer-process-prioritization.html">Taming the OOM Killer: Process Priorities on Linux</a></li>
+      <li><a href="https://rivassec.com/pwnagotchi-plugin-bandit-hardening.html">Bandit-Clean Pwnagotchi Plugins: How `subprocess` Goes From Risk to Routine</a></li>
+      <li><a href="https://rivassec.com/iam-blast-radius-architecture-problem.html">IAM Blast Radius Is an Architecture Problem, Not a Policy Problem</a></li>
+      <li><a href="https://rivassec.com/hiring-discovery-layer-broken.html">The Discovery Layer Is Broken: Hiring as an Observability Problem</a></li>
+      <li><a href="https://rivassec.com/paved-road-adoption-as-control.html">Adoption Is a Security Control: Notes from Paving a Road</a></li>
+    </ul>
+  </div>
+
+
+</article>
+
+<footer>
+    <p class="footer-feeds">
+      Subscribe:
+      <a href="https://rivassec.com/feeds/all.atom.xml" rel="alternate" type="application/atom+xml">Atom</a>
+    </p>
+<p>&copy;  RivasSec</p>
+<p class="footer-meta">
+  <a href="https://rivassec.com/accessibility/">Accessibility</a>
+</p>
+<p>
+Built with <a href="https://getpelican.com" target="_blank" rel="noopener">Pelican</a> using <a href="https://github.com/alexandrevicenzi/Flex" target="_blank" rel="noopener">Flex</a> theme
+</p></footer>  </main>
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "WebSite",
+  "name": "RivasSec | DevSecOps, Kubernetes, AWS IAM",
+  "url" : "https://rivassec.com",
+  "image": "https://rivassec.com/images/og-default.png",
+  "description": "Field notes on infrastructure security, cloud hardening, Kubernetes, IAM, and OSINT by RivasSec.",
+  "author": {
+    "@type": "Person",
+    "name": "RivasSec",
+    "url": "https://rivassec.com"    ,"sameAs": [      "https://github.com/rivassec"    ]  }
+}
+</script>
+  <script defer src="https://rivassec.com/static/copy-code.js"></script>
+
+</body>
+</html>

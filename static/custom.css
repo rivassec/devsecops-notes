@@ -1,0 +1,867 @@
+/* content/static/custom.css
+   Pixel-port of the dark mockup design (2026-05-21).
+   Stays on Flex theme but overrides aggressively. The previous
+   custom.css is preserved as custom.css.bak-mockup-port.
+   ============================================================ */
+
+:root {
+  --bg: #1a1c20;
+  --bg-elev: #232730;
+  --bg-elev-2: #2a2d33;
+  --fg: #e6e8eb;
+  --fg-dim: #98a0aa;
+  --fg-strong: #ffffff;
+  --accent: #6cb4ff;
+  --accent-strong: #79b8ff;
+  --accent-dim: #4a6f9c;
+  --border: #2a2d33;
+  --border-strong: #3a3d44;
+  --code-bg: #14161a;
+  --tag-bg: #2d3340;
+  /* Hero gradient: kept dark enough that white text passes WCAG AA
+     across the full gradient. --hero-mid was #2d4f80 (lum ~0.075)
+     which made axe's contrast-on-gradient heuristic flag white-on-mid
+     even though the actual ratio is well over 4.5:1. Darkening to
+     #1e3a66 keeps the visual character without the false positive. */
+  --hero-from: #1f3454;
+  --hero-mid: #1e3a66;
+  --hero-to: #1a3d6b;
+}
+
+/* ============================================================
+   Self-hosted fonts (preserved from previous custom.css).
+   ============================================================ */
+@font-face { font-family: "Source Sans Pro"; font-style: normal; font-weight: 300; font-display: swap;
+  src: url("/static/fonts/SourceSans3-Light.ttf.woff2") format("woff2"); }
+@font-face { font-family: "Source Sans Pro"; font-style: normal; font-weight: 400; font-display: swap;
+  src: url("/static/fonts/SourceSans3-Regular.ttf.woff2") format("woff2"); }
+@font-face { font-family: "Source Sans Pro"; font-style: italic;  font-weight: 400; font-display: swap;
+  src: url("/static/fonts/SourceSans3-It.ttf.woff2") format("woff2"); }
+@font-face { font-family: "Source Sans Pro"; font-style: normal; font-weight: 700; font-display: swap;
+  src: url("/static/fonts/SourceSans3-Bold.ttf.woff2") format("woff2"); }
+@font-face { font-family: "Source Code Pro"; font-style: normal; font-weight: 400; font-display: swap;
+  src: url("/static/fonts/SourceCodePro-Regular.ttf.woff2") format("woff2"); }
+@font-face { font-family: "Source Code Pro"; font-style: italic;  font-weight: 400; font-display: swap;
+  src: url("/static/fonts/SourceCodePro-It.ttf.woff2") format("woff2"); }
+@font-face { font-family: "Source Code Pro"; font-style: normal; font-weight: 700; font-display: swap;
+  src: url("/static/fonts/SourceCodePro-Bold.ttf.woff2") format("woff2"); }
+
+/* ============================================================
+   Global reset for the dark mockup look.
+   ============================================================ */
+html, body {
+  background: var(--bg);
+  color: var(--fg);
+}
+body {
+  font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 17px;
+  line-height: 1.65;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { color: var(--accent-strong); text-decoration: none; }
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--fg-strong);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+/* ============================================================
+   Hide Flex's left sidebar entirely. The mockup uses a top nav.
+   ============================================================ */
+@media screen and (min-width: 768px) {
+  body > aside { display: none !important; }
+  main {
+    padding-left: 0 !important;
+    height: auto !important;
+    position: static !important;
+  }
+}
+@media screen and (max-width: 767px) {
+  body > aside { display: none !important; }
+}
+
+/* ============================================================
+   Top nav bar: promote main > nav to sticky top bar with brand.
+   ============================================================ */
+main > nav {
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 32px !important;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 24px;
+  text-align: right !important;
+  text-transform: none !important;
+  font-size: 14px !important;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+main > nav::before {
+  content: 'RivasSec';
+  margin-right: auto;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: -0.01em;
+}
+main > nav a {
+  color: var(--fg-dim) !important;
+  border-right: none !important;
+  padding: 6px 8px !important;
+  font-size: 14px !important;
+  text-transform: none !important;
+  text-decoration: none;
+}
+main > nav a:hover { color: var(--accent) !important; background: transparent !important; }
+
+/* ============================================================
+   Article page: hero banner, body, sidebar.
+   ============================================================ */
+main article.single {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 280px;
+  grid-column-gap: 32px;
+  padding: 0 32px 64px;
+  max-width: 1200px;
+  margin: 0 auto !important;
+}
+main article.single > header {
+  grid-column: 1 / -1;
+  position: relative;
+  margin: 0 -32px 32px;
+  padding: 64px 32px 40px;
+  background: linear-gradient(135deg, var(--hero-from) 0%, var(--hero-mid) 50%, var(--hero-to) 100%);
+  color: var(--fg-strong);
+  overflow: hidden;
+}
+main article.single > header::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 80% 20%, rgba(108, 180, 255, 0.18), transparent 60%),
+    radial-gradient(circle at 10% 90%, rgba(255, 255, 255, 0.05), transparent 50%);
+  pointer-events: none;
+}
+main article.single > header > * {
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+}
+main article.single > header h1 {
+  font-size: 2.5em;
+  line-height: 1.15;
+  margin: 0 0 12px;
+  color: var(--fg-strong);
+}
+main article.single > header p {
+  margin: 0 0 12px;
+  /* Bumped from #c9d4e3 to #e6edf6 (2026-06-12): the previous color
+     measured ~3.7:1 against the blue gradient mid-stop, failing WCAG AA. */
+  color: #e6edf6;
+  font-size: 0.9em;
+}
+/* Hero links: bumped color and added underline so they are
+   distinguishable by more than color alone (WCAG 1.4.1). */
+main article.single > header p a {
+  color: #d6e6ff;
+  text-decoration: underline;
+}
+main article.single > header p a:hover { color: #ffffff; }
+main article.single > div { grid-column: 1; min-width: 0; }
+main article.single > aside.article-toc { grid-column: 2; grid-row: 2; }
+main article.single .tag-cloud,
+main article.single .related-posts,
+main article.single > .center,
+main article.single > .neighbors,
+main article.single > .related-posts { grid-column: 1 / -1; }
+
+@media (max-width: 1099px) {
+  main article.single { grid-template-columns: 1fr; }
+  main article.single > aside.article-toc { grid-column: 1; }
+}
+
+/* Article body typography */
+main article.single > div {
+  font-size: 17px;
+  color: var(--fg);
+}
+main article.single h2 {
+  font-size: 1.8em;
+  margin-top: 2em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--border);
+  color: var(--fg-strong);
+}
+main article.single h3 {
+  font-size: 1.4em;
+  margin-top: 1.6em;
+  color: var(--fg-strong);
+}
+main article.single p, main article.single li {
+  color: var(--fg);
+  line-height: 1.65;
+}
+main article.single strong { color: var(--fg-strong); }
+main article.single em { color: var(--fg); }
+
+/* In-article TOC card (right rail) */
+main article.single aside.article-toc {
+  position: sticky;
+  top: 80px;
+  align-self: flex-start;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 18px 20px;
+  margin: 0;
+  font-size: 13px;
+  color: var(--fg);
+  text-align: left;
+  width: auto;
+  height: auto;
+  left: auto;
+  z-index: auto;
+}
+main article.single aside.article-toc h4 {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--fg-dim);
+  margin: 0 0 12px;
+  font-weight: 700;
+}
+main article.single aside.article-toc a {
+  color: var(--fg);
+}
+main article.single aside.article-toc a:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+main article.single aside.article-toc .toc { margin-top: 0 !important; }
+main article.single aside.article-toc .toc > ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+main article.single aside.article-toc .toc > ul > li {
+  padding: 5px 0;
+  line-height: 1.4;
+}
+main article.single aside.article-toc .toc ul ul {
+  list-style: none;
+  padding-left: 16px;
+  margin-top: 4px;
+}
+
+/* Article tag-cloud at bottom */
+main article.single .tag-cloud {
+  margin: 32px 0 16px;
+  padding: 16px 0 0;
+  border-top: 1px solid var(--border);
+}
+main article.single .tag-cloud p {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+}
+main article.single .tag-cloud a {
+  display: inline-block;
+  padding: 4px 12px;
+  font-size: 0.75em;
+  background: var(--tag-bg) !important;
+  color: var(--fg) !important;
+  border-radius: 999px;
+  text-decoration: none;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  line-height: 1.4;
+  text-align: center;
+}
+main article.single .tag-cloud a:hover {
+  background: var(--bg-elev-2) !important;
+  border-color: var(--accent-dim);
+  color: var(--accent-strong) !important;
+}
+
+/* Related posts card (right rail) */
+main article.single .related-posts,
+main article.single div.related-posts {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 18px 20px;
+  font-size: 13px;
+}
+main article.single .related-posts h4 {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--fg-dim);
+  margin: 0 0 12px;
+  font-weight: 700;
+}
+main article.single .related-posts ul,
+main article.single ul.related-posts {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+main article.single .related-posts li {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+main article.single .related-posts li:last-child { border-bottom: none; }
+main article.single .related-posts a {
+  color: var(--fg);
+  text-decoration: none;
+  display: block;
+}
+main article.single .related-posts a:hover { color: var(--accent); }
+
+/* TL;DR callout */
+main article.single .tldr {
+  background: var(--bg-elev);
+  border-left: 3px solid var(--accent);
+  padding: 16px 20px;
+  margin: 24px 0;
+  border-radius: 4px;
+  font-size: 0.96em;
+}
+main article.single .tldr strong:first-child {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* Metric cards */
+main article.single .metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin: 24px 0;
+}
+main article.single .metric {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 16px 14px;
+  text-align: center;
+}
+main article.single .metric .num {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 1.8em;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1.1;
+}
+main article.single .metric .label {
+  font-size: 0.7em;
+  color: var(--fg-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-top: 6px;
+}
+
+/* ============================================================
+   Code blocks: dark with copy button.
+   ============================================================ */
+main article pre {
+  background: var(--code-bg) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 4px;
+  padding: 14px 16px;
+  font-size: 0.85em;
+  line-height: 1.55;
+  overflow-x: auto;
+  border-left-width: 1px !important;
+}
+main article :not(pre) > code {
+  background: var(--bg-elev) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--accent-strong) !important;
+  font-size: 0.85em;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+main article blockquote {
+  background: var(--bg-elev);
+  border-left: 3px solid var(--accent);
+  border-radius: 4px;
+  color: var(--fg);
+  margin: 20px 0;
+  padding: 12px 18px;
+  font-weight: 400;
+  font-size: 1em;
+}
+main article pre.has-copy .copy-btn {
+  background: var(--bg-elev-2) !important;
+  border: 1px solid var(--border-strong) !important;
+  color: var(--fg-dim) !important;
+  opacity: 1;
+  font-size: 0.78em;
+  padding: 4px 10px;
+  border-radius: 4px;
+  top: 8px;
+  right: 8px;
+}
+main article pre.has-copy .copy-btn:hover {
+  color: var(--fg-strong) !important;
+  background: var(--accent-dim) !important;
+}
+main article pre.has-copy .copy-btn.copied {
+  color: #3fb950 !important;
+  border-color: #238636 !important;
+}
+
+/* ============================================================
+   Index page (post listing): card-style entries.
+   ============================================================ */
+main article.post-card {
+  max-width: 800px;
+  margin: 0 auto !important;
+  padding: 24px 0;
+  border-bottom: 1px solid var(--border);
+}
+main article.post-card:last-of-type { border-bottom: none; }
+main article.post-card header h2 {
+  margin: 0 0 8px;
+  font-size: 1.6em;
+  letter-spacing: -0.02em;
+}
+main article.post-card header h2 a { color: var(--fg-strong); }
+main article.post-card header h2 a:hover { color: var(--accent); }
+main article.post-card .post-meta {
+  margin: 0 0 12px;
+  color: var(--fg-dim);
+  font-size: 0.9em;
+}
+main article.post-card .post-meta a {
+  color: var(--accent);
+  background: transparent !important;
+  padding: 0 !important;
+}
+main article.post-card ul.tag-pills {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+main article.post-card ul.tag-pills li a {
+  display: inline-block;
+  padding: 3px 12px;
+  font-size: 0.78em;
+  background: var(--tag-bg);
+  color: var(--fg);
+  border-radius: 999px;
+  text-decoration: none;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+main article.post-card ul.tag-pills li a:hover {
+  background: var(--bg-elev-2);
+  border-color: var(--accent-dim);
+  color: var(--accent-strong);
+}
+main article.post-card div { color: var(--fg); font-size: 16px; }
+main article.post-card a.btn {
+  background: var(--accent-dim) !important;
+  color: var(--fg-strong) !important;
+  border-radius: 4px;
+  padding: 6px 14px !important;
+  font-size: 0.85em !important;
+  margin-top: 12px;
+}
+main article.post-card a.btn:hover { background: var(--accent) !important; }
+
+/* Category-intro */
+main section.category-intro {
+  max-width: 800px;
+  margin: 0 auto 24px !important;
+  padding: 24px 0 16px;
+  border-bottom: 1px solid var(--border);
+}
+main section.category-intro h1 {
+  margin: 0 0 8px;
+  font-size: 2em;
+  color: var(--fg-strong);
+}
+main section.category-intro p { color: var(--fg-dim); margin: 0; }
+
+/* Pagination + footer + neighbors */
+main .pagination, main .neighbors { color: var(--fg-dim); }
+main .pagination a, main .neighbors a { color: var(--accent); }
+main footer {
+  border-top: 1px solid var(--border);
+  background: var(--bg);
+  padding: 16px 32px !important;
+  margin-top: 48px;
+}
+main footer p { color: var(--fg-dim); }
+
+/* Tag cloud (tags index page) */
+.tagcloud a {
+  background: var(--tag-bg);
+  color: var(--fg);
+  padding: 3px 10px;
+  margin: 2px;
+  border-radius: 999px;
+  font-size: 0.85em;
+}
+.tagcloud a:hover {
+  background: var(--bg-elev-2);
+  color: var(--accent-strong);
+}
+
+/* Inline SVG icons */
+.btn svg.icon {
+  width: 0.9em; height: 0.9em; vertical-align: -0.125em; fill: currentColor;
+}
+
+/* Read-more button */
+.read-more {
+  background: var(--accent-dim);
+  color: var(--fg-strong);
+  border-radius: 4px;
+  padding: 6px 12px;
+  text-decoration: none;
+  display: inline-block;
+}
+.read-more:hover { background: var(--accent); }
+
+/* ============================================================
+   Override Flex's default orange .btn styling site-wide.
+   The neighbors partial (Previous/Next Post) and Continue Reading
+   on index page use this class.
+   ============================================================ */
+a.btn,
+section#isso-thread section.auth-section p.post-action input {
+  background-color: var(--accent-dim) !important;
+  color: var(--fg-strong) !important;
+  border: 1px solid transparent !important;
+  border-radius: 4px !important;
+  padding: 8px 14px !important;
+  font-size: 0.85em !important;
+  text-decoration: none;
+  transition: background-color 120ms, border-color 120ms;
+}
+a.btn:hover,
+section#isso-thread section.auth-section p.post-action input:hover {
+  background-color: var(--accent) !important;
+  border-color: var(--accent-strong) !important;
+  color: var(--fg-strong) !important;
+}
+
+/* Previous/Next post container spacing on the dark layout */
+main article.single .neighbors {
+  height: auto !important;
+  margin: 32px 0 !important;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  grid-column: 1 / -1;
+}
+main article.single .neighbors a.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+/* The .btn inherits float-left/float-right from Flex; flexbox handles
+   alignment now, so neutralize the floats inside .neighbors. */
+main article.single .neighbors a.btn.float-left,
+main article.single .neighbors a.btn.float-right {
+  float: none;
+}
+
+/* ============================================================
+   Homepage: intro block, category strip, featured posts panel.
+   Only renders on the home (first page of paginated index).
+   ============================================================ */
+
+/* Above-the-fold intro */
+main section.home-intro {
+  max-width: 800px;
+  margin: 0 auto !important;
+  padding: 48px 32px 24px;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+}
+main section.home-intro h1 {
+  margin: 0 0 8px;
+  font-size: 2.6em;
+  letter-spacing: -0.02em;
+  color: var(--fg-strong);
+}
+main section.home-intro p.subtitle {
+  margin: 0 0 16px;
+  font-size: 1.15em;
+  color: var(--accent);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+main section.home-intro p.description {
+  margin: 0 auto;
+  max-width: 600px;
+  color: var(--fg-dim);
+  font-size: 0.95em;
+  line-height: 1.55;
+}
+
+/* Category navigation strip */
+main nav.home-categories {
+  max-width: 800px;
+  margin: 24px auto 36px !important;
+  padding: 0 32px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  position: static;
+  text-align: center !important;
+}
+main nav.home-categories::before { content: none; }
+main nav.home-categories a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px !important;
+  font-size: 13px !important;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: var(--bg-elev);
+  color: var(--fg) !important;
+  text-decoration: none;
+  text-transform: none !important;
+  transition: border-color 120ms, color 120ms, background 120ms;
+}
+main nav.home-categories a:hover {
+  background: var(--bg-elev-2) !important;
+  border-color: var(--accent-dim);
+  color: var(--accent-strong) !important;
+}
+main nav.home-categories .cat-name {
+  font-weight: 600;
+}
+main nav.home-categories .cat-count {
+  display: inline-block;
+  min-width: 20px;
+  padding: 1px 7px;
+  font-size: 11px;
+  font-family: 'Source Code Pro', monospace;
+  color: var(--fg-dim);
+  background: var(--bg);
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  text-align: center;
+}
+
+/* Section labels (Start here, Latest posts) */
+main h2.section-label {
+  max-width: 800px;
+  margin: 32px auto 16px !important;
+  padding: 0 32px;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  font-weight: 700;
+  border: none;
+}
+
+/* Featured posts grid */
+main section.home-featured {
+  max-width: 1200px;
+  margin: 0 auto !important;
+  padding: 0 32px 16px;
+}
+main section.home-featured .featured-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+main section.home-featured article.featured-card {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  transition: border-color 120ms, transform 120ms;
+}
+main section.home-featured article.featured-card:hover {
+  border-color: var(--accent-dim);
+  transform: translateY(-2px);
+}
+main section.home-featured article.featured-card p.cat {
+  margin: 0 0 8px;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  font-weight: 700;
+}
+main section.home-featured article.featured-card h3 {
+  margin: 0 0 12px;
+  font-size: 1.15em;
+  line-height: 1.3;
+  color: var(--fg-strong);
+}
+main section.home-featured article.featured-card h3 a {
+  color: var(--fg-strong);
+  text-decoration: none;
+}
+main section.home-featured article.featured-card:hover h3 a {
+  color: var(--accent);
+}
+main section.home-featured article.featured-card p.excerpt {
+  margin: 0 0 12px;
+  font-size: 0.9em;
+  color: var(--fg);
+  line-height: 1.5;
+  flex: 1;
+}
+main section.home-featured article.featured-card p.meta {
+  margin: 0;
+  font-size: 0.78em;
+  color: var(--fg-dim);
+  letter-spacing: 0.05em;
+}
+
+@media (max-width: 900px) {
+  main section.home-featured .featured-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Compact post-cards after featured panel: undo big top spacing on first card */
+main h2.section-label + article.post-card {
+  border-top: none;
+}
+
+/* Footer feed-subscribe link */
+main footer p.footer-feeds {
+  margin: 0 0 8px;
+  font-size: 12px !important;
+  color: var(--fg-dim);
+}
+main footer p.footer-feeds a {
+  color: var(--accent);
+  font-weight: 600;
+}
+main footer p.footer-feeds a:hover { color: var(--accent-strong); }
+
+/* ============================================================
+   Layout-shift hardening (CLS fix from Cloudflare RUM data).
+   The 'html>body.light-theme>main>article' element on / was reporting
+   CLS 0.221. Reserve space for homepage layout elements that
+   otherwise paint, then resize as content/fonts load.
+   ============================================================ */
+
+/* Featured grid: reserve a min-height so the row is stable
+   before card content paints. Tuned to the natural height of
+   3 cards with category, title, excerpt, and meta lines. */
+main section.home-featured .featured-grid {
+  min-height: 240px;
+}
+@media (max-width: 900px) {
+  main section.home-featured .featured-grid { min-height: 720px; }
+}
+main section.home-featured article.featured-card {
+  /* Lock minimum card height so flex-grow on the excerpt does
+     not jitter as fonts swap from system to Source Sans Pro. */
+  min-height: 220px;
+}
+
+/* Category strip: lock to a single row by default; pills inside
+   wrap inside-the-bounded-row rather than pushing content down. */
+main nav.home-categories {
+  min-height: 36px;
+}
+
+/* Intro: stable height while fonts swap. */
+main section.home-intro {
+  min-height: 220px;
+}
+
+/* All article-content images get explicit aspect-ratio so the
+   browser reserves layout space before image bytes arrive.
+   Fixes CLS for images without width/height attrs in markdown. */
+main article p img {
+  aspect-ratio: auto;
+  height: auto;
+  max-width: 100%;
+  display: block;
+}
+
+/* Flex's stylesheet sets `div.figure figcaption, figure figcaption {
+   color: #242121 }`. That selector has specificity 0,0,2, so a bare
+   `figcaption` rule loses the cascade against the dark theme. Match
+   the same specificity to actually take effect. Both fail WCAG AA
+   against the dark background (#242121 vs #1a1c20 is ~1.2:1). */
+div.figure,
+figure {
+  color: var(--fg);
+}
+div.figure figcaption,
+figure figcaption {
+  color: var(--fg);
+  font-style: italic;
+}
+
+/* Heading-level fix: the article TOC, related-posts, and series headings
+   were h4 in the Flex theme, which skipped levels (h1 -> h4) and broke
+   WCAG outline-order. They are now h2, peer to the body's h2 sections.
+   Preserve the smaller visual size with these class overrides so the
+   semantic change does not blow up the layout. */
+.aside-heading,
+.related-heading,
+.series-heading {
+  font-size: 1.36em;
+  margin: 20px 0 10px;
+}
+
+/* Footer attribution links must be distinguishable by more than color
+   (WCAG 1.4.1, Level A). The global `a { text-decoration: none }` rule
+   leaves them indistinguishable from surrounding text in a paragraph
+   that is already colored gray. Add an underline only inside the
+   footer to fix the audit finding without changing site-wide link
+   styling. */
+main footer a {
+  text-decoration: underline;
+}
+
+/* Pygments comment colors. Monokai's #75715e measures ~3.7:1 against
+   our custom code-block background #14161a, failing WCAG AA's 4.5:1
+   threshold for normal text. Bump comment classes to a lighter gray
+   (#a8a596, ~6:1) so code comments remain readable. Covers .c, .c1,
+   .ch, .cm, .cp, .cpf, .cs, and .gu (which monokai also styles as
+   commentary). */
+.highlight .c,
+.highlight .c1,
+.highlight .ch,
+.highlight .cm,
+.highlight .cp,
+.highlight .cpf,
+.highlight .cs,
+.highlight .gu,
+.literal-block .c,
+.literal-block .c1,
+.literal-block .ch,
+.literal-block .cm,
+.literal-block .cp,
+.literal-block .cpf,
+.literal-block .cs,
+.literal-block .gu {
+  color: #a8a596;
+}

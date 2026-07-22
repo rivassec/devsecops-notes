@@ -1,0 +1,297 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="" />
+
+
+  <link rel="stylesheet" type="text/css" href="https://rivassec.com/theme/stylesheet/style.min.css">
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="https://rivassec.com/theme/pygments/monokai.min.css">
+
+
+
+  <link rel="stylesheet" type="text/css" href="https://rivassec.com/static/custom.css">
+
+  <link rel="icon" href="https://rivassec.com/favicon.ico" sizes="any">
+  <link rel="icon" href="https://rivassec.com/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="https://rivassec.com/favicon-16.png" type="image/png" sizes="16x16">
+  <link rel="apple-touch-icon" href="https://rivassec.com/apple-touch-icon.png" sizes="180x180">
+
+  <!-- Chrome, Firefox OS and Opera -->
+  <meta name="theme-color" content="#222222">
+  <!-- Windows Phone -->
+  <meta name="msapplication-navbutton-color" content="#222222">
+  <!-- iOS Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!-- Microsoft EDGE -->
+  <meta name="msapplication-TileColor" content="#222222">
+
+  <link href="https://rivassec.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="RivasSec | DevSecOps, Kubernetes, AWS IAM Atom">
+
+
+
+
+
+
+<meta name="author" content="RivasSec" />
+<meta name="description" content="Most IAM reviews start too late. By the time someone is staring at a JSON policy the account structure, trust boundaries, and CI paths are already decided. Least privilege is not fewer actions; it is smaller failure domains." />
+<meta name="keywords" content="aws, iam, devsecops, cloud-security, threat-modeling">
+
+
+  <meta property="og:site_name" content="RivasSec | DevSecOps, Kubernetes, AWS IAM"/>
+  <meta property="og:title" content="IAM Blast Radius Is an Architecture Problem, Not a Policy Problem"/>
+  <meta property="og:description" content="Most IAM reviews start too late. By the time someone is staring at a JSON policy the account structure, trust boundaries, and CI paths are already decided. Least privilege is not fewer actions; it is smaller failure domains."/>
+  <meta property="og:locale" content="en_US"/>
+  <meta property="og:url" content="https://rivassec.com/iam-blast-radius-architecture-problem.html"/>
+  <meta property="og:type" content="article"/>
+  <meta property="article:published_time" content="2026-07-21 00:00:00-07:00"/>
+  <meta property="article:modified_time" content="2026-07-21 00:00:00-07:00"/>
+  <meta property="article:author" content="https://rivassec.com/author/rivassec.html">
+  <meta property="article:section" content="DevSecOps"/>
+  <meta property="article:tag" content="aws"/>
+  <meta property="article:tag" content="iam"/>
+  <meta property="article:tag" content="devsecops"/>
+  <meta property="article:tag" content="cloud-security"/>
+  <meta property="article:tag" content="threat-modeling"/>
+  <meta property="og:image" content="https://rivassec.com/images/covers/iam-blast-radius-architecture-problem.png">
+  <meta property="og:image:alt" content="IAM Blast Radius Is an Architecture Problem, Not a Policy Problem">
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="IAM Blast Radius Is an Architecture Problem, Not a Policy Problem"/>
+  <meta name="twitter:description" content="Most IAM reviews start too late. By the time someone is staring at a JSON policy the account structure, trust boundaries, and CI paths are already decided. Least privilege is not fewer actions; it is smaller failure domains."/>
+  <meta name="twitter:site" content="@rivassec"/>
+  <meta name="twitter:creator" content="@rivassec"/>
+  <meta name="twitter:image" content="https://rivassec.com/images/covers/iam-blast-radius-architecture-problem.png"/>
+  <meta name="twitter:image:alt" content="IAM Blast Radius Is an Architecture Problem, Not a Policy Problem"/>
+  <script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "name": "IAM Blast Radius Is an Architecture Problem, Not a Policy Problem",
+    "headline": "IAM Blast Radius Is an Architecture Problem, Not a Policy Problem",
+    "datePublished": "2026-07-21 00:00:00-07:00",
+    "dateModified": "2026-07-21 00:00:00-07:00",
+    "author": {
+      "@type": "Person",
+      "name": "RivasSec",
+      "url": "https://rivassec.com/author/rivassec.html"
+    },
+    "image": "https://rivassec.com/images/covers/iam-blast-radius-architecture-problem.png",
+    "url": "https://rivassec.com/iam-blast-radius-architecture-problem.html",
+    "description": "Most IAM reviews start too late. By the time someone is staring at a JSON policy the account structure, trust boundaries, and CI paths are already decided. Least privilege is not fewer actions; it is smaller failure domains."
+  }
+  </script>
+
+  <title>RivasSec | DevSecOps, Kubernetes, AWS IAM &ndash; IAM Blast Radius Is an Architecture Problem, Not a Policy Problem</title>
+</head>
+<body class="light-theme">
+<aside>
+  <div>
+    <a href="https://rivassec.com/">
+      <img src="images/avatar.png" alt="RivasSec" title="RivasSec">
+    </a>
+
+    <h1>
+      <a href="https://rivassec.com/">RivasSec</a>
+    </h1>
+
+    <p>Infrastructure. Security. Insight.</p>
+
+
+
+    <ul class="social">
+      <li>
+        <a class="sc-github"
+           aria-label="GitHub"
+           href="https://github.com/rivassec"
+           target="_blank">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512" aria-hidden="true" focusable="false"><path fill="currentColor" d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3 .3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5 .3-6.2 2.3zm44.2-1.7c-2.9 .7-4.9 2.6-4.6 4.9 .3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3 .7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3 .3 2.9 2.3 3.9 1.6 1 3.6 .7 4.3-.7 .7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3 .7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3 .7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>        </a>
+      </li>
+    </ul>
+  </div>
+
+</aside>
+  <main>
+<nav>
+  <a href="https://rivassec.com/">Home</a>
+
+  <a href="https://rivassec.com/pages/about.html">About</a>
+  <a href="https://rivassec.com/categories.html">Categories</a>
+  <a href="https://github.com/rivassec">GitHub</a>
+
+  <a href="https://rivassec.com/feeds/all.atom.xml">Atom</a>
+
+</nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="iam-blast-radius-architecture-problem">IAM Blast Radius Is an Architecture Problem, Not a Policy Problem</h1>
+    <p>
+      Posted on Tue 21 July 2026 in <a href="https://rivassec.com/category/devsecops.html">DevSecOps</a>
+
+        &#8226; 5 min read
+    </p>
+  </header>
+
+  <aside class="article-toc" aria-label="Table of contents">
+    <h2 class="aside-heading">On this page</h2>
+    <div class="toc">
+<ul>
+<li><a href="#most-iam-reviews-start-too-late">Most IAM reviews start too late</a></li>
+<li><a href="#policies-as-documents-vs-identities-as-architecture">Policies as documents vs identities as architecture</a></li>
+<li><a href="#better-questions-than-does-this-policy-contain">Better questions than "does this policy contain *?"</a></li>
+<li><a href="#attackers-experience-the-environment-as-a-graph">Attackers experience the environment as a graph</a></li>
+<li><a href="#where-compliance-checklists-fall-short">Where compliance checklists fall short</a></li>
+<li><a href="#good-iam-architecture-starts-with-containment">Good IAM architecture starts with containment</a></li>
+<li><a href="#trust-made-visible">Trust made visible</a></li>
+</ul>
+</div>
+  </aside>
+
+  <div>
+    
+<h2 id="most-iam-reviews-start-too-late">Most IAM reviews start too late</h2>
+<p>Most IAM reviews start too late.</p>
+<p>By the time someone is staring at a JSON policy, many of the important security decisions have already been made. The account structure exists. The trust relationships exist. The CI/CD path exists. The Terraform state exists. The production data, deployment roles, and trust boundaries are already in place.</p>
+<p>At that point, the policy review is often just cleanup. Useful cleanup, but still cleanup.</p>
+<p>The real IAM question is not only, "Does this policy look least privileged?" The real question is, "What happens when this identity is compromised?"</p>
+<hr/>
+<h2 id="policies-as-documents-vs-identities-as-architecture">Policies as documents vs identities as architecture</h2>
+<p>A lot of IAM programs stay shallow because they focus on permissions as isolated documents instead of treating identities as part of the system architecture. A policy can avoid wildcards and still create an unacceptable failure domain. A role can look narrow in isolation and still become dangerous because of who can assume it, what it can mutate, or what other paths it unlocks.</p>
+<p>Least privilege is not just fewer actions. Least privilege is smaller failure domains.</p>
+<ul>
+<li>A CI role that can deploy to every environment is not just a deployment role. It is a production-wide failure domain.</li>
+<li>A Terraform role that can modify IAM, networking, logging, and state stores is not just infrastructure automation. It is a control plane for the company.</li>
+<li>A workload identity that can read secrets, write artifacts, or assume a runner role is not just an application permission. It may be a persistence path.</li>
+<li>A Kubernetes service account that can patch workloads, mount secrets, or read nodes is not just a cluster detail. It can become a lateral movement primitive.</li>
+</ul>
+<p>This is why reviewing IAM as JSON hygiene misses the point.</p>
+<hr/>
+<h2 id="better-questions-than-does-this-policy-contain">Better questions than "does this policy contain <code>*</code>?"</h2>
+<p>The dangerous question is rarely, "Does this policy contain <code>Action: *</code>?"</p>
+<p>The better questions are:</p>
+<ul>
+<li>What trust boundary does this identity cross?</li>
+<li>What data class can it reach?</li>
+<li>Can it mutate code, infrastructure, identity, or logs?</li>
+<li>Can it change the deployment path?</li>
+<li>Can it create persistence?</li>
+<li>Can it assume, pass, bind, or influence another identity?</li>
+<li>What detects misuse?</li>
+<li>What is the rollback path?</li>
+<li>What happens if this identity is compromised at 2:00 AM, and who can contain it?</li>
+</ul>
+<p>Those questions move IAM reviews out of the policy document and back into the architecture.</p>
+<hr/>
+<h2 id="attackers-experience-the-environment-as-a-graph">Attackers experience the environment as a graph</h2>
+<p>Attackers do not experience your environment as a set of clean policy JSONs. They experience it as a graph. Trust relationships, deployment pipelines, secrets, buckets, queues, roles, runners, clusters, and logs all become edges in that graph.</p>
+<p>A permission that looks harmless in one context can become serious in another:</p>
+<ul>
+<li>Read access to an artifact bucket may expose deployable code.</li>
+<li>Write access to that same bucket may become code execution.</li>
+<li>Permission to update a build pipeline may become production access.</li>
+<li>Permission to read Terraform state may expose secrets, role names, network topology, or privileged paths.</li>
+<li>Permission to <code>iam:PassRole</code> may matter more than the actions listed in the role's own policy.</li>
+</ul>
+<p>IAM design has to account for that graph.</p>
+<hr/>
+<h2 id="where-compliance-checklists-fall-short">Where compliance checklists fall short</h2>
+<p>Compliance checklists can tell you whether a policy contains obvious broad permissions. They can tell you whether MFA is required. They can tell you whether a role was unused for 90 days.</p>
+<p>Those checks are useful. They are not enough.</p>
+<p>They do not always tell you whether a compromised CI runner can mutate production. They do not tell you whether a developer role can indirectly mutate identity through Terraform. They do not tell you whether an application can turn a read permission into credential exposure. They do not tell you whether logs would show the difference between normal automation and abuse.</p>
+<p>The checklist verifies the shape of the policy. It does not verify the shape of the blast radius.</p>
+<hr/>
+<h2 id="good-iam-architecture-starts-with-containment">Good IAM architecture starts with containment</h2>
+<p>Containment is a design choice made before the policy review begins:</p>
+<ul>
+<li><strong>Separate deployment identities by app and environment.</strong> An incident in staging or an isolated service should not be able to cascade across boundaries.</li>
+<li><strong>Keep identity mutation behind tighter controls.</strong> Restrict rights to modify roles, policies, and trust relationships far more aggressively than ordinary infrastructure changes.</li>
+<li><strong>Protect Terraform state like sensitive production data.</strong> Treat state files as high-risk assets containing secrets, architecture maps, and privileged paths.</li>
+<li><strong>Treat CI/CD as privileged infrastructure.</strong> Build pipelines are not generic automation; they are execution engines with direct access to production state.</li>
+<li><strong>Make role assumption paths explicit.</strong> Require clear, auditable trust policies rather than broad, ambient role-chaining.</li>
+<li><strong>Detect sensitive actions, not just policy drift.</strong> Monitor for abnormal role assumptions, key generation, and identity mutation in real time.</li>
+<li><strong>Make rollback work without the compromised identity.</strong> Break-glass and incident containment paths must not depend on the very principals being isolated.</li>
+</ul>
+<p>This is slower than rubber-stamping a policy PR. It is also the work that actually matters.</p>
+<p>The safer default is easier to enforce when it is baked into the tooling. A small library like <a href="https://rivassec.com/iam-safe-defaults-fail-loud.html">iam-safe-defaults</a> can move the argument from "should this role have a permissions boundary" to "why is this role opting out of one," which is where you want the conversation to live.</p>
+<hr/>
+<h2 id="trust-made-visible">Trust made visible</h2>
+<p>IAM is not only an access control system. It is one of the main ways cloud architecture expresses trust. Every role, policy, permission boundary, service account, and deployment credential says something about what the system believes can safely happen.</p>
+<p>When those beliefs are wrong, the incident does not stay inside the JSON file. It leaks through the architecture.</p>
+<p>That is why mature IAM reviews should feel less like linting and more like threat modeling. The reviewer should be asking what the identity can reach, what it can change, what is unrecoverable, what it can hide, and how far the damage can spread before someone notices.</p>
+<p>A clean policy is good. A contained failure domain is better.</p>
+<p>The strongest IAM programs understand that distinction. They do not stop at removing wildcards. They design systems where one compromised principal cannot rewrite production, erase the evidence, and call it automation. Adoption of that shape is a control in its own right, which is a longer story told in <a href="https://rivassec.com/paved-road-adoption-as-control.html">Adoption Is a Security Control</a>.</p>
+<p>The goal is not a prettier IAM policy. The goal is a system where one compromised principal cannot become a company-wide incident.</p>
+<p>IAM blast radius is an architecture problem. The policy is only where the architecture becomes visible.</p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://rivassec.com/tag/aws.html">aws</a>
+      <a href="https://rivassec.com/tag/iam.html">iam</a>
+      <a href="https://rivassec.com/tag/devsecops.html">devsecops</a>
+      <a href="https://rivassec.com/tag/cloud-security.html">cloud-security</a>
+      <a href="https://rivassec.com/tag/threat-modeling.html">threat-modeling</a>
+    </p>
+  </div>
+
+
+  <div class="neighbors">
+    <a class="btn float-left" href="https://rivassec.com/hiring-discovery-layer-broken.html" title="The Discovery Layer Is Broken: Hiring as an Observability Problem">
+      <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512" aria-hidden="true" focusable="false"><path fill="currentColor" d="M192 448c-8.188 0-16.38-3.125-22.62-9.375l-160-160c-12.5-12.5-12.5-32.75 0-45.25l160-160c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25L77.25 256l137.4 137.4c12.5 12.5 12.5 32.75 0 45.25C208.4 444.9 200.2 448 192 448z"/></svg>
+      Previous Post
+    </a>
+  </div>
+
+  <div class="related-posts">
+    <h2 class="related-heading">You might enjoy</h2>
+    <ul class="related-posts">
+      <li><a href="https://rivassec.com/iam-safe-defaults-fail-loud.html">IAM Roles That Fail Loud: Small Defaults, Big Difference</a></li>
+      <li><a href="https://rivassec.com/paved-road-adoption-as-control.html">Adoption Is a Security Control: Notes from Paving a Road</a></li>
+      <li><a href="https://rivassec.com/elasticsearch-secure-snapshot-verification.html">Elasticsearch Snapshot Verification, Minimal Privileges</a></li>
+      <li><a href="https://rivassec.com/hiring-discovery-layer-broken.html">The Discovery Layer Is Broken: Hiring as an Observability Problem</a></li>
+      <li><a href="https://rivassec.com/trust-decay-adversarial-hiring.html">The Trust Decay: Why Modern Hiring Has Become an Adversarial System</a></li>
+    </ul>
+  </div>
+
+
+</article>
+
+<footer>
+    <p class="footer-feeds">
+      Subscribe:
+      <a href="https://rivassec.com/feeds/all.atom.xml" rel="alternate" type="application/atom+xml">Atom</a>
+    </p>
+<p>&copy;  RivasSec</p>
+<p class="footer-meta">
+  <a href="https://rivassec.com/accessibility/">Accessibility</a>
+</p>
+<p>
+Built with <a href="https://getpelican.com" target="_blank" rel="noopener">Pelican</a> using <a href="https://github.com/alexandrevicenzi/Flex" target="_blank" rel="noopener">Flex</a> theme
+</p></footer>  </main>
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "WebSite",
+  "name": "RivasSec | DevSecOps, Kubernetes, AWS IAM",
+  "url" : "https://rivassec.com",
+  "image": "https://rivassec.com/images/og-default.png",
+  "description": "Field notes on infrastructure security, cloud hardening, Kubernetes, IAM, and OSINT by RivasSec.",
+  "author": {
+    "@type": "Person",
+    "name": "RivasSec",
+    "url": "https://rivassec.com"    ,"sameAs": [      "https://github.com/rivassec"    ]  }
+}
+</script>
+  <script defer src="https://rivassec.com/static/copy-code.js"></script>
+
+</body>
+</html>

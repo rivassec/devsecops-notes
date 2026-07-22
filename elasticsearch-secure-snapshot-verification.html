@@ -1,0 +1,325 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="" />
+
+
+  <link rel="stylesheet" type="text/css" href="https://rivassec.com/theme/stylesheet/style.min.css">
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="https://rivassec.com/theme/pygments/monokai.min.css">
+
+
+
+  <link rel="stylesheet" type="text/css" href="https://rivassec.com/static/custom.css">
+
+  <link rel="icon" href="https://rivassec.com/favicon.ico" sizes="any">
+  <link rel="icon" href="https://rivassec.com/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="https://rivassec.com/favicon-16.png" type="image/png" sizes="16x16">
+  <link rel="apple-touch-icon" href="https://rivassec.com/apple-touch-icon.png" sizes="180x180">
+
+  <!-- Chrome, Firefox OS and Opera -->
+  <meta name="theme-color" content="#222222">
+  <!-- Windows Phone -->
+  <meta name="msapplication-navbutton-color" content="#222222">
+  <!-- iOS Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!-- Microsoft EDGE -->
+  <meta name="msapplication-TileColor" content="#222222">
+
+  <link href="https://rivassec.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="RivasSec | DevSecOps, Kubernetes, AWS IAM Atom">
+
+
+
+
+
+
+<meta name="author" content="RivasSec" />
+<meta name="description" content="Verify Elasticsearch snapshots without manage_snapshot: minimal API key, Prometheus-friendly script, and a public tools repo for hardened monitoring automation." />
+<meta name="keywords" content="elasticsearch, prometheus, observability, iam">
+
+
+  <meta property="og:site_name" content="RivasSec | DevSecOps, Kubernetes, AWS IAM"/>
+  <meta property="og:title" content="Elasticsearch Snapshot Verification, Minimal Privileges"/>
+  <meta property="og:description" content="Verify Elasticsearch snapshots without manage_snapshot: minimal API key, Prometheus-friendly script, and a public tools repo for hardened monitoring automation."/>
+  <meta property="og:locale" content="en_US"/>
+  <meta property="og:url" content="https://rivassec.com/elasticsearch-secure-snapshot-verification.html"/>
+  <meta property="og:type" content="article"/>
+  <meta property="article:published_time" content="2025-04-20 00:00:00-07:00"/>
+  <meta property="article:modified_time" content="2026-05-12 00:00:00-07:00"/>
+  <meta property="article:author" content="https://rivassec.com/author/rivassec.html">
+  <meta property="article:section" content="DevSecOps"/>
+  <meta property="article:tag" content="elasticsearch"/>
+  <meta property="article:tag" content="prometheus"/>
+  <meta property="article:tag" content="observability"/>
+  <meta property="article:tag" content="iam"/>
+  <meta property="og:image" content="https://rivassec.com/images/covers/elasticsearch-secure-snapshot-verification.png">
+  <meta property="og:image:alt" content="Elasticsearch Snapshot Verification, Minimal Privileges">
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="Elasticsearch Snapshot Verification, Minimal Privileges"/>
+  <meta name="twitter:description" content="Verify Elasticsearch snapshots without manage_snapshot: minimal API key, Prometheus-friendly script, and a public tools repo for hardened monitoring automation."/>
+  <meta name="twitter:site" content="@rivassec"/>
+  <meta name="twitter:creator" content="@rivassec"/>
+  <meta name="twitter:image" content="https://rivassec.com/images/covers/elasticsearch-secure-snapshot-verification.png"/>
+  <meta name="twitter:image:alt" content="Elasticsearch Snapshot Verification, Minimal Privileges"/>
+  <script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "name": "Elasticsearch Snapshot Verification, Minimal Privileges",
+    "headline": "Elasticsearch Snapshot Verification, Minimal Privileges",
+    "datePublished": "2025-04-20 00:00:00-07:00",
+    "dateModified": "2026-05-12 00:00:00-07:00",
+    "author": {
+      "@type": "Person",
+      "name": "RivasSec",
+      "url": "https://rivassec.com/author/rivassec.html"
+    },
+    "image": "https://rivassec.com/images/covers/elasticsearch-secure-snapshot-verification.png",
+    "url": "https://rivassec.com/elasticsearch-secure-snapshot-verification.html",
+    "description": "Verify Elasticsearch snapshots without manage_snapshot: minimal API key, Prometheus-friendly script, and a public tools repo for hardened monitoring automation."
+  }
+  </script>
+
+  <title>RivasSec | DevSecOps, Kubernetes, AWS IAM &ndash; Elasticsearch Snapshot Verification, Minimal Privileges</title>
+</head>
+<body class="light-theme">
+<aside>
+  <div>
+    <a href="https://rivassec.com/">
+      <img src="images/avatar.png" alt="RivasSec" title="RivasSec">
+    </a>
+
+    <h1>
+      <a href="https://rivassec.com/">RivasSec</a>
+    </h1>
+
+    <p>Infrastructure. Security. Insight.</p>
+
+
+
+    <ul class="social">
+      <li>
+        <a class="sc-github"
+           aria-label="GitHub"
+           href="https://github.com/rivassec"
+           target="_blank">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512" aria-hidden="true" focusable="false"><path fill="currentColor" d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3 .3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5 .3-6.2 2.3zm44.2-1.7c-2.9 .7-4.9 2.6-4.6 4.9 .3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3 .7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3 .3 2.9 2.3 3.9 1.6 1 3.6 .7 4.3-.7 .7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3 .7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3 .7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>        </a>
+      </li>
+    </ul>
+  </div>
+
+</aside>
+  <main>
+<nav>
+  <a href="https://rivassec.com/">Home</a>
+
+  <a href="https://rivassec.com/pages/about.html">About</a>
+  <a href="https://rivassec.com/categories.html">Categories</a>
+  <a href="https://github.com/rivassec">GitHub</a>
+
+  <a href="https://rivassec.com/feeds/all.atom.xml">Atom</a>
+
+</nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="elasticsearch-secure-snapshot-verification">Elasticsearch Snapshot Verification, Minimal Privileges</h1>
+    <p>
+      Posted on Sun 20 April 2025 in <a href="https://rivassec.com/category/devsecops.html">DevSecOps</a>
+
+        &#8226; 3 min read
+    </p>
+  </header>
+
+
+  <div>
+    <p>Verifying Elasticsearch snapshots typically requires broad <code>manage</code> permissions. This can be risky, especially if credentials are compromised. We can reduce the blast radius by defining a minimal role that grants only the specific actions necessary to verify snapshots without allowing deletions or alterations.</p>
+<p>In some environments, using external monitoring systems like Datadog or Prometheus may not be feasible. Whether due to air-gapped infrastructure, compliance restrictions, or footprint concerns, having a hardened custom script with minimal privileges can be a reliable fallback.</p>
+<p>To improve portability and maintainability, this article now references code and configuration files hosted in the <a href="https://github.com/rivassec/elasticsearch-tools">elasticsearch-tools GitHub repository</a>. This structure allows future updates to the tools without requiring edits to the article.</p>
+<h2 id="minimal-elasticsearch-role">Minimal Elasticsearch Role</h2>
+<p>Here is a role that avoids using <code>manage_snapshot</code> to reduce exposure. This ensures a compromised API key cannot delete or tamper with existing backups:</p>
+<p><a href="https://github.com/rivassec/elasticsearch-tools/blob/main/roles/snapshot_repo_readonly.json">View full role definition</a></p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;snapshot_repo_readonly&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;cluster&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="s2">&quot;cluster:admin/repository/get&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">&quot;cluster:admin/repository/verify&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">&quot;cluster:admin/snapshot/get&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">&quot;cluster:admin/snapshot/status&quot;</span>
+<span class="w">    </span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;indices&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">    </span><span class="nt">&quot;run_as&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">    </span><span class="nt">&quot;metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
+<span class="w">    </span><span class="nt">&quot;transient_metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="api-key-generation">API Key Generation</h2>
+<p>To generate an API key restricted to this role, use the following <code>curl</code> command. This allows access only to the approved cluster actions with a defined expiration period:</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-u<span class="w"> </span>elastic:<span class="si">${</span><span class="nv">ELASTICPASS</span><span class="si">}</span><span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;localhost:9200/_security/api_key&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span>@elasticsearch-tools/roles/snapshot_repo_readonly.json
+</code></pre></div>
+
+<h2 id="snapshot-verifier-script">Snapshot Verifier Script</h2>
+<p>This API key can be used with a lightweight shell script that verifies the repository and emits Prometheus-compatible metrics. The script is secure by design and includes input validation, safe temporary file handling, and minimal permissions.</p>
+<p><a href="https://github.com/rivassec/elasticsearch-tools/blob/main/scripts/verify_snapshot.sh">View the script</a></p>
+<div class="highlight"><pre><span></span><code><span class="ch">#!/bin/bash</span>
+
+<span class="c1">########################################################################</span>
+<span class="c1"># Hardened Snapshot Monitor for Elasticsearch</span>
+<span class="c1"># Purpose: Verify an Elasticsearch snapshot repository and expose</span>
+<span class="c1"># Prometheus-style metrics securely.</span>
+<span class="c1">########################################################################</span>
+
+<span class="nb">set</span><span class="w"> </span>-euo<span class="w"> </span>pipefail
+
+:<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">ES_HOST</span><span class="p">:=</span><span class="s2">&quot;http://localhost:9200&quot;</span><span class="si">}</span><span class="s2">&quot;</span>
+:<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">REPO_NAME</span><span class="p">:?Missing REPO_NAME</span><span class="si">}</span><span class="s2">&quot;</span>
+:<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">API_KEY_FILE</span><span class="p">:=</span><span class="s2">&quot;/etc/elasticsearch/readonly-api-key&quot;</span><span class="si">}</span><span class="s2">&quot;</span>
+:<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PROM_FILE</span><span class="p">:=</span><span class="s2">&quot;/var/lib/node_exporter/textfile_collector/es_snapshot.prom&quot;</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<span class="k">if</span><span class="w"> </span><span class="o">[[</span><span class="w"> </span>!<span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$API_KEY_FILE</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">]]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;[FATAL] API key file not found: </span><span class="nv">$API_KEY_FILE</span><span class="s2">&quot;</span><span class="w"> </span>&gt;<span class="p">&amp;</span><span class="m">2</span>
+<span class="w">  </span><span class="nb">exit</span><span class="w"> </span><span class="m">2</span>
+<span class="k">fi</span>
+
+<span class="k">if</span><span class="w"> </span><span class="o">[[</span><span class="w"> </span><span class="k">$(</span>stat<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;%a&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$API_KEY_FILE</span><span class="s2">&quot;</span><span class="k">)</span><span class="w"> </span>-gt<span class="w"> </span><span class="m">600</span><span class="w"> </span><span class="o">]]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;[FATAL] API key file permissions too permissive (should be 600 or less)&quot;</span><span class="w"> </span>&gt;<span class="p">&amp;</span><span class="m">2</span>
+<span class="w">  </span><span class="nb">exit</span><span class="w"> </span><span class="m">3</span>
+<span class="k">fi</span>
+
+<span class="nv">API_KEY</span><span class="o">=</span><span class="k">$(</span>&lt;<span class="s2">&quot;</span><span class="nv">$API_KEY_FILE</span><span class="s2">&quot;</span><span class="k">)</span>
+<span class="nv">TMP_PROM_FILE</span><span class="o">=</span><span class="k">$(</span>mktemp<span class="k">)</span>
+<span class="nv">safe_repo</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">REPO_NAME</span><span class="p">//[^a-zA-Z0-9_]/_</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="nv">timestamp</span><span class="o">=</span><span class="k">$(</span>date<span class="w"> </span>+%s<span class="k">)</span>
+
+<span class="nv">response</span><span class="o">=</span><span class="k">$(</span>curl<span class="w"> </span>-fsSL<span class="w"> </span>--retry<span class="w"> </span><span class="m">3</span><span class="w"> </span>--retry-delay<span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: ApiKey </span><span class="nv">$API_KEY</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$ES_HOST</span><span class="s2">/_snapshot/</span><span class="nv">$REPO_NAME</span><span class="s2">/_verify&quot;</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">true</span><span class="k">)</span>
+
+<span class="k">if</span><span class="w"> </span>jq<span class="w"> </span>-e<span class="w"> </span><span class="s1">&#39;.nodes | length &gt; 0&#39;</span><span class="w"> </span><span class="o">&lt;&lt;&lt;</span><span class="s2">&quot;</span><span class="nv">$response</span><span class="s2">&quot;</span><span class="w"> </span>&gt;/dev/null<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">  </span><span class="nv">result</span><span class="o">=</span><span class="m">1</span>
+<span class="w">  </span><span class="nv">status</span><span class="o">=</span><span class="s2">&quot;ok&quot;</span>
+<span class="k">else</span>
+<span class="w">  </span><span class="nv">result</span><span class="o">=</span><span class="m">0</span>
+<span class="w">  </span><span class="nv">status</span><span class="o">=</span><span class="s2">&quot;failed&quot;</span>
+<span class="k">fi</span>
+
+<span class="o">{</span>
+<span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;# HELP es_snapshot_repository_verified Success status of snapshot verification&quot;</span>
+<span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;# TYPE es_snapshot_repository_verified gauge&quot;</span>
+<span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;es_snapshot_repository_verified{repo=\&quot;</span><span class="nv">$safe_repo</span><span class="s2">\&quot;} </span><span class="nv">$result</span><span class="s2">&quot;</span>
+<span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;# HELP es_snapshot_repository_verified_at Unix timestamp of last check&quot;</span>
+<span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;# TYPE es_snapshot_repository_verified_at gauge&quot;</span>
+<span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;es_snapshot_repository_verified_at{repo=\&quot;</span><span class="nv">$safe_repo</span><span class="s2">\&quot;} </span><span class="nv">$timestamp</span><span class="s2">&quot;</span>
+<span class="o">}</span><span class="w"> </span>&gt;<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$TMP_PROM_FILE</span><span class="s2">&quot;</span>
+
+mv<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$TMP_PROM_FILE</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$PROM_FILE</span><span class="s2">&quot;</span>
+logger<span class="w"> </span>-t<span class="w"> </span>es-snapshot-monitor<span class="w"> </span><span class="s2">&quot;[INFO] Verification </span><span class="nv">$status</span><span class="s2"> for &#39;</span><span class="nv">$REPO_NAME</span><span class="s2">&#39; (code=</span><span class="nv">$result</span><span class="s2">)&quot;</span>
+
+<span class="nb">exit</span><span class="w"> </span><span class="m">0</span>
+</code></pre></div>
+
+<h2 id="cron-example">Cron Example</h2>
+<p>A cron job can be configured to run the script regularly:</p>
+<p><a href="https://github.com/rivassec/elasticsearch-tools/blob/main/examples/example_cronjob.sh">View example cron wrapper</a></p>
+<div class="highlight"><pre><span></span><code><span class="ch">#!/bin/bash</span>
+
+<span class="c1"># Note: For production use, place this logic directly into a cron job or systemd timer.</span>
+<span class="c1">#       This script is just an example for demonstration and testing.</span>
+
+<span class="c1"># Fail fast on error</span>
+<span class="nb">set</span><span class="w"> </span>-euo<span class="w"> </span>pipefail
+
+<span class="c1"># === Configuration ===</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">REPO_NAME</span><span class="o">=</span><span class="s2">&quot;my_backup_repo&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">ES_HOST</span><span class="o">=</span><span class="s2">&quot;http://localhost:9200&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">API_KEY_FILE</span><span class="o">=</span><span class="s2">&quot;/etc/elasticsearch/readonly-api-key&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">PROM_FILE</span><span class="o">=</span><span class="s2">&quot;/var/lib/node_exporter/textfile_collector/es_snapshot_</span><span class="si">${</span><span class="nv">REPO_NAME</span><span class="si">}</span><span class="s2">.prom&quot;</span>
+
+<span class="c1"># === Invoke snapshot verification script ===</span>
+/opt/elasticsearch-tools/tools/snapshot-verifier/verify_snapshot.sh
+</code></pre></div>
+
+<h2 id="usage-instructions">Usage Instructions</h2>
+<p>To install, configure, and run the snapshot verification system, follow the documentation in the repository:
+<a href="https://github.com/rivassec/elasticsearch-tools/blob/main/docs/USAGE.md">View usage guide</a></p>
+<p>This structure is ideal for environments with limited connectivity or strict compliance rules. It keeps the verification logic reproducible, auditable, and safe from privilege escalation risks. Updates to the tooling can be managed independently of the article, improving long-term maintainability. For the same "grant the minimum, refuse everything else" approach applied to AWS IAM, see <a href="https://rivassec.com/iam-safe-defaults-fail-loud.html">IAM Roles That Fail Loud</a>.</p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://rivassec.com/tag/elasticsearch.html">elasticsearch</a>
+      <a href="https://rivassec.com/tag/prometheus.html">prometheus</a>
+      <a href="https://rivassec.com/tag/observability.html">observability</a>
+      <a href="https://rivassec.com/tag/iam.html">iam</a>
+    </p>
+  </div>
+
+
+  <div class="neighbors">
+    <a class="btn float-left" href="https://rivassec.com/hardening-k8s.html" title="Hardening Kubernetes Deployments">
+      <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512" aria-hidden="true" focusable="false"><path fill="currentColor" d="M192 448c-8.188 0-16.38-3.125-22.62-9.375l-160-160c-12.5-12.5-12.5-32.75 0-45.25l160-160c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25L77.25 256l137.4 137.4c12.5 12.5 12.5 32.75 0 45.25C208.4 444.9 200.2 448 192 448z"/></svg>
+      Previous Post
+    </a>
+    <a class="btn float-right" href="https://rivassec.com/pwnagotchi-bluetooth-tethering.html" title="Never Lose Connection: Multi-Phone Bluetooth Tethering for Pwnagotchi">
+      Next Post
+      <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512" aria-hidden="true" focusable="false"><path fill="currentColor" d="M64 448c-8.188 0-16.38-3.125-22.62-9.375c-12.5-12.5-12.5-32.75 0-45.25L178.8 256L41.38 118.6c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0l160 160c12.5 12.5 12.5 32.75 0 45.25l-160 160C80.38 444.9 72.19 448 64 448z"/></svg>
+    </a>
+  </div>
+
+  <div class="related-posts">
+    <h2 class="related-heading">You might enjoy</h2>
+    <ul class="related-posts">
+      <li><a href="https://rivassec.com/iam-blast-radius-architecture-problem.html">IAM Blast Radius Is an Architecture Problem, Not a Policy Problem</a></li>
+      <li><a href="https://rivassec.com/iam-safe-defaults-fail-loud.html">IAM Roles That Fail Loud: Small Defaults, Big Difference</a></li>
+    </ul>
+  </div>
+
+
+</article>
+
+<footer>
+    <p class="footer-feeds">
+      Subscribe:
+      <a href="https://rivassec.com/feeds/all.atom.xml" rel="alternate" type="application/atom+xml">Atom</a>
+    </p>
+<p>&copy;  RivasSec</p>
+<p class="footer-meta">
+  <a href="https://rivassec.com/accessibility/">Accessibility</a>
+</p>
+<p>
+Built with <a href="https://getpelican.com" target="_blank" rel="noopener">Pelican</a> using <a href="https://github.com/alexandrevicenzi/Flex" target="_blank" rel="noopener">Flex</a> theme
+</p></footer>  </main>
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "WebSite",
+  "name": "RivasSec | DevSecOps, Kubernetes, AWS IAM",
+  "url" : "https://rivassec.com",
+  "image": "https://rivassec.com/images/og-default.png",
+  "description": "Field notes on infrastructure security, cloud hardening, Kubernetes, IAM, and OSINT by RivasSec.",
+  "author": {
+    "@type": "Person",
+    "name": "RivasSec",
+    "url": "https://rivassec.com"    ,"sameAs": [      "https://github.com/rivassec"    ]  }
+}
+</script>
+  <script defer src="https://rivassec.com/static/copy-code.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,705 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>RivasSec | DevSecOps, Kubernetes, AWS IAM - DevSecOps</title><link href="https://rivassec.com/" rel="alternate"/><link href="https://rivassec.com/feeds/devsecops.atom.xml" rel="self"/><id>https://rivassec.com/</id><updated>2026-07-21T00:00:00-07:00</updated><subtitle>Infrastructure. Security. Insight.</subtitle><entry><title>IAM Blast Radius Is an Architecture Problem, Not a Policy Problem</title><link href="https://rivassec.com/iam-blast-radius-architecture-problem.html" rel="alternate"/><published>2026-07-21T00:00:00-07:00</published><updated>2026-07-21T00:00:00-07:00</updated><author><name>RivasSec</name></author><id>tag:rivassec.com,2026-07-21:/iam-blast-radius-architecture-problem.html</id><summary type="html">&lt;p&gt;Most IAM reviews start too late. By the time someone is staring at a JSON policy the account structure, trust boundaries, and CI paths are already decided. Least privilege is not fewer actions; it is smaller failure domains.&lt;/p&gt;</summary><content type="html">
+&lt;h2 id="most-iam-reviews-start-too-late"&gt;Most IAM reviews start too late&lt;/h2&gt;
+&lt;p&gt;Most IAM reviews start too late.&lt;/p&gt;
+&lt;p&gt;By the time someone is staring at a JSON policy, many of the important security decisions have already been made. The account structure exists. The trust relationships exist. The CI/CD path exists. The Terraform state exists. The production data, deployment roles, and trust boundaries are already in place.&lt;/p&gt;
+&lt;p&gt;At that point, the policy review is often just cleanup. Useful cleanup, but still cleanup.&lt;/p&gt;
+&lt;p&gt;The real IAM question is not only, "Does this policy look least privileged?" The real question is, "What happens when this identity is compromised?"&lt;/p&gt;
+&lt;hr/&gt;
+&lt;h2 id="policies-as-documents-vs-identities-as-architecture"&gt;Policies as documents vs identities as architecture&lt;/h2&gt;
+&lt;p&gt;A lot of IAM programs stay shallow because they focus on permissions as isolated documents instead of treating identities as part of the system architecture. A policy can avoid wildcards and still create an unacceptable failure domain. A role can look narrow in isolation and still become dangerous because of who can assume it, what it can mutate, or what other paths it unlocks.&lt;/p&gt;
+&lt;p&gt;Least privilege is not just fewer actions. Least privilege is smaller failure domains.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A CI role that can deploy to every environment is not just a deployment role. It is a production-wide failure domain.&lt;/li&gt;
+&lt;li&gt;A Terraform role that can modify IAM, networking, logging, and state stores is not just infrastructure automation. It is a control plane for the company.&lt;/li&gt;
+&lt;li&gt;A workload identity that can read secrets, write artifacts, or assume a runner role is not just an application permission. It may be a persistence path.&lt;/li&gt;
+&lt;li&gt;A Kubernetes service account that can patch workloads, mount secrets, or read nodes is not just a cluster detail. It can become a lateral movement primitive.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;This is why reviewing IAM as JSON hygiene misses the point.&lt;/p&gt;
+&lt;hr/&gt;
+&lt;h2 id="better-questions-than-does-this-policy-contain"&gt;Better questions than "does this policy contain &lt;code&gt;*&lt;/code&gt;?"&lt;/h2&gt;
+&lt;p&gt;The dangerous question is rarely, "Does this policy contain &lt;code&gt;Action: *&lt;/code&gt;?"&lt;/p&gt;
+&lt;p&gt;The better questions are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;What trust boundary does this identity cross?&lt;/li&gt;
+&lt;li&gt;What data class can it reach?&lt;/li&gt;
+&lt;li&gt;Can it mutate code, infrastructure, identity, or logs?&lt;/li&gt;
+&lt;li&gt;Can it change the deployment path?&lt;/li&gt;
+&lt;li&gt;Can it create persistence?&lt;/li&gt;
+&lt;li&gt;Can it assume, pass, bind, or influence another identity?&lt;/li&gt;
+&lt;li&gt;What detects misuse?&lt;/li&gt;
+&lt;li&gt;What is the rollback path?&lt;/li&gt;
+&lt;li&gt;What happens if this identity is compromised at 2:00 AM, and who can contain it?&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Those questions move IAM reviews out of the policy document and back into the architecture.&lt;/p&gt;
+&lt;hr/&gt;
+&lt;h2 id="attackers-experience-the-environment-as-a-graph"&gt;Attackers experience the environment as a graph&lt;/h2&gt;
+&lt;p&gt;Attackers do not experience your environment as a set of clean policy JSONs. They experience it as a graph. Trust relationships, deployment pipelines, secrets, buckets, queues, roles, runners, clusters, and logs all become edges in that graph.&lt;/p&gt;
+&lt;p&gt;A permission that looks harmless in one context can become serious in another:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Read access to an artifact bucket may expose deployable code.&lt;/li&gt;
+&lt;li&gt;Write access to that same bucket may become code execution.&lt;/li&gt;
+&lt;li&gt;Permission to update a build pipeline may become production access.&lt;/li&gt;
+&lt;li&gt;Permission to read Terraform state may expose secrets, role names, network topology, or privileged paths.&lt;/li&gt;
+&lt;li&gt;Permission to &lt;code&gt;iam:PassRole&lt;/code&gt; may matter more than the actions listed in the role's own policy.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;IAM design has to account for that graph.&lt;/p&gt;
+&lt;hr/&gt;
+&lt;h2 id="where-compliance-checklists-fall-short"&gt;Where compliance checklists fall short&lt;/h2&gt;
+&lt;p&gt;Compliance checklists can tell you whether a policy contains obvious broad permissions. They can tell you whether MFA is required. They can tell you whether a role was unused for 90 days.&lt;/p&gt;
+&lt;p&gt;Those checks are useful. They are not enough.&lt;/p&gt;
+&lt;p&gt;They do not always tell you whether a compromised CI runner can mutate production. They do not tell you whether a developer role can indirectly mutate identity through Terraform. They do not tell you whether an application can turn a read permission into credential exposure. They do not tell you whether logs would show the difference between normal automation and abuse.&lt;/p&gt;
+&lt;p&gt;The checklist verifies the shape of the policy. It does not verify the shape of the blast radius.&lt;/p&gt;
+&lt;hr/&gt;
+&lt;h2 id="good-iam-architecture-starts-with-containment"&gt;Good IAM architecture starts with containment&lt;/h2&gt;
+&lt;p&gt;Containment is a design choice made before the policy review begins:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Separate deployment identities by app and environment.&lt;/strong&gt; An incident in staging or an isolated service should not be able to cascade across boundaries.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Keep identity mutation behind tighter controls.&lt;/strong&gt; Restrict rights to modify roles, policies, and trust relationships far more aggressively than ordinary infrastructure changes.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Protect Terraform state like sensitive production data.&lt;/strong&gt; Treat state files as high-risk assets containing secrets, architecture maps, and privileged paths.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Treat CI/CD as privileged infrastructure.&lt;/strong&gt; Build pipelines are not generic automation; they are execution engines with direct access to production state.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Make role assumption paths explicit.&lt;/strong&gt; Require clear, auditable trust policies rather than broad, ambient role-chaining.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Detect sensitive actions, not just policy drift.&lt;/strong&gt; Monitor for abnormal role assumptions, key generation, and identity mutation in real time.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Make rollback work without the compromised identity.&lt;/strong&gt; Break-glass and incident containment paths must not depend on the very principals being isolated.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;This is slower than rubber-stamping a policy PR. It is also the work that actually matters.&lt;/p&gt;
+&lt;p&gt;The safer default is easier to enforce when it is baked into the tooling. A small library like &lt;a href="https://rivassec.com/iam-safe-defaults-fail-loud.html"&gt;iam-safe-defaults&lt;/a&gt; can move the argument from "should this role have a permissions boundary" to "why is this role opting out of one," which is where you want the conversation to live.&lt;/p&gt;
+&lt;hr/&gt;
+&lt;h2 id="trust-made-visible"&gt;Trust made visible&lt;/h2&gt;
+&lt;p&gt;IAM is not only an access control system. It is one of the main ways cloud architecture expresses trust. Every role, policy, permission boundary, service account, and deployment credential says something about what the system believes can safely happen.&lt;/p&gt;
+&lt;p&gt;When those beliefs are wrong, the incident does not stay inside the JSON file. It leaks through the architecture.&lt;/p&gt;
+&lt;p&gt;That is why mature IAM reviews should feel less like linting and more like threat modeling. The reviewer should be asking what the identity can reach, what it can change, what is unrecoverable, what it can hide, and how far the damage can spread before someone notices.&lt;/p&gt;
+&lt;p&gt;A clean policy is good. A contained failure domain is better.&lt;/p&gt;
+&lt;p&gt;The strongest IAM programs understand that distinction. They do not stop at removing wildcards. They design systems where one compromised principal cannot rewrite production, erase the evidence, and call it automation. Adoption of that shape is a control in its own right, which is a longer story told in &lt;a href="https://rivassec.com/paved-road-adoption-as-control.html"&gt;Adoption Is a Security Control&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The goal is not a prettier IAM policy. The goal is a system where one compromised principal cannot become a company-wide incident.&lt;/p&gt;
+&lt;p&gt;IAM blast radius is an architecture problem. The policy is only where the architecture becomes visible.&lt;/p&gt;</content><category term="DevSecOps"/><category term="aws"/><category term="iam"/><category term="devsecops"/><category term="cloud-security"/><category term="threat-modeling"/></entry><entry><title>The Discovery Layer Is Broken: Hiring as an Observability Problem</title><link href="https://rivassec.com/hiring-discovery-layer-broken.html" rel="alternate"/><published>2026-07-11T00:00:00-07:00</published><updated>2026-07-11T00:00:00-07:00</updated><author><name>RivasSec</name></author><id>tag:rivassec.com,2026-07-11:/hiring-discovery-layer-broken.html</id><summary type="html">&lt;p&gt;The senior engineering market does not have a talent shortage. It has a routing failure. Resumes compress judgment into keywords, funnels index for keywords, and the signal that senior roles actually depend on is discarded before anyone qualified sees it.&lt;/p&gt;</summary><content type="html">
+&lt;h2 id="the-gap-between-capability-and-first-screen"&gt;The gap between capability and first screen&lt;/h2&gt;
+&lt;p&gt;The market is full of senior engineers who can debug a production outage, harden an IAM boundary, review a Terraform plan, and explain blast radius before the pager goes off.&lt;/p&gt;
+&lt;p&gt;Many of those same engineers struggle to get past the first screen.&lt;/p&gt;
+&lt;p&gt;That gap says something important about the hiring system. Hiring has a discovery problem. The industry has signal. The signal is poorly indexed, poorly routed, and poorly evaluated.&lt;/p&gt;
+&lt;hr/&gt;
+&lt;h2 id="observability-everywhere-except-the-hiring-funnel"&gt;Observability everywhere except the hiring funnel&lt;/h2&gt;
+&lt;p&gt;Modern engineering organizations spend enormous effort building observability into production systems. They trace requests, measure latency, monitor failure modes, and build dashboards so they can understand what is happening under pressure.&lt;/p&gt;
+&lt;p&gt;Then many of those same organizations rely on one of the least observable processes in the company when hiring senior engineers.&lt;/p&gt;
+&lt;p&gt;A resume is a lossy compression format for engineering judgment. It takes years of tradeoffs, incidents, architecture decisions, migrations, security reviews, compliance work, and production scars, then compresses them into titles, company names, tools, and bullet points.&lt;/p&gt;
+&lt;p&gt;That format can find familiar labels. It struggles to find judgment.&lt;/p&gt;
+&lt;hr/&gt;
+&lt;h2 id="senior-signal-lives-in-context"&gt;Senior signal lives in context&lt;/h2&gt;
+&lt;p&gt;Senior engineering skill usually shows up in context:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;What tradeoff did you make?&lt;/li&gt;
+&lt;li&gt;What constraint mattered?&lt;/li&gt;
+&lt;li&gt;What failed first?&lt;/li&gt;
+&lt;li&gt;What did you automate?&lt;/li&gt;
+&lt;li&gt;What did you refuse to ship?&lt;/li&gt;
+&lt;li&gt;What risk did you reduce?&lt;/li&gt;
+&lt;li&gt;What did the system look like six months later?&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Most hiring funnels do not ingest that shape of evidence. They ingest keywords.&lt;/p&gt;
+&lt;p&gt;This creates a predictable failure mode. Candidates optimize resumes for search. Recruiters scan for matches. Hiring managers complain about weak pipelines. Strong candidates disappear before anyone with enough technical context sees them.&lt;/p&gt;
+&lt;p&gt;The system then calls the result a talent shortage.&lt;/p&gt;
+&lt;hr/&gt;
+&lt;h2 id="some-shortages-are-real-this-one-is-mostly-routing"&gt;Some shortages are real. This one is mostly routing.&lt;/h2&gt;
+&lt;p&gt;Some shortages are real. Security, infrastructure, identity, Kubernetes, cloud architecture, incident response, and compliance automation all require people who have made real decisions under constraint. Those people are hard to find.&lt;/p&gt;
+&lt;p&gt;The deeper problem is that current hiring systems are also bad at recognizing them when they appear.&lt;/p&gt;
+&lt;p&gt;The cost is not just candidate frustration. It is organizational velocity. Teams spend months searching for the perfect resume while security debt, platform fragility, and operational risk keep accumulating.&lt;/p&gt;
+&lt;p&gt;A staff or principal engineer may have the exact experience a team needs, but describe it in production language instead of job-post language. They may write about reducing IAM blast radius instead of listing every AWS service in the account. They may talk about evidence quality, auditability, and rollback paths instead of using the phrase "DevSecOps transformation." They may have done the work without wrapping it in the vocabulary the filter expects.&lt;/p&gt;
+&lt;p&gt;That should concern every engineering leader.&lt;/p&gt;
+&lt;p&gt;If your hiring process cannot distinguish operational judgment from keyword optimization, you are selecting for resume compatibility ahead of production judgment. That is a risky thing to optimize for in senior roles.&lt;/p&gt;
+&lt;p&gt;A process that screens mostly for tool names will undervalue people who understand failure modes. A funnel that treats context as noise will discard the signal senior roles depend on.&lt;/p&gt;
+&lt;hr/&gt;
+&lt;h2 id="the-fix-starts-with-calibration"&gt;The fix starts with calibration&lt;/h2&gt;
+&lt;p&gt;Hiring managers need to give recruiters sharper signal than a list of tools. A good intake should include examples of real problems the person will solve, failure modes the team cares about, and evidence that would prove competence.&lt;/p&gt;
+&lt;p&gt;For example:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Can this person design least-privilege IAM without breaking delivery?&lt;/li&gt;
+&lt;li&gt;Can they explain the blast radius of a bad change?&lt;/li&gt;
+&lt;li&gt;Can they turn audit requirements into repeatable evidence?&lt;/li&gt;
+&lt;li&gt;Can they debug a CI/CD security failure without cargo-culting controls?&lt;/li&gt;
+&lt;li&gt;Can they make an infrastructure environment safer without creating developer friction or security theater?&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Those questions produce better screens than a wall of product names.&lt;/p&gt;
+&lt;hr/&gt;
+&lt;h2 id="better-artifacts-than-resumes"&gt;Better artifacts than resumes&lt;/h2&gt;
+&lt;p&gt;Candidates also need better artifacts.&lt;/p&gt;
+&lt;p&gt;Senior engineers should document their career experience the same way incident responders document an outage: capture the problem, the constraints, the decision, the outcome, and what changed afterward. Those narratives communicate judgment far better than another bullet point listing AWS services.&lt;/p&gt;
+&lt;p&gt;We already produce better artifacts than resumes. Design reviews, postmortems, threat models, incident writeups, technical writeups, open source contributions, and conference talks all capture engineering judgment with far higher fidelity.&lt;/p&gt;
+&lt;p&gt;Most hiring systems ignore them because they are not structured for automated parsing. That is the core indexing failure.&lt;/p&gt;
+&lt;p&gt;The shape works both ways. My own writeup of a program that produced measurable outcomes plus the political stall I caused myself, &lt;a href="https://rivassec.com/paved-road-adoption-as-control.html"&gt;Adoption Is a Security Control&lt;/a&gt;, is the kind of artifact I would rather be evaluated on than a bullet list. The failure-mode writeup in &lt;a href="https://rivassec.com/teensy-efi-bruteforce-hours-late.html"&gt;The Teensy That Failed in Public&lt;/a&gt; does more to communicate how I think about hardware trust than any keyword-match ever will. The complement to this post is &lt;a href="https://rivassec.com/trust-decay-adversarial-hiring.html"&gt;The Trust Decay&lt;/a&gt;, which frames the same pipeline from the candidate side.&lt;/p&gt;
+&lt;hr/&gt;
+&lt;h2 id="what-hiring-teams-should-actually-ask-for"&gt;What hiring teams should actually ask for&lt;/h2&gt;
+&lt;p&gt;Teams should look for direct proof.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Ask for incident stories.&lt;/li&gt;
+&lt;li&gt;Ask for design tradeoffs.&lt;/li&gt;
+&lt;li&gt;Ask what changed after a security review.&lt;/li&gt;
+&lt;li&gt;Ask what the candidate automated.&lt;/li&gt;
+&lt;li&gt;Ask where they accepted risk, and why.&lt;/li&gt;
+&lt;li&gt;Ask how they knew a control was working in production.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;These questions surface judgment. Keyword filters surface vocabulary. The two are not the same signal.&lt;/p&gt;
+&lt;hr/&gt;
+&lt;h2 id="the-routing-failure-has-a-name"&gt;The routing failure has a name&lt;/h2&gt;
+&lt;p&gt;The hiring market feels broken because discovery is broken. The people exist. The work exists. The evidence exists. The pipeline loses too much signal before it reaches the people qualified to evaluate it.&lt;/p&gt;
+&lt;p&gt;Until hiring systems learn to index engineering judgment, they will keep mistaking a routing failure for a talent shortage.&lt;/p&gt;</content><category term="DevSecOps"/><category term="careers"/><category term="devsecops"/><category term="hiring"/></entry><entry><title>Bandit-Clean Pwnagotchi Plugins: How `subprocess` Goes From Risk to Routine</title><link href="https://rivassec.com/pwnagotchi-plugin-bandit-hardening.html" rel="alternate"/><published>2026-06-10T00:00:00-07:00</published><updated>2026-06-10T00:00:00-07:00</updated><author><name>RivasSec</name></author><id>tag:rivassec.com,2026-06-10:/pwnagotchi-plugin-bandit-hardening.html</id><summary type="html">&lt;p&gt;Pwnagotchi plugins live one &lt;code&gt;shell=True&lt;/code&gt; away from local code execution. Walking through the hardening of &lt;code&gt;bt-tether-multi&lt;/code&gt; against Bandit B602/B603/B607: full-path resolution with &lt;code&gt;shutil.which()&lt;/code&gt;, argv-list invocations, MAC and name validation, and the &lt;code&gt;# nosec&lt;/code&gt; discipline. The patterns generalize to anything that shells out from Python.&lt;/p&gt;</summary><content type="html">
+&lt;p&gt;I ran Bandit on &lt;a href="https://github.com/rivassec/pwnagotchi"&gt;&lt;code&gt;bt-tether-multi&lt;/code&gt;&lt;/a&gt; as part of a routine pre-publish sweep. I expected zero findings. I got a handful, half of them on code I had already convinced myself was hardened. That gap, between "I think this is safe" and "Bandit's static analyzer can prove it is safe," is what this post is about.&lt;/p&gt;
+&lt;p&gt;Pwnagotchi plugins are Python that ships next to a Wi-Fi monitor running as root. They shell out to &lt;code&gt;nmcli&lt;/code&gt;, &lt;code&gt;bluetoothctl&lt;/code&gt;, &lt;code&gt;iw&lt;/code&gt;, &lt;code&gt;wpa_supplicant&lt;/code&gt;, &lt;code&gt;curl&lt;/code&gt;. Most plugins on GitHub treat &lt;code&gt;subprocess&lt;/code&gt; like an &lt;code&gt;os.system&lt;/code&gt; shortcut: shell strings, relative binary names, untrusted config values concatenated into command lines. None of that survives Bandit's defaults.&lt;/p&gt;
+&lt;p&gt;This is the hardening pass that took &lt;a href="https://github.com/rivassec/pwnagotchi"&gt;&lt;code&gt;bt-tether-multi&lt;/code&gt;&lt;/a&gt;, the multi-phone Bluetooth tethering plugin I wrote about &lt;a href="https://rivassec.com/pwnagotchi-bluetooth-tethering.html"&gt;last year&lt;/a&gt;, from "looked careful" to "scans clean against Bandit 1.8.6." The functional behavior (fall back through a list of phones, verify WAN, retry on failure) is unchanged. What changed is that every subprocess call now has a story for why it cannot be tricked, every external value gets validated before reaching argv, and the surprises Bandit caught along the way are why the post exists at all.&lt;/p&gt;
+&lt;p&gt;The patterns generalize. If your Python ever calls a binary, the same checklist applies.&lt;/p&gt;
+&lt;h2 id="the-threat-model-is-local-not-remote"&gt;The threat model is local, not remote&lt;/h2&gt;
+&lt;p&gt;The plugin reads phones from &lt;code&gt;config.toml&lt;/code&gt; on the same disk Pwnagotchi is running from. There is no network input that becomes a shell argument. So why bother?&lt;/p&gt;
+&lt;p&gt;Two reasons.&lt;/p&gt;
+&lt;p&gt;First, the Pwnagotchi config file is the highest-leverage attack surface on the device. It is human-edited, it gets shared, plugins copy snippets between machines, and the moment one plugin treats a &lt;code&gt;name&lt;/code&gt; field as a shell-safe string the whole device class inherits the gap. A field intended to be &lt;code&gt;"Pixel 8"&lt;/code&gt; that ends up as &lt;code&gt;"Pixel 8; rm -rf /"&lt;/code&gt; is the entire kill chain. Defense-in-depth says you assume that field is hostile.&lt;/p&gt;
+&lt;p&gt;Second, you are running as root next to a Wi-Fi adapter. The blast radius of a bug here is the radio. "Local-only" stops being a comforting word the moment you imagine a stranger handed your Pwnagotchi back to you with a "fixed" &lt;code&gt;config.toml&lt;/code&gt;.&lt;/p&gt;
+&lt;h2 id="what-bandit-catches-that-linters-miss"&gt;What Bandit catches that linters miss&lt;/h2&gt;
+&lt;p&gt;Bandit is &lt;code&gt;pip install bandit&lt;/code&gt; and it ships with rules numbered B602, B603, B607 that are the entire ballgame for &lt;code&gt;subprocess&lt;/code&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;B602&lt;/strong&gt;: &lt;code&gt;subprocess&lt;/code&gt; with &lt;code&gt;shell=True&lt;/code&gt;. Hard fail unless explicitly suppressed and justified.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;B603&lt;/strong&gt;: &lt;code&gt;subprocess&lt;/code&gt; without an explicit shell, but the binary path comes from a variable rather than a literal. Bandit can't tell whether that variable is trusted.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;B607&lt;/strong&gt;: starting a process with a partial executable path. &lt;code&gt;subprocess.run(["nmcli", "..."])&lt;/code&gt; triggers this because &lt;code&gt;nmcli&lt;/code&gt; is resolved through &lt;code&gt;$PATH&lt;/code&gt;, and &lt;code&gt;$PATH&lt;/code&gt; is something you should not trust on a device whose disk has been out of your sight.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Pyflakes, Ruff, mypy will not flag any of these. They are not type or syntax errors. They are policy.&lt;/p&gt;
+&lt;p&gt;A clean Bandit run on a hardened plugin looks like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ bandit -r bt-tether-multi.py
+Run started: ...
+Total lines of code: 219
+Total lines skipped (#nosec): 6
+
+Total issues (by severity):
+        Undefined: 0
+        Low: 0
+        Medium: 0
+        High: 0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Six &lt;code&gt;# nosec&lt;/code&gt; annotations, each one earned. We will get to those.&lt;/p&gt;
+&lt;h2 id="resolve-binary-paths-with-shutilwhich-once-at-init"&gt;Resolve binary paths with &lt;code&gt;shutil.which()&lt;/code&gt; once, at init&lt;/h2&gt;
+&lt;p&gt;This was where my first surprise lived. I had been careful, or thought I had, but Bandit B607 fired on a &lt;code&gt;subprocess.run(["bluetoothctl", "info"], ...)&lt;/code&gt; deep in the UI update handler. I had typed the binary name as a string literal because at the time it felt safe: the value is hardcoded, no user input. Bandit doesn't care. B607 fires on any partial executable path, regardless of where the string came from, because at runtime it is &lt;code&gt;$PATH&lt;/code&gt; that decides which &lt;code&gt;bluetoothctl&lt;/code&gt; actually runs. On a Pwnagotchi whose disk has been out of your sight, that decision is not yours.&lt;/p&gt;
+&lt;p&gt;The fix is to stop typing literal binary names into argv lists at all. The plugin's &lt;code&gt;__init__&lt;/code&gt; now resolves every binary it will ever shell out to:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;shutil&lt;/span&gt;
+
+&lt;span class="k"&gt;class&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nc"&gt;BTTetherMulti&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;plugins&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Plugin&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="fm"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;nmcli&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;shutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;which&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"nmcli"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;bluetoothctl&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;shutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;which&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"bluetoothctl"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;curl&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;shutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;which&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"curl"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;shutil.which()&lt;/code&gt; returns the absolute path of the first match in &lt;code&gt;$PATH&lt;/code&gt;, or &lt;code&gt;None&lt;/code&gt; if it is not found. Three things this buys you:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;B607 goes away.&lt;/strong&gt; Every later subprocess call uses &lt;code&gt;self.nmcli&lt;/code&gt;, which is &lt;code&gt;/usr/bin/nmcli&lt;/code&gt;. Bandit sees a literal-looking path argument and shuts up.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Every code path that needs the binary gets a typed "is it installed?" check for free.&lt;/strong&gt; Just &lt;code&gt;if not self.nmcli: return False&lt;/code&gt;. The plugin degrades cleanly when the underlying tool is missing instead of producing a confusing &lt;code&gt;FileNotFoundError&lt;/code&gt; from inside an event handler.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;The path is locked at startup.&lt;/strong&gt; If something rewrites &lt;code&gt;$PATH&lt;/code&gt; later (a malicious systemd drop-in, a rogue plugin, your own shell config), the plugin keeps using the version that existed when it loaded.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;The cost is one &lt;code&gt;if&lt;/code&gt; check per call site. Tiny.&lt;/p&gt;
+&lt;h2 id="always-pass-argv-as-a-list-never-shelltrue"&gt;Always pass argv as a list. Never &lt;code&gt;shell=True&lt;/code&gt;.&lt;/h2&gt;
+&lt;p&gt;Every subprocess call in the plugin uses the list form:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;subprocess&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;run&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+    &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;nmcli&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;"connection"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;"delete"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;phone_name&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;
+    &lt;span class="n"&gt;stdout&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;subprocess&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;DEVNULL&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="n"&gt;stderr&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;subprocess&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;DEVNULL&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="n"&gt;check&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;False&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;span class="p"&gt;)&lt;/span&gt;  &lt;span class="c1"&gt;# nosec B603&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;The &lt;code&gt;# nosec B603&lt;/code&gt; is there because Bandit's static analysis sees a variable in &lt;code&gt;argv[0]&lt;/code&gt;, not a literal string, and it does not trace data flow to know that &lt;code&gt;self.nmcli&lt;/code&gt; was populated by &lt;code&gt;shutil.which()&lt;/code&gt; at startup. The annotation is a localized claim: "this argv[0] is a resolved absolute path, here's the structural reason." Each of the six &lt;code&gt;# nosec&lt;/code&gt; comments in the plugin sits next to a call that is provably bound to a resolved binary path and a list of strings, never a shell.&lt;/p&gt;
+&lt;p&gt;The list form matters because it bypasses &lt;code&gt;/bin/sh&lt;/code&gt; entirely. With &lt;code&gt;shell=True&lt;/code&gt; you are concatenating strings and handing them to a shell that will tokenize them, expand globs, run subshells from &lt;code&gt;$(...)&lt;/code&gt;, and follow whatever locale-specific rules apply. With a list, the kernel's &lt;code&gt;execve(2)&lt;/code&gt; gets exactly the argv you passed. No tokenization. No expansion. No glob.&lt;/p&gt;
+&lt;p&gt;I caught myself reaching for &lt;code&gt;shell=True&lt;/code&gt; exactly once during this pass. I was sketching a follow-up plugin that enumerates saved handshake &lt;code&gt;.pcap&lt;/code&gt; files, and my fingers typed &lt;code&gt;subprocess.run(f"ls /root/handshakes/*.pcap | head", shell=True)&lt;/code&gt; before my brain caught up. The instinct was glob expansion: &lt;code&gt;*.pcap&lt;/code&gt; is a shell pattern, the shell is what does the expansion, so reaching for &lt;code&gt;shell=True&lt;/code&gt; felt like the natural way to get globbing. It is also exactly the path that turns a benign-looking config field into a code-execution hole, because the moment any part of that command line comes from outside the Python process, the shell will tokenize it.&lt;/p&gt;
+&lt;p&gt;The right shape is to do the enumeration in Python and pass results as argv:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# Wrong&lt;/span&gt;
+&lt;span class="n"&gt;subprocess&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;run&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;"ls /root/handshakes/*.pcap | head"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;shell&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Right&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;pathlib&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Path&lt;/span&gt;
+&lt;span class="n"&gt;pcaps&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;sorted&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Path&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"/root/handshakes"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;glob&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"*.pcap"&lt;/span&gt;&lt;span class="p"&gt;))[:&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;Path.glob()&lt;/code&gt; does the expansion in-process, returns a list of &lt;code&gt;Path&lt;/code&gt; objects, and never touches a shell. Anything you would have piped into &lt;code&gt;head&lt;/code&gt; is a Python slice. Anything you would have piped into another command becomes a list comprehension or a second &lt;code&gt;subprocess.run()&lt;/code&gt; that takes the list as argv.&lt;/p&gt;
+&lt;p&gt;The same shape applies if your reason for reaching at &lt;code&gt;shell=True&lt;/code&gt; was a pipe rather than a glob:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# Wrong&lt;/span&gt;
+&lt;span class="n"&gt;subprocess&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;run&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"ip link show | grep wlan0"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;shell&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Right&lt;/span&gt;
+&lt;span class="n"&gt;out&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;subprocess&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;run&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ip&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;"link"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;"show"&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="n"&gt;capture_output&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;True&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;text&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;matches&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;l&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;l&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;out&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;stdout&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;splitlines&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="s2"&gt;"wlan0"&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;l&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;The list form is also the only form that makes sense once any argument becomes a variable. The moment a &lt;code&gt;phone_name&lt;/code&gt; from config goes into a string interpolation that goes into a shell, you have a remote-config-execution bug. The list form turns that same value into a single argv slot the shell never sees.&lt;/p&gt;
+&lt;h2 id="validate-the-inputs-that-become-argv"&gt;Validate the inputs that become argv&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;shutil.which()&lt;/code&gt; and the list form make the call site safe. They do not make the &lt;em&gt;arguments&lt;/em&gt; safe. A &lt;code&gt;phone_name&lt;/code&gt; of &lt;code&gt;"Pixel 8 Network; reboot"&lt;/code&gt; does not break out of &lt;code&gt;subprocess&lt;/code&gt;, but it does become a NetworkManager connection profile name with a semicolon in it, which is its own ugly debugging story.&lt;/p&gt;
+&lt;p&gt;Two validators run before any value reaches argv:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;_sanitize_mac&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;mac&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;re&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;match&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;r&lt;/span&gt;&lt;span class="s2"&gt;"^([0-9A-Fa-f]&lt;/span&gt;&lt;span class="si"&gt;{2}&lt;/span&gt;&lt;span class="s2"&gt;:)&lt;/span&gt;&lt;span class="si"&gt;{5}&lt;/span&gt;&lt;span class="s2"&gt;[0-9A-Fa-f]&lt;/span&gt;&lt;span class="si"&gt;{2}&lt;/span&gt;&lt;span class="s2"&gt;$"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;mac&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;mac&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;lower&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="k"&gt;raise&lt;/span&gt; &lt;span class="ne"&gt;ValueError&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;"Invalid MAC address: &lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;mac&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;_sanitize_name&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;strip&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;re&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;match&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;r&lt;/span&gt;&lt;span class="s2"&gt;"^[\w\s\-]{1,32}$"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt;
+    &lt;span class="k"&gt;raise&lt;/span&gt; &lt;span class="ne"&gt;ValueError&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;"Invalid phone name: &lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;The MAC regex is restrictive on purpose: six pairs of hex separated by colons, nothing else. The name regex allows word characters, spaces, and hyphens, capped at 32 characters. Both of these reject inputs at config-load time so that the rest of the plugin can assume its values are already clean. The validation lives in &lt;code&gt;_validate_phones()&lt;/code&gt;, which runs from &lt;code&gt;on_loaded&lt;/code&gt; and &lt;code&gt;on_config_changed&lt;/code&gt;. Phones that fail validation are dropped, logged, and never reach a subprocess call.&lt;/p&gt;
+&lt;p&gt;The pattern is "validate at the trust boundary, trust everything past it." The trust boundary in this plugin is the config-load handler. Past that, the rest of the code is allowed to assume &lt;code&gt;phone["mac"]&lt;/code&gt; matches &lt;code&gt;^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$&lt;/code&gt;. That assumption is enforced by the validator, not by hope.&lt;/p&gt;
+&lt;h2 id="the-nosec-discipline"&gt;The &lt;code&gt;# nosec&lt;/code&gt; discipline&lt;/h2&gt;
+&lt;p&gt;Six &lt;code&gt;# nosec&lt;/code&gt; annotations is six fewer than zero, but it is still six places where you are telling the auditor "trust me." The discipline that keeps that honest:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Every &lt;code&gt;# nosec&lt;/code&gt; annotates exactly one call.&lt;/strong&gt; No file-level suppressions, no broad ignores. If three calls need it, three &lt;code&gt;# nosec&lt;/code&gt; comments. Each one is a localized claim.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;The reason is structural, not "it works."&lt;/strong&gt; The plugin's &lt;code&gt;# nosec&lt;/code&gt; comments all sit next to calls where the binary path came from &lt;code&gt;shutil.which()&lt;/code&gt; and the arguments are either literals or inputs that have already passed &lt;code&gt;_sanitize_*&lt;/code&gt;. That is the structural reason Bandit's flag is a false positive.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;# nosec&lt;/code&gt; annotations are reviewed as code.&lt;/strong&gt; When a plugin update changes how an argument flows into a subprocess call, the &lt;code&gt;# nosec&lt;/code&gt; next to that call gets re-evaluated. If the structural reason no longer holds, the annotation comes off and the call gets fixed.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Bandit also accepts targeted suppressions like &lt;code&gt;# nosec B603&lt;/code&gt; instead of bare &lt;code&gt;# nosec&lt;/code&gt;. Targeted is better. It documents which rule you are silencing and avoids accidentally hiding a different finding the next time a rule fires on the same line.&lt;/p&gt;
+&lt;h2 id="what-this-looks-like-in-ci"&gt;What this looks like in CI&lt;/h2&gt;
+&lt;p&gt;The plugin's repo runs Bandit on push. The relevant fragment of GitHub Actions:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p p-Indicator"&gt;-&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;name&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;Bandit security scan&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nt"&gt;run&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p p-Indicator"&gt;|&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="no"&gt;pip install bandit==1.8.6&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="no"&gt;bandit -r bt-tether-multi.py --severity-level low --confidence-level low&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;--severity-level low --confidence-level low&lt;/code&gt; is the strictest setting. Anything less and you are filtering out the exact class of finding you want to see. The plugin is small enough that this runs in seconds. The GitHub Actions workflow fails the PR if Bandit returns non-zero, which happens on any unsuppressed finding at any severity.&lt;/p&gt;
+&lt;p&gt;Pin the Bandit version. Bandit's rule set evolves; an unpinned &lt;code&gt;bandit&lt;/code&gt; in CI means a future point release can fail your PR for reasons you have not seen before. Bump deliberately, not on every install.&lt;/p&gt;
+&lt;h2 id="the-pattern-generalizes"&gt;The pattern generalizes&lt;/h2&gt;
+&lt;p&gt;The four moves (resolve binaries with &lt;code&gt;shutil.which()&lt;/code&gt; at init, pass argv as lists, validate inputs at the trust boundary, annotate &lt;code&gt;# nosec&lt;/code&gt; per-call with a structural reason) are not Pwnagotchi-specific. They are the entire defense for any Python that shells out:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A homelab MCP server that runs &lt;code&gt;docker exec&lt;/code&gt; on user-supplied container names.&lt;/li&gt;
+&lt;li&gt;A CI script that calls &lt;code&gt;kubectl&lt;/code&gt; against a cluster name from environment.&lt;/li&gt;
+&lt;li&gt;A Pelican plugin that runs &lt;code&gt;convert&lt;/code&gt; on filenames from frontmatter.&lt;/li&gt;
+&lt;li&gt;A Discord bot that calls &lt;code&gt;ffmpeg&lt;/code&gt; on URLs.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Each of these is one &lt;code&gt;shell=True&lt;/code&gt; away from a shell-injection bug. Each is one resolved-binary-path away from being safe by construction.&lt;/p&gt;
+&lt;p&gt;The Pwnagotchi case is small enough to be a clean worked example. The plugin is 283 lines. The hardening pass added maybe 40, and most of it is the validators that make the rest of the code shorter because it stops needing defensive checks. Six &lt;code&gt;# nosec&lt;/code&gt; comments, each one explainable in a sentence. Bandit clean. The radio still tethers.&lt;/p&gt;
+&lt;p&gt;The reason this matters is not Bandit. Bandit is a tool. The reason is that the same patterns Bandit teaches you in 200 lines of plugin code are the patterns that hold up at 200,000 lines of cloud infrastructure. The IAM equivalent of "validate at the trust boundary, trust everything past it" is what &lt;a href="https://rivassec.com/iam-safe-defaults-fail-loud.html"&gt;IAM Roles That Fail Loud&lt;/a&gt; is about. The shell-injection equivalent at the cluster scope is the &lt;a href="https://rivassec.com/paved-road-adoption-as-control.html"&gt;paved-road adoption pattern&lt;/a&gt;. Plugin hardening is just where you can see the whole pattern at once.&lt;/p&gt;</content><category term="DevSecOps"/><category term="pwnagotchi"/><category term="python"/><category term="bandit"/><category term="subprocess"/><category term="security"/><category term="supply-chain"/><category term="hardening"/></entry><entry><title>TLS Has Three Jobs. Forget the Rest.</title><link href="https://rivassec.com/tls-three-jobs.html" rel="alternate"/><published>2026-06-04T00:00:00-07:00</published><updated>2026-06-04T00:00:00-07:00</updated><author><name>RivasSec</name></author><id>tag:rivassec.com,2026-06-04:/tls-three-jobs.html</id><summary type="html">&lt;p&gt;TLS gets easier when you stop walking the handshake step by step and start naming what it is for. It does three jobs. Once those are anchored, the protocol stops being a memorization problem and becomes a design problem.&lt;/p&gt;</summary><content type="html">
+&lt;p&gt;TLS gets easier when you stop walking the handshake step by step and start naming what it is for. There are too many round trips, too many cipher suites, too many extensions, and the version in your head is rarely the one in front of you.&lt;/p&gt;
+&lt;p&gt;Every TLS handshake, in every version, is doing three jobs at the same time:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Key agreement.&lt;/strong&gt; Two parties who have never spoken derive the same secret over a public network without sending it.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Server authentication.&lt;/strong&gt; The server proves it is the entity the client meant to talk to.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Session-key derivation.&lt;/strong&gt; Both sides turn that shared secret into the symmetric keys that encrypt the actual application data.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;If you can hold those three in your head, the rest of the protocol is an implementation detail. The differences between TLS 1.2 and TLS 1.3 collapse into "which mechanisms got removed for being unsafe." The cipher suite alphabet soup collapses into "which algorithm fills which job."&lt;/p&gt;
+&lt;h2 id="how-the-three-jobs-map-to-the-wire"&gt;How the three jobs map to the wire&lt;/h2&gt;
+&lt;p&gt;In TLS 1.3, the handshake takes one round trip:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;ClientHello&lt;/strong&gt;: supported ciphers, an ECDHE public key share, the server name (SNI).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;ServerHello&lt;/strong&gt;: chosen cipher, server's ECDHE public key share, server certificate, signature over the handshake transcript. From this point forward the handshake is encrypted.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Client side&lt;/strong&gt;: verifies the certificate chain, uses its private ECDHE key plus the server's public ECDHE key to compute the shared secret. Both sides feed that secret through HKDF to derive symmetric keys.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Finished&lt;/strong&gt; messages on both sides confirm nothing was tampered with mid-handshake. Application data starts.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Three jobs, one round trip. Key agreement is ECDHE. Server authentication is the certificate plus the signature. Session-key derivation is HKDF. The version that does this in two round trips with optional unsafe modes is TLS 1.2.&lt;/p&gt;
+&lt;h2 id="what-got-removed-in-tls-13-and-why"&gt;What got removed in TLS 1.3 and why&lt;/h2&gt;
+&lt;p&gt;The honest one-line difference is "TLS 1.3 deleted the parts that kept getting people compromised."&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;RSA key exchange is gone.&lt;/strong&gt; In TLS 1.2 a server could choose to encrypt the pre-master secret to its own RSA public key. If that private key ever leaked, every recorded session that used it was retroactively decryptable. TLS 1.3 only allows ephemeral Diffie-Hellman, which gives you forward secrecy by default.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;CBC mode ciphers are gone.&lt;/strong&gt; BEAST, Lucky13, and the rest of the padding-oracle family lived here. TLS 1.3 only allows AEAD ciphers: AES-GCM and ChaCha20-Poly1305.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;MAC-then-encrypt is gone.&lt;/strong&gt; AEAD modes do authentication and encryption in one pass.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Compression is gone.&lt;/strong&gt; CRIME exploited it.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Renegotiation is gone.&lt;/strong&gt; It was a footgun for years.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The cipher suite list in TLS 1.3 has five entries. In TLS 1.2 it has hundreds. That is the whole story.&lt;/p&gt;
+&lt;h2 id="the-certificate-chain-is-where-most-outages-live"&gt;The certificate chain is where most outages live&lt;/h2&gt;
+&lt;p&gt;Server authentication is done by certificate, but the client does not trust the server's certificate directly. It trusts a chain:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The server's leaf certificate, signed by an intermediate CA.&lt;/li&gt;
+&lt;li&gt;The intermediate CA's certificate, signed by a root CA.&lt;/li&gt;
+&lt;li&gt;The root CA's certificate, sitting in the operating system or browser trust store.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Validation, in order, is roughly:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Hostname matches the certificate's Subject Alternative Name.&lt;/li&gt;
+&lt;li&gt;Certificate is within its validity window.&lt;/li&gt;
+&lt;li&gt;Signature chain reaches a trusted root.&lt;/li&gt;
+&lt;li&gt;Certificate has not been revoked (CRL or OCSP).&lt;/li&gt;
+&lt;li&gt;Key usage permits server authentication.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Most production TLS incidents are not protocol bugs. Every TLS outage I have debugged falls into one of four buckets: an expired intermediate, a leaf certificate rotated without rolling the clients that pinned it, an OCSP responder timing out under load, or a trust store that drifted after an AMI bump. The protocol is fine. The operational surface around it is where the pages come from.&lt;/p&gt;
+&lt;h2 id="what-i-actually-type-when-something-is-broken"&gt;What I actually type when something is broken&lt;/h2&gt;
+&lt;p&gt;Most TLS triage is two or three commands.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="gh"&gt;#&lt;/span&gt; what is the server actually presenting, including chain
+openssl s_client -connect host:443 -servername host -showcerts &amp;lt;/dev/null
+
+&lt;span class="gh"&gt;#&lt;/span&gt; what does this leaf actually say
+openssl x509 -in cert.pem -noout -text | grep -E 'Not After|Subject:|Issuer:|DNS:'
+
+&lt;span class="gh"&gt;#&lt;/span&gt; does it validate against the system trust store
+curl -vI https://host 2&amp;gt;&amp;amp;1 | grep -E 'expire|subject|issuer|verify'
+
+&lt;span class="gh"&gt;#&lt;/span&gt; is the chain Mozilla-trusted, or am I missing an intermediate
+openssl verify -CAfile /etc/ssl/certs/ca-certificates.crt -untrusted intermediate.pem leaf.pem
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;If the answer is "expired", you are done. If the answer is "no issuer found", an intermediate is missing from what the server is sending. If the answer is "hostname mismatch", the SAN does not include what the client asked for. Those three account for most of the calls.&lt;/p&gt;
+&lt;h2 id="mtls-is-the-same-thing-in-both-directions"&gt;mTLS is the same thing in both directions&lt;/h2&gt;
+&lt;p&gt;Mutual TLS just adds a second authentication step: the server requires the client to present a certificate, and the server validates that certificate against an internal CA. Same primitives, same chain logic, same revocation question, just now the client is also proving who it is.&lt;/p&gt;
+&lt;p&gt;It matters because in a serverless or microservices fabric, mTLS is the cleanest replacement for "shared secrets in environment variables." Service identity becomes a certificate issued by an internal CA, rotated automatically by something like cert-manager or AWS Private CA. The handshake is doing the same three jobs; you just stopped trusting the network and started trusting the certificate. The "refuse the dangerous default unless the caller asks for it explicitly" pattern that makes that workable on the IAM side is the subject of &lt;a href="https://rivassec.com/iam-safe-defaults-fail-loud.html"&gt;IAM Roles That Fail Loud&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id="where-the-operational-work-actually-lives"&gt;Where the operational work actually lives&lt;/h2&gt;
+&lt;p&gt;In a real design review, the handshake recitation is the wrong shape anyway. The interesting questions are operational:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Certificate lifecycle.&lt;/strong&gt; Auto-rotation with ACM for AWS-fronted services, cert-manager for Kubernetes, internal CA for service-to-service mTLS. Most TLS outages are expiry-driven, and the way out is the same paved-road pattern that fixes everything else: ship the rotation as a default, not as a checklist. I wrote about that program shape in &lt;a href="https://rivassec.com/paved-road-adoption-as-control.html"&gt;Adoption Is a Security Control&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Termination boundary.&lt;/strong&gt; Where does TLS terminate, where does it re-originate, what is in cleartext between those points. ALB-terminated traffic to an HTTP backend is a different threat model than end-to-end mTLS.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Cipher policy.&lt;/strong&gt; TLS 1.2 minimum, AEAD-only, no RSA key exchange, no legacy versions. The defaults from a serious load balancer are usually fine; the failure mode is leaving 1.0 or 1.1 on for "compatibility" and forgetting.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Trust store hygiene.&lt;/strong&gt; Pinning, revocation checking, intermediate cert distribution. The boring half of the protocol is where the real attacks land.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The handshake is well understood. The real risk lives in mis-configured trust stores, expired intermediates, and downgrade paths kept around for legacy clients that nobody actually has anymore.&lt;/p&gt;
+&lt;p&gt;Three jobs, in parallel, in every version: key agreement, server authentication, session-key derivation. Once you see the protocol that way, the handshake stops being a sequence to memorize and becomes the smallest, most boring part of running TLS in production.&lt;/p&gt;</content><category term="DevSecOps"/><category term="tls"/><category term="cryptography"/><category term="security"/><category term="infrastructure"/><category term="pki"/><category term="mtls"/><category term="operations"/></entry><entry><title>Adoption Is a Security Control: Notes from Paving a Road</title><link href="https://rivassec.com/paved-road-adoption-as-control.html" rel="alternate"/><published>2026-05-21T00:00:00-07:00</published><updated>2026-06-04T00:00:00-07:00</updated><author><name>RivasSec</name></author><id>tag:rivassec.com,2026-05-21:/paved-road-adoption-as-control.html</id><summary type="html">&lt;p&gt;A security control developers can route around is not a control. Field notes from rebuilding a cloud security model around making the secure path the easy path: 40% lower remediation time, 27% lower pipeline latency, and a four-month adoption stall I caused myself.&lt;/p&gt;</summary><content type="html">
+&lt;h2 id="adoption-is-a-security-control"&gt;Adoption is a security control&lt;/h2&gt;
+&lt;p&gt;A security control developers can route around is not a control. It is a checkbox.&lt;/p&gt;
+&lt;p&gt;In a previous life, I watched our cloud security model fail in a very specific way. Developers would hit a build break, file a ticket, and ship the workload through a side door. The controls all worked on paper. The audit report read fine. Adoption was the problem, and adoption is what determines whether a control exists in practice or only in slides.&lt;/p&gt;
+&lt;div class="tldr"&gt;&lt;strong&gt;TL;DR.&lt;/strong&gt; Make the secure path the easy path, own it inside the security org, and aggressively retire the side doors. The political work is harder than the technical work.&lt;/div&gt;
+&lt;p&gt;So I rebuilt the model around a single idea: make the secure path the easy path, and make every other path expensive enough that nobody picks it twice. Eighteen months in:&lt;/p&gt;
+&lt;div class="metrics"&gt;
+&lt;div class="metric"&gt;&lt;div class="num"&gt;-40%&lt;/div&gt;&lt;div class="label"&gt;Remediation Time&lt;/div&gt;&lt;/div&gt;
+&lt;div class="metric"&gt;&lt;div class="num"&gt;-27%&lt;/div&gt;&lt;div class="label"&gt;Pipeline Latency&lt;/div&gt;&lt;/div&gt;
+&lt;div class="metric"&gt;&lt;div class="num"&gt;4 mo&lt;/div&gt;&lt;div class="label"&gt;Adoption Stall&lt;/div&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;The reason it worked is not novel - "paved road" as a concept has been written about for years - but the specifics of &lt;em&gt;why&lt;/em&gt; it stopped failing the way it had been failing are worth writing down. Three things mattered, in this order.&lt;/p&gt;
+&lt;h2 id="1-modules-with-the-controls-baked-in"&gt;1. Modules with the controls baked in&lt;/h2&gt;
+&lt;p&gt;I shipped Pulumi modules with the controls already inside them. Encryption at rest, IAM least-privilege scaffolding, network segmentation defaults, structured logging, all wired up. A developer picked a module, got a workload, and shipped. The controls happened because the module was &lt;em&gt;inherently&lt;/em&gt; built that way - they were not a checklist the developer had to remember. The smallest standalone example of that posture is &lt;a href="https://rivassec.com/iam-safe-defaults-fail-loud.html"&gt;iam-safe-defaults&lt;/a&gt;, a tiny Pulumi library that refuses to mint a role without a permissions boundary unless the caller types an explicit opt-out.&lt;/p&gt;
+&lt;p&gt;The CI side mirrored this. We gated &lt;a href="https://github.com/aquasecurity/trivy"&gt;Trivy&lt;/a&gt; and &lt;a href="https://github.com/bridgecrewio/checkov"&gt;Checkov&lt;/a&gt; directly in the pipeline and surfaced their findings in pull request comments, not in a quarterly report. Findings showed up where the developer was already looking, before deploy, while the change was small and the context was fresh. By the time a workload reached production, the failure modes that used to dominate audit findings had been priced out at the PR level.&lt;/p&gt;
+&lt;p&gt;The principle here is unsexy: the secure default has to be the &lt;em&gt;path of least resistance&lt;/em&gt;, not the path of most virtue. If the developer has to type more, remember more, or wait more for the secure path, the side door wins. The same logic applies one layer up the stack: TLS misconfigurations stop being a security problem the moment the cert lifecycle is automated by default, which is the lens I take in &lt;a href="https://rivassec.com/tls-three-jobs.html"&gt;TLS Has Three Jobs&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id="2-the-modules-lived-inside-the-security-org"&gt;2. The modules lived inside the security org&lt;/h2&gt;
+&lt;p&gt;Owning the modules in security made the iteration loop tight. When CIS benchmarks shifted, when a new CVE surfaced, when an internal incident produced a hardening lesson - I pushed a module update, and the next deploy picked it up. Security owned both the responsibility and the means to act on it. There was no quarterly cross-team negotiation about whose backlog the fix lived in.&lt;/p&gt;
+&lt;p&gt;This is the part that is uncomfortable to write down because it sounds like an empire grab. It is not. The accountability for cloud misconfiguration &lt;em&gt;already&lt;/em&gt; sat with security; what changed was that the levers to actually fix things sat in the same place. The platform team did not lose anything they wanted - they wanted to build platform features, not chase down stale IAM defaults.&lt;/p&gt;
+&lt;p&gt;The boundary I drew was that the modules were security's, the runtime platform was platform's, and the contract between them was the module API. That contract was the negotiation surface, and once we agreed on it, both teams could move independently.&lt;/p&gt;
+&lt;h2 id="3-aggressive-deprecation"&gt;3. Aggressive deprecation&lt;/h2&gt;
+&lt;p&gt;The first rollout was a soft launch. Both the new module path and the legacy paths existed side by side, on the theory that developers would naturally drift toward the better experience.&lt;/p&gt;
+&lt;p&gt;Adoption stalled for &lt;strong&gt;four months&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;What was happening in retrospect is obvious: as long as two paths existed, the new path was extra work for any team that already had a working pattern in the old one. The new path was easier for greenfield workloads, but most workloads were not greenfield, and the migration cost is what dominated.&lt;/p&gt;
+&lt;p&gt;I retired the legacy patterns hard. Stopped accepting them in CI, marked them deprecated in code review, and gave teams a fixed window to migrate. Adoption climbed within a single sprint. The lesson - one I keep relearning in different forms - is that &lt;em&gt;paths in addition&lt;/em&gt; are not adopted, paths in &lt;em&gt;replacement&lt;/em&gt; are. If you are not willing to break the side door, you are not actually building a paved road. You are building a recommendation.&lt;/p&gt;
+&lt;h2 id="what-i-underestimated-the-political-cost"&gt;What I underestimated: the political cost&lt;/h2&gt;
+&lt;p&gt;The technical lift was the easier half. The harder half was a quarter of feeling like I had crossed an organizational line.&lt;/p&gt;
+&lt;p&gt;Platform engineering felt boundary-crossed when modules started shipping that touched their substrate. Their concern was reasonable - we were sitting in the seam between their platform contract and the developers consuming it, and we had not asked first. I spent real time co-designing the module review rotation with them, giving platform a structural seat in what got merged and when. That review process slowed initial throughput a bit, but it eliminated an entire class of trust friction that would have surfaced later as veto power applied at scale.&lt;/p&gt;
+&lt;p&gt;If I were starting this work fresh, the single thing I would do differently is invite platform into the module review process &lt;em&gt;before&lt;/em&gt; shipping the first module - not after. The technical design is mostly tractable; the org design is where the work actually lives.&lt;/p&gt;
+&lt;h2 id="what-survived-contact"&gt;What survived contact&lt;/h2&gt;
+&lt;p&gt;The version of this system that ended up in production looked different from the one I designed on paper. It survived contact with the developer experience team, the platform team, and the audit team. Each of them moved a constraint, and the final shape was the intersection of all those constraints.&lt;/p&gt;
+&lt;p&gt;That's the work. Not the architecture diagram, not the pull request that shipped the first module - the eighteen months of operating the thing inside a real org, watching it not quite fit, and reshaping it. The numbers (40%, 27%, the stalled four months) are real, but they are not the point. The point is that adoption is the security control, and everything else is plumbing that exists in service of adoption.&lt;/p&gt;
+&lt;p&gt;If developers can route around your control, the control doesn't exist. If they can't, you have done the work.&lt;/p&gt;</content><category term="DevSecOps"/><category term="devsecops"/><category term="platform-security"/><category term="paved-road"/><category term="pulumi"/><category term="ci-cd"/><category term="cloud-security"/></entry><entry><title>IAM Roles That Fail Loud: Small Defaults, Big Difference</title><link href="https://rivassec.com/iam-safe-defaults-fail-loud.html" rel="alternate"/><published>2026-05-12T00:00:00-07:00</published><updated>2026-06-04T00:00:00-07:00</updated><author><name>RivasSec</name></author><id>tag:rivassec.com,2026-05-12:/iam-safe-defaults-fail-loud.html</id><summary type="html">&lt;p&gt;A small Pulumi library that treats IAM safety as a precondition: mandatory permissions boundary, no wildcard trust, no wildcard actions, every opt-out explicit.&lt;/p&gt;</summary><content type="html">
+&lt;p&gt;There's a class of AWS bug that doesn't show up until audit season: an IAM role that nobody reviewed closely, quietly granted more than it needed, sat for three years, and shows up in a Security Hub finding with &lt;code&gt;*&lt;/code&gt; in its action list. The role did exactly what it was told to do. The problem is that "do what I'm told" and "refuse to do anything dumb" aren't the same default.&lt;/p&gt;
+&lt;p&gt;I put a small Pulumi library together to move that default. It's called &lt;a href="https://github.com/rivassec/iam-safe-defaults"&gt;iam-safe-defaults&lt;/a&gt;, it's under 200 lines of Python, and the behavior it changes is narrow on purpose.&lt;/p&gt;
+&lt;h2 id="the-pattern"&gt;The pattern&lt;/h2&gt;
+&lt;p&gt;Every AWS IAM helper I'd seen, including the one I started from, treats safety as opt-in. You can pass a permissions boundary. You can narrow the resource list. You can avoid wildcard actions. But if you &lt;em&gt;don't&lt;/em&gt; do those things, you still get a working role. The function signature makes every safety measure look like a preference.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;iam-safe-defaults&lt;/code&gt; inverts that. The safety measures aren't preferences; they're preconditions. If you want to skip one, you pass an explicit flag with a name that is hard to type by accident:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;safe_iam&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;create_safe_role&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+    &lt;span class="s2"&gt;"example-role"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="n"&gt;assume_role_policy&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="n"&gt;permissions_boundary&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"arn:aws:iam::123456789012:policy/YourBoundary"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;That works. This doesn't:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;safe_iam&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;create_safe_role&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"example-role"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;assume_role_policy&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="c1"&gt;# ValueError: create_safe_role requires permissions_boundary.&lt;/span&gt;
+&lt;span class="c1"&gt;# Pass the boundary ARN, or set allow_no_boundary=True to opt out explicitly.&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Same for trust policies. A trust policy with &lt;code&gt;Principal: "*"&lt;/code&gt; raises. Same for &lt;code&gt;generate_safe_policy&lt;/code&gt;. Pass it &lt;code&gt;["*"]&lt;/code&gt; or &lt;code&gt;["s3:*"]&lt;/code&gt; as actions and it refuses unless &lt;code&gt;allow_wildcard=True&lt;/code&gt; is on the call.&lt;/p&gt;
+&lt;p&gt;The opt-outs exist because there are legitimate reasons to need wildcard scope. A logging role that reads every object in every bucket. A bootstrap role. A cross-account trust with &lt;code&gt;Principal: "*"&lt;/code&gt; plus a condition key. None of those should be blocked. But none of them should happen &lt;em&gt;silently&lt;/em&gt; either. Every one of those calls now has an explicit flag in the source: something a reviewer can grep for, and something a future auditor can justify.&lt;/p&gt;
+&lt;h2 id="what-the-checker-actually-catches"&gt;What the checker actually catches&lt;/h2&gt;
+&lt;p&gt;The old version of &lt;code&gt;is_policy_overly_permissive&lt;/code&gt; in the repo checked for &lt;code&gt;"*" in actions&lt;/code&gt;. That's &lt;code&gt;"*"&lt;/code&gt; as a literal list element, not &lt;code&gt;"*"&lt;/code&gt; as a character. It caught &lt;code&gt;Action: "*"&lt;/code&gt; and it caught &lt;code&gt;Action: ["*"]&lt;/code&gt;. It missed everything that matters.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;Action: "s3:*"&lt;/code&gt; didn't match. &lt;code&gt;Action: "iam:*"&lt;/code&gt; didn't match. &lt;code&gt;Action: ["ec2:*", "rds:*"]&lt;/code&gt; didn't match. &lt;code&gt;NotAction&lt;/code&gt; inversions didn't match. And the &lt;code&gt;NotAction&lt;/code&gt; ones are the real problem: a policy that says "allow anything except &lt;code&gt;iam:DeleteUser&lt;/code&gt;" is one of the highest-blast-radius shapes you can write, and it sailed through.&lt;/p&gt;
+&lt;p&gt;New version walks actions with &lt;code&gt;any(a == "*" or a.endswith(":*") for a in actions)&lt;/code&gt;, flags &lt;code&gt;NotAction&lt;/code&gt; / &lt;code&gt;NotResource&lt;/code&gt; as inversions, and returns &lt;code&gt;True&lt;/code&gt; on the whole class. Still a boolean, still single-purpose. It doesn't try to be a full IAM analyzer; there are better tools for that. It just catches the ones that happen by accident.&lt;/p&gt;
+&lt;h2 id="why-pulumi-and-not-terraform"&gt;Why Pulumi and not Terraform&lt;/h2&gt;
+&lt;p&gt;Pulumi is Python. The guards are Python. The tests are Python. You can unit-test the logic without standing up a provider. Pulumi's mock runtime makes it cheap to verify "this input raises the expected exception" in under a second. The Terraform equivalent would have been an OPA policy or a Sentinel rule, with a different language, a different test harness, and a lot more ceremony for the same amount of actual behavior change.&lt;/p&gt;
+&lt;p&gt;A library this small only matters if it ships as part of a paved road, a default that developers &lt;em&gt;land on&lt;/em&gt; without trying. The program shape that makes that work, including the four-month adoption stall I caused myself, is in &lt;a href="https://rivassec.com/paved-road-adoption-as-control.html"&gt;Adoption Is a Security Control&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id="the-part-i-didnt-build"&gt;The part I didn't build&lt;/h2&gt;
+&lt;p&gt;This library doesn't generate permissions boundary policies. It requires one and takes an ARN. Choosing what goes in a boundary is a per-org decision: your dev accounts need different denies than your prod accounts, your data accounts need different allows than your application accounts. I thought about shipping defaults and backed off. A boundary that says &lt;code&gt;deny iam:PutRolePermissionsBoundary&lt;/code&gt; is almost universal. A boundary that says "deny &lt;code&gt;ec2:RunInstances&lt;/code&gt; in regions other than us-west-2" is wrong for half the audience. Making callers supply the ARN is the honest scope.&lt;/p&gt;
+&lt;p&gt;It also doesn't inject &lt;code&gt;Condition&lt;/code&gt; blocks. Adding &lt;code&gt;aws:SourceAccount&lt;/code&gt; or &lt;code&gt;aws:PrincipalOrgID&lt;/code&gt; on every trust policy would catch a real class of cross-account confused-deputy attacks, but it would also break any legitimate cross-account pattern where the caller hasn't pre-registered. That's a tradeoff I want to make explicitly, one service principal at a time, not as a global default.&lt;/p&gt;
+&lt;h2 id="supply-chain"&gt;Supply chain&lt;/h2&gt;
+&lt;p&gt;One thing I did do all the way: the CI workflow that runs Bandit on every push is pinned by commit SHA for every third-party action, and every pip dependency is hash-verified. &lt;code&gt;actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd&lt;/code&gt;, not &lt;code&gt;v6&lt;/code&gt;, not &lt;code&gt;v6.0.2&lt;/code&gt;, the 40-char hash. Bandit 1.9.4 and its six transitive dependencies install via &lt;code&gt;pip install --require-hashes&lt;/code&gt; against a generated lockfile with sha256 pins for every wheel. The runner explicitly nukes any private pip registry config so everything resolves against PyPI.&lt;/p&gt;
+&lt;p&gt;It felt performative to pin the tooling this hard until I remembered this is a security library. A library that lectures other people about IAM footguns and then pulls dependencies by loose version name is a joke. The bar for "I trust this" is higher than for most repos.&lt;/p&gt;
+&lt;h2 id="try-it"&gt;Try it&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;git&lt;span class="w"&gt; &lt;/span&gt;clone&lt;span class="w"&gt; &lt;/span&gt;git@github.com:rivassec/iam-safe-defaults.git
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Three helpers: &lt;code&gt;create_safe_role&lt;/code&gt;, &lt;code&gt;generate_safe_policy&lt;/code&gt;, &lt;code&gt;is_policy_overly_permissive&lt;/code&gt;. Each with a single opt-out flag per guard, named explicitly enough that the code review catches it.&lt;/p&gt;
+&lt;p&gt;If you find a failure mode the checker misses, the next version will fix it. There's always another footgun. For the cluster-side cousin of this "secure by default" stance, see &lt;a href="https://rivassec.com/hardening-k8s.html"&gt;Hardening Kubernetes Deployments&lt;/a&gt;.&lt;/p&gt;</content><category term="DevSecOps"/><category term="aws"/><category term="iam"/><category term="pulumi"/><category term="python"/><category term="devsecops"/></entry><entry><title>The Trust Decay: Why Modern Hiring Has Become an Adversarial System</title><link href="https://rivassec.com/trust-decay-adversarial-hiring.html" rel="alternate"/><published>2026-05-04T00:00:00-07:00</published><updated>2026-06-04T00:00:00-07:00</updated><author><name>RivasSec</name></author><id>tag:rivassec.com,2026-05-04:/trust-decay-adversarial-hiring.html</id><summary type="html">&lt;p&gt;The tech hiring pipeline has shifted from talent discovery to risk mitigation. In 2026, the engineers who get hired are the ones who are hardest to doubt.&lt;/p&gt;</summary><content type="html">&lt;h2 id="the-duality-of-the-current-market"&gt;The Duality of the Current Market&lt;/h2&gt;
+&lt;p&gt;The tech job market is currently defined by a jarring paradox. On one side, elite engineers land roles in days; on the other, equally qualified peers face months of silence. These aren't conflicting data points - they are the predictable outputs of a system under extreme duress.&lt;/p&gt;
+&lt;p&gt;The hiring pipeline has ceased to be a discovery engine designed to find talent. It has evolved into a defensive perimeter designed to mitigate risk in a low-trust environment.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="from-discovery-to-defense-the-death-of-honest-inputs"&gt;From Discovery to Defense: The Death of Honest Inputs&lt;/h2&gt;
+&lt;p&gt;Historically, recruitment operated on the assumption of "manageable honesty." You received a stack of resumes, assumed most were reasonably accurate, and searched for the best fit.&lt;/p&gt;
+&lt;p&gt;That model has collapsed. Today, hiring systems are bombarded by "strategically optimized noise," including:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Hyper-automated workflows:&lt;/strong&gt; Candidates applying to hundreds of roles via LLM-powered scripts.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Synthetic Resumes:&lt;/strong&gt; AI-generated profiles perfectly tuned to trigger every keyword in a Job Description (JD).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Signal Dilution:&lt;/strong&gt; When every applicant looks like a 95% match on paper, the "match" itself becomes meaningless.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;From a systems engineering perspective, the pipeline is now facing adversarial inputs. When a system is flooded with high-volume, low-integrity data, it naturally shifts its posture from "open" to "fortified."&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="how-the-system-defends-itself"&gt;How the System Defends Itself&lt;/h2&gt;
+&lt;p&gt;When trust in incoming data drops, the system compensates with three defensive maneuvers:&lt;/p&gt;
+&lt;h3 id="1-the-false-negative-bias"&gt;1. The False Negative Bias&lt;/h3&gt;
+&lt;p&gt;In a high-noise environment, the cost of a "False Positive" (a bad hire) outweighs the cost of a "False Negative" (missing a great candidate). Consequently, filters are tightened to an extreme degree. If a candidate cannot be verified with absolute certainty at the first gate, they are discarded.&lt;/p&gt;
+&lt;h3 id="2-signal-collapse"&gt;2. Signal Collapse&lt;/h3&gt;
+&lt;p&gt;As presentation becomes commoditized through AI, "looking the part" no longer serves as a differentiator. If everyone's resume is a work of art, no one's resume is. This leads to ranking paralysis, where recruiters rely on arbitrary or conservative heuristics because they can no longer distinguish between genuine expertise and successful optimization.&lt;/p&gt;
+&lt;h3 id="3-upstream-trust-migration"&gt;3. Upstream Trust Migration&lt;/h3&gt;
+&lt;p&gt;Because the public pipeline is compromised, hiring teams are retreating to "pre-validated" channels. This explains the heavy reliance on internal referrals and known networks. It's not necessarily cronyism; it's an architectural necessity to find signal in a sea of noise.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="the-feedback-loop-of-friction"&gt;The Feedback Loop of Friction&lt;/h2&gt;
+&lt;p&gt;We are trapped in a recursive cycle. Candidates optimize harder to bypass filters; in response, filters become more draconian. This creates a "Degraded Trust Loop" where the system's own success at filtering further incentivizes candidates to game the system.&lt;/p&gt;
+&lt;p&gt;Ultimately, the pipeline stops being a way to find people and becomes a way to manage risk.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="the-new-strategy-proof-over-presentation"&gt;The New Strategy: Proof Over Presentation&lt;/h2&gt;
+&lt;p&gt;If the market is a low-trust system, "Presentation" (how you describe yourself) is losing its value. What remains valuable is Evidence - signals that are computationally or socially expensive to fake.&lt;/p&gt;
+&lt;h3 id="moving-from-i-did-to-here-is"&gt;Moving from "I Did" to "Here Is"&lt;/h3&gt;
+&lt;p&gt;To bypass the defensive perimeter, engineers must move beyond the resume. The goal is to provide externally verifiable artifacts that don't require the pipeline to "believe" you.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Architectural Transparency:&lt;/strong&gt; Don't just list technologies; publish (abstracted) system designs, trade-off analyses, and post-mortems of failure modes. A worked example of the shape: &lt;a href="https://rivassec.com/paved-road-adoption-as-control.html"&gt;Adoption Is a Security Control&lt;/a&gt; - the program that produced -40% remediation time and -27% pipeline latency, plus the four-month adoption stall I caused myself.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Tangible Artifacts:&lt;/strong&gt; Real-world contributions - whether through open-source modules, infrastructure-as-code repos, or documented homelabs - serve as proof-of-work. The artifact that survives your attention is the one that names the failure modes inline, not just the success path; the longest case study I have of that is &lt;a href="https://rivassec.com/teensy-efi-bruteforce-hours-late.html"&gt;The Teensy That Failed in Public&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Impact-Oriented Signaling:&lt;/strong&gt; Shift from "tasks completed" to "business outcomes achieved." Hard numbers on risk reduction, latency improvements, or cost savings are much harder to hallucinate effectively.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="a-devsecops-view-of-the-career"&gt;A DevSecOps View of the Career&lt;/h2&gt;
+&lt;p&gt;If we treat the job market as a security problem, the solution becomes clear. The hiring pipeline is a system with exposed endpoints and high validation costs. As any security professional knows, when you can't trust the input, you lean on Multi-Factor Authentication. In hiring, your "factors" are your network, your public evidence, and your verifiable history.&lt;/p&gt;
+&lt;p&gt;The market isn't "broken" - it has simply changed its objective function. It no longer prioritizes finding the best; it prioritizes avoiding the unverified.&lt;/p&gt;
+&lt;p&gt;Success in 2026 and beyond isn't about having the most optimized resume. It's about being the most difficult to doubt. In a world of automated noise, reliability is the only signal that scales.&lt;/p&gt;</content><category term="DevSecOps"/><category term="careers"/><category term="devsecops"/></entry><entry><title>Elasticsearch Snapshot Verification, Minimal Privileges</title><link href="https://rivassec.com/elasticsearch-secure-snapshot-verification.html" rel="alternate"/><published>2025-04-20T00:00:00-07:00</published><updated>2026-05-12T00:00:00-07:00</updated><author><name>RivasSec</name></author><id>tag:rivassec.com,2025-04-20:/elasticsearch-secure-snapshot-verification.html</id><summary type="html">&lt;p&gt;Verify Elasticsearch snapshots without manage_snapshot: minimal API key, Prometheus-friendly script, and a public tools repo for hardened monitoring automation.&lt;/p&gt;</summary><content type="html">&lt;p&gt;Verifying Elasticsearch snapshots typically requires broad &lt;code&gt;manage&lt;/code&gt; permissions. This can be risky, especially if credentials are compromised. We can reduce the blast radius by defining a minimal role that grants only the specific actions necessary to verify snapshots without allowing deletions or alterations.&lt;/p&gt;
+&lt;p&gt;In some environments, using external monitoring systems like Datadog or Prometheus may not be feasible. Whether due to air-gapped infrastructure, compliance restrictions, or footprint concerns, having a hardened custom script with minimal privileges can be a reliable fallback.&lt;/p&gt;
+&lt;p&gt;To improve portability and maintainability, this article now references code and configuration files hosted in the &lt;a href="https://github.com/rivassec/elasticsearch-tools"&gt;elasticsearch-tools GitHub repository&lt;/a&gt;. This structure allows future updates to the tools without requiring edits to the article.&lt;/p&gt;
+&lt;h2 id="minimal-elasticsearch-role"&gt;Minimal Elasticsearch Role&lt;/h2&gt;
+&lt;p&gt;Here is a role that avoids using &lt;code&gt;manage_snapshot&lt;/code&gt; to reduce exposure. This ensures a compromised API key cannot delete or tamper with existing backups:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://github.com/rivassec/elasticsearch-tools/blob/main/roles/snapshot_repo_readonly.json"&gt;View full role definition&lt;/a&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;snapshot_repo_readonly&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;cluster&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;
+&lt;span class="w"&gt;      &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;cluster:admin/repository/get&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;span class="w"&gt;      &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;cluster:admin/repository/verify&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;span class="w"&gt;      &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;cluster:admin/snapshot/get&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;span class="w"&gt;      &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;cluster:admin/snapshot/status&amp;quot;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;indices&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[],&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;run_as&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[],&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;metadata&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{},&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;transient_metadata&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;span class="w"&gt;      &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;enabled&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kc"&gt;true&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h2 id="api-key-generation"&gt;API Key Generation&lt;/h2&gt;
+&lt;p&gt;To generate an API key restricted to this role, use the following &lt;code&gt;curl&lt;/code&gt; command. This allows access only to the approved cluster actions with a defined expiration period:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;curl&lt;span class="w"&gt; &lt;/span&gt;-u&lt;span class="w"&gt; &lt;/span&gt;elastic:&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ELASTICPASS&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-X&lt;span class="w"&gt; &lt;/span&gt;POST&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;localhost:9200/_security/api_key&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;-H&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Content-Type: application/json&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;-d&lt;span class="w"&gt; &lt;/span&gt;@elasticsearch-tools/roles/snapshot_repo_readonly.json
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h2 id="snapshot-verifier-script"&gt;Snapshot Verifier Script&lt;/h2&gt;
+&lt;p&gt;This API key can be used with a lightweight shell script that verifies the repository and emits Prometheus-compatible metrics. The script is secure by design and includes input validation, safe temporary file handling, and minimal permissions.&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://github.com/rivassec/elasticsearch-tools/blob/main/scripts/verify_snapshot.sh"&gt;View the script&lt;/a&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="ch"&gt;#!/bin/bash&lt;/span&gt;
+
+&lt;span class="c1"&gt;########################################################################&lt;/span&gt;
+&lt;span class="c1"&gt;# Hardened Snapshot Monitor for Elasticsearch&lt;/span&gt;
+&lt;span class="c1"&gt;# Purpose: Verify an Elasticsearch snapshot repository and expose&lt;/span&gt;
+&lt;span class="c1"&gt;# Prometheus-style metrics securely.&lt;/span&gt;
+&lt;span class="c1"&gt;########################################################################&lt;/span&gt;
+
+&lt;span class="nb"&gt;set&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-euo&lt;span class="w"&gt; &lt;/span&gt;pipefail
+
+:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ES_HOST&lt;/span&gt;&lt;span class="p"&gt;:=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;http://localhost:9200&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;REPO_NAME&lt;/span&gt;&lt;span class="p"&gt;:?Missing REPO_NAME&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;API_KEY_FILE&lt;/span&gt;&lt;span class="p"&gt;:=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;/etc/elasticsearch/readonly-api-key&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;PROM_FILE&lt;/span&gt;&lt;span class="p"&gt;:=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;/var/lib/node_exporter/textfile_collector/es_snapshot.prom&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+
+&lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[[&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;!&lt;span class="w"&gt; &lt;/span&gt;-f&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$API_KEY_FILE&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;]]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;then&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;[FATAL] API key file not found: &lt;/span&gt;&lt;span class="nv"&gt;$API_KEY_FILE&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&amp;gt;&lt;span class="p"&gt;&amp;amp;&lt;/span&gt;&lt;span class="m"&gt;2&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nb"&gt;exit&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2&lt;/span&gt;
+&lt;span class="k"&gt;fi&lt;/span&gt;
+
+&lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[[&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;stat&lt;span class="w"&gt; &lt;/span&gt;-c&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;%a&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$API_KEY_FILE&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-gt&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;600&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;]]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;then&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;[FATAL] API key file permissions too permissive (should be 600 or less)&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&amp;gt;&lt;span class="p"&gt;&amp;amp;&lt;/span&gt;&lt;span class="m"&gt;2&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nb"&gt;exit&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;3&lt;/span&gt;
+&lt;span class="k"&gt;fi&lt;/span&gt;
+
+&lt;span class="nv"&gt;API_KEY&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&amp;lt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$API_KEY_FILE&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+&lt;span class="nv"&gt;TMP_PROM_FILE&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;mktemp&lt;span class="k"&gt;)&lt;/span&gt;
+&lt;span class="nv"&gt;safe_repo&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;REPO_NAME&lt;/span&gt;&lt;span class="p"&gt;//[^a-zA-Z0-9_]/_&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+&lt;span class="nv"&gt;timestamp&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;date&lt;span class="w"&gt; &lt;/span&gt;+%s&lt;span class="k"&gt;)&lt;/span&gt;
+
+&lt;span class="nv"&gt;response&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;curl&lt;span class="w"&gt; &lt;/span&gt;-fsSL&lt;span class="w"&gt; &lt;/span&gt;--retry&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;3&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;--retry-delay&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;-H&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Authorization: ApiKey &lt;/span&gt;&lt;span class="nv"&gt;$API_KEY&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;-H&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Content-Type: application/json&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;-X&lt;span class="w"&gt; &lt;/span&gt;POST&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$ES_HOST&lt;/span&gt;&lt;span class="s2"&gt;/_snapshot/&lt;/span&gt;&lt;span class="nv"&gt;$REPO_NAME&lt;/span&gt;&lt;span class="s2"&gt;/_verify&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;||&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;true&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+
+&lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;jq&lt;span class="w"&gt; &lt;/span&gt;-e&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;.nodes | length &amp;gt; 0&amp;#39;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&amp;lt;&amp;lt;&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$response&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&amp;gt;/dev/null&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2&lt;/span&gt;&amp;gt;&lt;span class="p"&gt;&amp;amp;&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;then&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nv"&gt;result&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nv"&gt;status&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;ok&amp;quot;&lt;/span&gt;
+&lt;span class="k"&gt;else&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nv"&gt;result&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nv"&gt;status&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;failed&amp;quot;&lt;/span&gt;
+&lt;span class="k"&gt;fi&lt;/span&gt;
+
+&lt;span class="o"&gt;{&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;# HELP es_snapshot_repository_verified Success status of snapshot verification&amp;quot;&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;# TYPE es_snapshot_repository_verified gauge&amp;quot;&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;es_snapshot_repository_verified{repo=\&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$safe_repo&lt;/span&gt;&lt;span class="s2"&gt;\&amp;quot;} &lt;/span&gt;&lt;span class="nv"&gt;$result&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;# HELP es_snapshot_repository_verified_at Unix timestamp of last check&amp;quot;&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;# TYPE es_snapshot_repository_verified_at gauge&amp;quot;&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;es_snapshot_repository_verified_at{repo=\&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$safe_repo&lt;/span&gt;&lt;span class="s2"&gt;\&amp;quot;} &lt;/span&gt;&lt;span class="nv"&gt;$timestamp&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&amp;gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$TMP_PROM_FILE&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+
+mv&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$TMP_PROM_FILE&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$PROM_FILE&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+logger&lt;span class="w"&gt; &lt;/span&gt;-t&lt;span class="w"&gt; &lt;/span&gt;es-snapshot-monitor&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;[INFO] Verification &lt;/span&gt;&lt;span class="nv"&gt;$status&lt;/span&gt;&lt;span class="s2"&gt; for &amp;#39;&lt;/span&gt;&lt;span class="nv"&gt;$REPO_NAME&lt;/span&gt;&lt;span class="s2"&gt;&amp;#39; (code=&lt;/span&gt;&lt;span class="nv"&gt;$result&lt;/span&gt;&lt;span class="s2"&gt;)&amp;quot;&lt;/span&gt;
+
+&lt;span class="nb"&gt;exit&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h2 id="cron-example"&gt;Cron Example&lt;/h2&gt;
+&lt;p&gt;A cron job can be configured to run the script regularly:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://github.com/rivassec/elasticsearch-tools/blob/main/examples/example_cronjob.sh"&gt;View example cron wrapper&lt;/a&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="ch"&gt;#!/bin/bash&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Note: For production use, place this logic directly into a cron job or systemd timer.&lt;/span&gt;
+&lt;span class="c1"&gt;#       This script is just an example for demonstration and testing.&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Fail fast on error&lt;/span&gt;
+&lt;span class="nb"&gt;set&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-euo&lt;span class="w"&gt; &lt;/span&gt;pipefail
+
+&lt;span class="c1"&gt;# === Configuration ===&lt;/span&gt;
+&lt;span class="nb"&gt;export&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;REPO_NAME&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;my_backup_repo&amp;quot;&lt;/span&gt;
+&lt;span class="nb"&gt;export&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;ES_HOST&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;http://localhost:9200&amp;quot;&lt;/span&gt;
+&lt;span class="nb"&gt;export&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;API_KEY_FILE&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;/etc/elasticsearch/readonly-api-key&amp;quot;&lt;/span&gt;
+&lt;span class="nb"&gt;export&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;PROM_FILE&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;/var/lib/node_exporter/textfile_collector/es_snapshot_&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;REPO_NAME&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;.prom&amp;quot;&lt;/span&gt;
+
+&lt;span class="c1"&gt;# === Invoke snapshot verification script ===&lt;/span&gt;
+/opt/elasticsearch-tools/tools/snapshot-verifier/verify_snapshot.sh
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h2 id="usage-instructions"&gt;Usage Instructions&lt;/h2&gt;
+&lt;p&gt;To install, configure, and run the snapshot verification system, follow the documentation in the repository:
+&lt;a href="https://github.com/rivassec/elasticsearch-tools/blob/main/docs/USAGE.md"&gt;View usage guide&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;This structure is ideal for environments with limited connectivity or strict compliance rules. It keeps the verification logic reproducible, auditable, and safe from privilege escalation risks. Updates to the tooling can be managed independently of the article, improving long-term maintainability. For the same "grant the minimum, refuse everything else" approach applied to AWS IAM, see &lt;a href="https://rivassec.com/iam-safe-defaults-fail-loud.html"&gt;IAM Roles That Fail Loud&lt;/a&gt;.&lt;/p&gt;</content><category term="DevSecOps"/><category term="elasticsearch"/><category term="prometheus"/><category term="observability"/><category term="iam"/></entry><entry><title>Taming the OOM Killer: Process Priorities on Linux</title><link href="https://rivassec.com/oom-killer-process-prioritization.html" rel="alternate"/><published>2025-04-18T00:00:00-07:00</published><updated>2026-05-12T00:00:00-07:00</updated><author><name>RivasSec</name></author><id>tag:rivassec.com,2025-04-18:/oom-killer-process-prioritization.html</id><summary type="html">&lt;p&gt;The Linux OOM Killer decides what dies under memory pressure. Protect sshd, mysqld, and other critical processes with oom_score_adj via a small script.&lt;/p&gt;</summary><content type="html">
+&lt;p&gt;In resource-constrained environments (especially virtual private servers, CI agents, and container hosts) the Linux kernel's &lt;strong&gt;Out of Memory Killer (OOM Killer)&lt;/strong&gt; is a last-resort defense mechanism. When memory is exhausted, it begins terminating processes to keep the system alive.&lt;/p&gt;
+&lt;p&gt;The OOM Killer uses heuristics (like memory usage and the &lt;code&gt;oom_score_adj&lt;/code&gt; value) to select processes it deems less essential. But you don’t have to leave that critical decision entirely to the kernel's default logic.&lt;/p&gt;
+&lt;hr/&gt;
+&lt;h2 id="the-incident"&gt;The Incident&lt;/h2&gt;
+&lt;p&gt;Years ago, I had to recover a VPS via remote console. A quick dive into &lt;code&gt;/var/log/messages&lt;/code&gt; showed that the OOM Killer had struck, terminating critical services. The culprit? A perfect storm:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Web crawlers (Google, Yahoo, Yandex) simultaneously indexing multiple sites&lt;/li&gt;
+&lt;li&gt;A torrent tracker and download script both running&lt;/li&gt;
+&lt;li&gt;IRC flood attempts while &lt;code&gt;irssi&lt;/code&gt; was connected&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;This combination overwhelmed system memory. Without process priority tuning, the OOM Killer started targeting processes based on its heuristics, which felt indiscriminate from an operational view as it even took down &lt;code&gt;sshd&lt;/code&gt;.&lt;/p&gt;
+&lt;hr/&gt;
+&lt;h2 id="the-mitigation-strategy"&gt;The Mitigation Strategy&lt;/h2&gt;
+&lt;p&gt;You can significantly influence OOM Killer decisions using the &lt;code&gt;/proc/&amp;lt;pid&amp;gt;/oom_score_adj&lt;/code&gt; setting for a process. This value ranges from -1000 to +1000. The kernel uses this score, combined with memory usage, to decide kill priority; a lower score makes the process less likely to be chosen relative to others.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A value of &lt;code&gt;-1000&lt;/code&gt; effectively disables OOM killing for that process.&lt;/li&gt;
+&lt;li&gt;A value of &lt;code&gt;+1000&lt;/code&gt; makes it a highly preferred target.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;0&lt;/code&gt; is the default.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Here’s a script that reads preferences from a config file and adjusts running process scores accordingly.&lt;/p&gt;
+&lt;h3 id="etcoom_candidatesconf"&gt;&lt;code&gt;/etc/oom_candidates.conf&lt;/code&gt;&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="gh"&gt;#&lt;/span&gt; Format: &amp;lt;process_name&amp;gt; &amp;lt;oom_score_adj_value&amp;gt;
+&lt;span class="gh"&gt;#&lt;/span&gt; Higher = more likely to be killed. Negative = more protected.
+&lt;span class="gh"&gt;#&lt;/span&gt; Critical Services (Protect Strongly)
+sshd -1000
+mysqld -500
+portsentry -200
+
+&lt;span class="gh"&gt;#&lt;/span&gt; Important Services (Protect Moderately)
+apache2 100
+
+&lt;span class="gh"&gt;#&lt;/span&gt; Less Critical Interactive/Background (Allow Killing)
+screen 300
+irssi 400
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3 id="oom_adjustersh"&gt;&lt;code&gt;oom_adjuster.sh&lt;/code&gt;&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="ch"&gt;#!/bin/bash&lt;/span&gt;
+&lt;span class="nv"&gt;CONFIG&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"/etc/oom_candidates.conf"&lt;/span&gt;
+
+&lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[[&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;!&lt;span class="w"&gt; &lt;/span&gt;-f&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="nv"&gt;$CONFIG&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;]]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;then&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;"Error: Config file &lt;/span&gt;&lt;span class="nv"&gt;$CONFIG&lt;/span&gt;&lt;span class="s2"&gt; not found."&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&amp;gt;&lt;span class="p"&gt;&amp;amp;&lt;/span&gt;&lt;span class="m"&gt;2&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nb"&gt;exit&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;
+&lt;span class="k"&gt;fi&lt;/span&gt;
+
+&lt;span class="k"&gt;while&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;IFS&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;read&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-r&lt;span class="w"&gt; &lt;/span&gt;line&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;||&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[[&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-n&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="nv"&gt;$line&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;]]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;do&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="o"&gt;[[&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="nv"&gt;$line&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;~&lt;span class="w"&gt; &lt;/span&gt;^#.*$&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;||&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-z&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="nv"&gt;$line&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;]]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;continue&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nb"&gt;read&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-r&lt;span class="w"&gt; &lt;/span&gt;process&lt;span class="w"&gt; &lt;/span&gt;score&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&amp;lt;&amp;lt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="nv"&gt;$line&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;
+
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[[&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-z&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="nv"&gt;$process&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;||&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-z&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="nv"&gt;$score&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;]]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;then&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;"Warning: Skipping invalid line: &lt;/span&gt;&lt;span class="nv"&gt;$line&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&amp;gt;&lt;span class="p"&gt;&amp;amp;&lt;/span&gt;&lt;span class="m"&gt;2&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="k"&gt;continue&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="k"&gt;fi&lt;/span&gt;
+
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nv"&gt;pids&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;pgrep&lt;span class="w"&gt; &lt;/span&gt;-x&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="nv"&gt;$process&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[[&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-z&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="nv"&gt;$pids&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;]]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;then&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="k"&gt;continue&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="k"&gt;fi&lt;/span&gt;
+
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;"Adjusting OOM score for &lt;/span&gt;&lt;span class="nv"&gt;$process&lt;/span&gt;&lt;span class="s2"&gt; (PIDs: &lt;/span&gt;&lt;span class="nv"&gt;$pids&lt;/span&gt;&lt;span class="s2"&gt;) to &lt;/span&gt;&lt;span class="nv"&gt;$score&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;pid&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;in&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$pids&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;do&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[[&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-w&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;"/proc/&lt;/span&gt;&lt;span class="nv"&gt;$pid&lt;/span&gt;&lt;span class="s2"&gt;/oom_score_adj"&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;]]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;then&lt;/span&gt;
+&lt;span class="w"&gt;      &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="nv"&gt;$score&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&amp;gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;"/proc/&lt;/span&gt;&lt;span class="nv"&gt;$pid&lt;/span&gt;&lt;span class="s2"&gt;/oom_score_adj"&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2&lt;/span&gt;&amp;gt;/dev/null
+&lt;span class="w"&gt;      &lt;/span&gt;&lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[[&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$?&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-ne&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;]]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;then&lt;/span&gt;
+&lt;span class="w"&gt;         &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;"Warning: Failed to set score for &lt;/span&gt;&lt;span class="nv"&gt;$process&lt;/span&gt;&lt;span class="s2"&gt; (PID: &lt;/span&gt;&lt;span class="nv"&gt;$pid&lt;/span&gt;&lt;span class="s2"&gt;)"&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&amp;gt;&lt;span class="p"&gt;&amp;amp;&lt;/span&gt;&lt;span class="m"&gt;2&lt;/span&gt;
+&lt;span class="w"&gt;      &lt;/span&gt;&lt;span class="k"&gt;fi&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="k"&gt;else&lt;/span&gt;
+&lt;span class="w"&gt;       &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;"Warning: Cannot write to oom_score_adj for &lt;/span&gt;&lt;span class="nv"&gt;$process&lt;/span&gt;&lt;span class="s2"&gt; (PID: &lt;/span&gt;&lt;span class="nv"&gt;$pid&lt;/span&gt;&lt;span class="s2"&gt;)"&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&amp;gt;&lt;span class="p"&gt;&amp;amp;&lt;/span&gt;&lt;span class="m"&gt;2&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="k"&gt;fi&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="k"&gt;done&lt;/span&gt;
+&lt;span class="k"&gt;done&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&amp;lt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="nv"&gt;$CONFIG&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;
+
+&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;"OOM score adjustment complete."&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr/&gt;
+&lt;h2 id="running-the-script"&gt;Running the Script&lt;/h2&gt;
+&lt;p&gt;You can run this periodically via cron or on boot with systemd. For example:&lt;/p&gt;
+&lt;h3 id="etcsystemdsystemoom-adjusterservice"&gt;&lt;code&gt;/etc/systemd/system/oom-adjuster.service&lt;/code&gt;&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;[Unit]&lt;/span&gt;
+&lt;span class="na"&gt;Description&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;Adjust OOM Scores from config file&lt;/span&gt;
+&lt;span class="na"&gt;After&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;network.target&lt;/span&gt;
+
+&lt;span class="k"&gt;[Service]&lt;/span&gt;
+&lt;span class="na"&gt;Type&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;oneshot&lt;/span&gt;
+&lt;span class="na"&gt;ExecStart&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;/usr/local/bin/oom_adjuster.sh&lt;/span&gt;
+
+&lt;span class="k"&gt;[Install]&lt;/span&gt;
+&lt;span class="na"&gt;WantedBy&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;multi-user.target&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Then run:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo&lt;span class="w"&gt; &lt;/span&gt;systemctl&lt;span class="w"&gt; &lt;/span&gt;daemon-reload
+sudo&lt;span class="w"&gt; &lt;/span&gt;systemctl&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;enable&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;--now&lt;span class="w"&gt; &lt;/span&gt;oom-adjuster.service
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr/&gt;
+&lt;h2 id="security-considerations"&gt;Security Considerations&lt;/h2&gt;
+&lt;p&gt;From a DevSecOps perspective, OOM prioritization is not just about uptime. It’s a security hardening technique:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;SSHD protection&lt;/strong&gt; prevents lockouts during memory exhaustion.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Preserving portsentry or IDS processes&lt;/strong&gt; ensures defense mechanisms remain active.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Avoiding the kill of logging/monitoring agents&lt;/strong&gt; helps retain forensic data post-incident.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Minimizing risk of service flapping&lt;/strong&gt; reduces noisy alerts and potential abuse vectors during DoS scenarios.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Misconfigured systems where critical daemons (like &lt;code&gt;iptables&lt;/code&gt;, &lt;code&gt;auditd&lt;/code&gt;, &lt;code&gt;sshd&lt;/code&gt;, or VPN tunnels) are killed first expose themselves to avoidable downtime and security gaps.&lt;/p&gt;
+&lt;hr/&gt;
+&lt;h2 id="modern-use-cases"&gt;Modern Use Cases&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Kubernetes nodes&lt;/strong&gt;: Influence OOM behavior via Quality of Service (QoS) classes (set by defining resource requests/limits in pod specs), or apply node-level tuning using methods like the script above for critical node components (e.g., kubelet, container runtime). For the pod-side of the same problem, see &lt;a href="https://rivassec.com/hardening-k8s.html"&gt;Hardening Kubernetes Deployments&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;CI/CD runners&lt;/strong&gt;: Protect build agents or essential runner services from being killed during resource-intensive test suites or concurrent builds.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Shared hosting / VPS&lt;/strong&gt;: Prioritize core services (web server, database, SSH) over potentially less critical user processes or background tasks.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr/&gt;
+&lt;h2 id="conclusion"&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;The OOM Killer is an essential part of the Linux kernel, but leaving process termination order purely to default heuristics can be risky in production. By strategically assigning &lt;code&gt;oom_score_adj&lt;/code&gt; values based on business continuity and security priorities, you can significantly reduce recovery time and harden your systems against memory pressure scenarios.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;How does your team manage OOM Killer behavior in critical environments? Share your strategies!&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Originally inspired by a real-world VPS recovery and refreshed for the modern DevSecOps landscape.&lt;/em&gt;&lt;/p&gt;</content><category term="DevSecOps"/><category term="linux"/><category term="oom-killer"/><category term="sysadmin"/><category term="hardening"/><category term="devsecops"/></entry><entry><title>The 208.5-Day Kernel Bug: Uptime, Overflow, and Risk</title><link href="https://rivassec.com/208-day-kernel-bug-lessons.html" rel="alternate"/><published>2025-04-16T00:00:00-07:00</published><updated>2026-05-12T00:00:00-07:00</updated><author><name>RivasSec</name></author><id>tag:rivassec.com,2025-04-16:/208-day-kernel-bug-lessons.html</id><summary type="html">&lt;p&gt;A 2012 Linux kernel bug caused CPU lockups after 208.5 days of uptime due to an integer overflow in sched_clock(). RHEL 5/6 lesson: patch and observe uptime.&lt;/p&gt;</summary><content type="html">&lt;p&gt;In 2012, a subtle but potentially catastrophic bug was discovered in older versions of the Linux kernel, particularly affecting Red Hat Enterprise Linux (RHEL) and its derivatives. Once a system reached &lt;strong&gt;208.5 days of continuous uptime&lt;/strong&gt;, a flaw in the kernel’s &lt;code&gt;sched_clock()&lt;/code&gt; function could trigger a soft lockup, freezing the CPU for an estimated &lt;strong&gt;584 years&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Yes, &lt;strong&gt;584 years&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;The root cause? An &lt;strong&gt;unsigned 64-bit integer overflow&lt;/strong&gt;. The kernel attempted to compute elapsed nanoseconds based on CPU cycles, using this logic:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="cm"&gt;/* Simplified representation of the overflow-prone calculation */&lt;/span&gt;
+&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;cpu&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;smp_processor_id&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+&lt;span class="kt"&gt;unsigned&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;long&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;long&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;ns&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;per_cpu&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;cyc2ns_offset&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;cpu&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="n"&gt;ns&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;+=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;cyc&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;per_cpu&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;cyc2ns&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;cpu&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;CYC2NS_SCALE_FACTOR&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;ns&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Once the computed value exceeded &lt;code&gt;0xffffffffffffffff&lt;/code&gt;, it wrapped around, leading to undefined behavior in the scheduler and an unrecoverable state requiring a manual reboot.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="why-this-matters-to-devsecops"&gt;Why This Matters to DevSecOps&lt;/h2&gt;
+&lt;p&gt;This bug is more than a curiosity. It's a classic case study in:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;The operational danger of long uptimes&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Why kernel patching should be automated and observable&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;How integer overflows can lead to severe availability risks&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Affected systems included RHEL 5.0 through 5.5 and early RHEL 6 versions running kernels below &lt;code&gt;2.6.32-220.4.*&lt;/code&gt;. Some Debian-based distributions were likely impacted, though documentation was less complete.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="takeaways-for-modern-systems"&gt;Takeaways for Modern Systems&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Live patching tools&lt;/strong&gt; like Ksplice, KernelCare, and kpatch can reduce reboot pressure&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Observability stacks&lt;/strong&gt; should alert on uptime thresholds and kernel messages (&lt;code&gt;dmesg&lt;/code&gt;, &lt;code&gt;uptime&lt;/code&gt;, scheduler warnings)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Compliance frameworks&lt;/strong&gt; often require timely OS patching, and this bug illustrates why&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;CI/CD pipelines for OS-level components&lt;/strong&gt; should test for edge cases, including time-based and overflow scenarios&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;p&gt;Even today, this incident reminds us that uptime isn't always a badge of honor. In some cases, it's a quiet countdown to failure. For another time-math failure at cloud scale, see &lt;a href="https://rivassec.com/leap-second-chaos-2012.html"&gt;The Chaos of the Leap Second (2012)&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Originally inspired by a 2012 analysis of the &lt;code&gt;sched_clock()&lt;/code&gt; bug affecting Linux systems with prolonged uptime.&lt;/em&gt;&lt;/p&gt;</content><category term="DevSecOps"/><category term="kernel"/><category term="linux"/><category term="bug"/><category term="devsecops"/></entry></feed>
