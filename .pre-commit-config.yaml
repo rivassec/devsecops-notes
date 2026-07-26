@@ -30,3 +30,13 @@ repos:
         types: [markdown]
         # The script always exits 0 — output is informational, never blocking.
         verbose: true
+
+      - id: check-descriptions
+        name: enforce article Summary length + uniqueness
+        entry: scripts/check_descriptions.py
+        language: python
+        types: [markdown]
+        files: ^content/[^/]+\.md$
+        # Only fails when explicit staged files violate (100-160 chars,
+        # non-empty, unique). Repo-wide scans warn but do not fail. See
+        # scripts/check_descriptions.py header comment for policy.
