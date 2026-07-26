@@ -120,11 +120,11 @@ main > nav a:hover { color: var(--accent) !important; background: transparent !i
 
 /* ============================================================
    Article page: hero banner, body, sidebar.
+   TOC (aside.article-toc) is now a sibling of <article> (not a
+   grid child) so Firefox Reader View can identify the article
+   node cleanly. See theme change 2026-07-26 for context.
    ============================================================ */
 main article.single {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 280px;
-  grid-column-gap: 32px;
   padding: 0 32px 64px;
   max-width: 1200px;
   margin: 0 auto !important;
@@ -174,18 +174,7 @@ main article.single > header p a {
   text-decoration: underline;
 }
 main article.single > header p a:hover { color: #ffffff; }
-main article.single > div { grid-column: 1; min-width: 0; }
-main article.single > aside.article-toc { grid-column: 2; grid-row: 2; }
-main article.single .tag-cloud,
-main article.single .related-posts,
-main article.single > .center,
-main article.single > .neighbors,
-main article.single > .related-posts { grid-column: 1 / -1; }
-
-@media (max-width: 1099px) {
-  main article.single { grid-template-columns: 1fr; }
-  main article.single > aside.article-toc { grid-column: 1; }
-}
+main article.single > div { min-width: 0; }
 
 /* Article body typography */
 main article.single > div {
@@ -211,25 +200,21 @@ main article.single p, main article.single li {
 main article.single strong { color: var(--fg-strong); }
 main article.single em { color: var(--fg); }
 
-/* In-article TOC card (right rail) */
-main article.single aside.article-toc {
-  position: sticky;
-  top: 80px;
-  align-self: flex-start;
+/* Article-page TOC card, now a sibling of <article>. Placed above
+   article on desktop, hidden on mobile so the article title lands
+   first in the mobile viewport. */
+main > aside.article-toc {
   background: var(--bg-elev);
   border: 1px solid var(--border);
   border-radius: 6px;
   padding: 18px 20px;
-  margin: 0;
+  margin: 24px auto 0;
+  max-width: 1136px;              /* matches article.single max-width minus its padding */
   font-size: 13px;
   color: var(--fg);
   text-align: left;
-  width: auto;
-  height: auto;
-  left: auto;
-  z-index: auto;
 }
-main article.single aside.article-toc h4 {
+main > aside.article-toc .aside-heading {
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 1.5px;
@@ -237,27 +222,34 @@ main article.single aside.article-toc h4 {
   margin: 0 0 12px;
   font-weight: 700;
 }
-main article.single aside.article-toc a {
+main > aside.article-toc a {
   color: var(--fg);
 }
-main article.single aside.article-toc a:hover {
+main > aside.article-toc a:hover {
   color: var(--accent);
   text-decoration: none;
 }
-main article.single aside.article-toc .toc { margin-top: 0 !important; }
-main article.single aside.article-toc .toc > ul {
+main > aside.article-toc .toc { margin-top: 0 !important; }
+main > aside.article-toc .toc > ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
-main article.single aside.article-toc .toc > ul > li {
+main > aside.article-toc .toc > ul > li {
   padding: 5px 0;
   line-height: 1.4;
 }
-main article.single aside.article-toc .toc ul ul {
+main > aside.article-toc .toc ul ul {
   list-style: none;
   padding-left: 16px;
   margin-top: 4px;
+}
+
+/* Hide the TOC entirely on mobile. Rationale: on narrow screens the
+   TOC dominates the viewport before the article title becomes
+   visible, and users scroll rather than jump on mobile. */
+@media (max-width: 767px) {
+  main > aside.article-toc { display: none; }
 }
 
 /* Article tag-cloud at bottom */
