@@ -7,7 +7,10 @@ repos:
     hooks:
       - id: gitleaks
         name: gitleaks (staged secrets)
-        args: ["protect", "--staged", "--redact"]
+        # gitleaks v8.x renamed `protect` to `git --pre-commit`.
+        # The upstream hook entry is now
+        # `gitleaks git --pre-commit --redact --staged --verbose`
+        # which is what we get by not overriding args here.
 
   - repo: local
     hooks:
