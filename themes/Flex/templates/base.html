@@ -21,7 +21,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
   {% endif %}
 
-  <link rel="stylesheet" type="text/css" href="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/stylesheet/style.min.css">
+  <link rel="stylesheet" type="text/css" href="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/stylesheet/style.min.css{% if ASSET_VERSION %}?v={{ ASSET_VERSION }}{% endif %}">
 
   {# DARK THEME STYLES #}
   {% if THEME_COLOR == "dark" or THEME_COLOR_AUTO_DETECT_BROWSER_PREFERENCE or THEME_COLOR_ENABLE_USER_OVERRIDE %}
@@ -35,7 +35,7 @@
       {% elif THEME_COLOR_ENABLE_USER_OVERRIDE and THEME_COLOR|default("light") == "light" %}
         disabled="disabled"
       {% endif %}
-    href="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/stylesheet/dark-theme.min.css">
+    href="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/stylesheet/dark-theme.min.css{% if ASSET_VERSION %}?v={{ ASSET_VERSION }}{% endif %}">
   {% endif %}
 
   {# PYGMENTS STYLES #}
@@ -79,7 +79,7 @@
   {% endif %}
 
   {% if CUSTOM_CSS %}
-  <link rel="stylesheet" type="text/css" href="{% if main_siteurl is defined %}{{ main_site }}{% else %}{{ SITEURL }}{% endif %}/{{ CUSTOM_CSS }}">
+  <link rel="stylesheet" type="text/css" href="{% if main_siteurl is defined %}{{ main_site }}{% else %}{{ SITEURL }}{% endif %}/{{ CUSTOM_CSS }}{% if ASSET_VERSION %}?v={{ ASSET_VERSION }}{% endif %}">
   {% endif %}
 
   {% include "partial/icon.html" %}
@@ -138,7 +138,7 @@
 
   {% include "partial/jsonld.html" %}
 
-  <script defer src="{{ SITEURL }}/static/copy-code.js"></script>
+  <script defer src="{{ SITEURL }}/static/copy-code.js{% if ASSET_VERSION %}?v={{ ASSET_VERSION }}{% endif %}"></script>
 
   {% block additional_js %}{% endblock %}
 </body>

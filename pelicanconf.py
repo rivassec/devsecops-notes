@@ -1,4 +1,38 @@
+import os
+import subprocess
+
 AUTHOR = 'RivasSec'
+
+
+def _asset_version() -> str:
+    """Return a stable per-deploy version string for cache-busting.
+
+    Priority:
+    1. GITHUB_SHA env var (set by GitHub Actions; changes on every commit)
+    2. `git rev-parse HEAD` (works for local builds)
+    3. Literal 'dev' (last resort so builds never fail on this)
+
+    Truncated to 8 chars because we only need it distinct per deploy, not
+    cryptographically unique. Referenced from base.html as ?v={{ ASSET_VERSION }}.
+    """
+    sha = os.environ.get("GITHUB_SHA")
+    if sha:
+        return sha[:8]
+    try:
+        sha = subprocess.check_output(
+            ["git", "rev-parse", "HEAD"],
+            cwd=os.path.dirname(__file__),
+            stderr=subprocess.DEVNULL,
+            text=True,
+        ).strip()
+        if sha:
+            return sha[:8]
+    except (subprocess.CalledProcessError, FileNotFoundError, OSError):
+        pass
+    return "dev"
+
+
+ASSET_VERSION = _asset_version()
 SITENAME = 'RivasSec | DevSecOps, Kubernetes, AWS IAM'
 SITETITLE = 'RivasSec'
 SITESUBTITLE = 'Infrastructure. Security. Insight.'
