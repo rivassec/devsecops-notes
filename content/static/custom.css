@@ -252,19 +252,24 @@ main > aside.article-toc .toc ul ul {
   main > aside.article-toc { display: none; }
 }
 
-/* Article tag-cloud at bottom */
-main article.single .tag-cloud {
-  margin: 32px 0 16px;
-  padding: 16px 0 0;
+/* Tag cloud at article bottom.
+   Scoped to `main >` because these blocks are now siblings of
+   <article> (moved outside for Firefox Reader View compatibility).
+   Constrained to the same max-width as article.single so they visually
+   align with article content. */
+main > .tag-cloud {
+  max-width: 1136px;
+  margin: 32px auto 16px;
+  padding: 16px 32px 0;
   border-top: 1px solid var(--border);
 }
-main article.single .tag-cloud p {
+main > .tag-cloud p {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
   margin: 0;
 }
-main article.single .tag-cloud a {
+main > .tag-cloud a {
   display: inline-block;
   padding: 4px 12px;
   font-size: 0.75em;
@@ -277,22 +282,25 @@ main article.single .tag-cloud a {
   line-height: 1.4;
   text-align: center;
 }
-main article.single .tag-cloud a:hover {
+main > .tag-cloud a:hover {
   background: var(--bg-elev-2) !important;
   border-color: var(--accent-dim);
   color: var(--accent-strong) !important;
 }
 
-/* Related posts card (right rail) */
-main article.single .related-posts,
-main article.single div.related-posts {
+/* Related-posts card and Series card. Boxed panel below the article.
+   Now sibling of <article> (moved out for Reader View eligibility). */
+main > .related-posts {
+  max-width: 1136px;
+  margin: 24px auto 0;
   background: var(--bg-elev);
   border: 1px solid var(--border);
   border-radius: 6px;
   padding: 18px 20px;
-  font-size: 13px;
+  font-size: 14px;
 }
-main article.single .related-posts h4 {
+main > .related-posts h2.related-heading,
+main > .related-posts h2.series-heading {
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 1.5px;
@@ -300,23 +308,37 @@ main article.single .related-posts h4 {
   margin: 0 0 12px;
   font-weight: 700;
 }
-main article.single .related-posts ul,
-main article.single ul.related-posts {
+main > .related-posts ul.related-posts,
+main > .related-posts ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
-main article.single .related-posts li {
-  padding: 8px 0;
+main > .related-posts li {
+  padding: 10px 0;
   border-bottom: 1px solid var(--border);
 }
-main article.single .related-posts li:last-child { border-bottom: none; }
-main article.single .related-posts a {
+main > .related-posts li:last-child { border-bottom: none; }
+main > .related-posts a {
   color: var(--fg);
   text-decoration: none;
   display: block;
+  line-height: 1.4;
 }
-main article.single .related-posts a:hover { color: var(--accent); }
+main > .related-posts a:hover { color: var(--accent); }
+
+/* On desktop, split related-posts into two columns for better scan. */
+@media (min-width: 768px) {
+  main > .related-posts > ul.related-posts,
+  main > .related-posts > ul {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 24px;
+  }
+  main > .related-posts li {
+    border-bottom: 1px solid var(--border);
+  }
+}
 
 /* TL;DR callout */
 main article.single .tldr {
@@ -552,25 +574,28 @@ section#isso-thread section.auth-section p.post-action input:hover {
   color: var(--fg-strong) !important;
 }
 
-/* Previous/Next post container spacing on the dark layout */
-main article.single .neighbors {
+/* Previous/Next post container spacing.
+   Rescoped to `main >` because neighbors is now a sibling of <article>,
+   not a grid child. */
+main > .neighbors {
   height: auto !important;
-  margin: 32px 0 !important;
+  max-width: 1136px;
+  margin: 32px auto !important;
+  padding: 0 32px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 12px;
-  grid-column: 1 / -1;
 }
-main article.single .neighbors a.btn {
+main > .neighbors a.btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
 }
 /* The .btn inherits float-left/float-right from Flex; flexbox handles
    alignment now, so neutralize the floats inside .neighbors. */
-main article.single .neighbors a.btn.float-left,
-main article.single .neighbors a.btn.float-right {
+main > .neighbors a.btn.float-left,
+main > .neighbors a.btn.float-right {
   float: none;
 }
 
