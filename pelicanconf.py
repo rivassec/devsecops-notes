@@ -101,6 +101,14 @@ COPYRIGHT_NAME = "RivasSec"
 
 DEFAULT_PAGINATION = 10
 
+# Auto-defer future-dated posts.
+# Any article with a Date: value in the future gets Status: draft by
+# default and is not built into the published site. Lets us schedule
+# posts by editing the Date: frontmatter and letting the build cadence
+# pick them up once the date passes.
+# Docs: https://docs.getpelican.com/en/latest/settings.html
+WITH_FUTURE_DATES = False
+
 # Development
 RELATIVE_URLS = True
 

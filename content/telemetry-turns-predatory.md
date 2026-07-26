@@ -1,5 +1,6 @@
 Title: When Telemetry Turns Predatory: A DevSecOps Look at Digital Repression in Venezuela
 Date: 2026-08-25
+Status: draft
 Author: Oliver Rivas
 Category: DevSecOps
 Tags: devsecops, security, venezuela, censorship, threat-modeling, privacy, network-security, surveillance, data-minimization, dual-use, soc, detection-engineering, iam
