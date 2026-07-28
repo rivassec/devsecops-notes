@@ -40,3 +40,12 @@ repos:
         # Only fails when explicit staged files violate (100-160 chars,
         # non-empty, unique). Repo-wide scans warn but do not fail. See
         # scripts/check_descriptions.py header comment for policy.
+
+      - id: check-requirements-clean
+        name: block index URLs / credentials in requirements files
+        entry: scripts/check_requirements_clean.py
+        language: python
+        files: ^requirements.*\.txt$
+        # pip-compile inlines the machine's pip.conf index URLs (incl.
+        # embedded PATs) into its output. Regenerate with `make deps`
+        # (PIP_CONFIG_FILE=/dev/null) if this fires.

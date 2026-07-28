@@ -84,3 +84,9 @@ github: publish
 
 
 .PHONY: html help clean regenerate serve serve-global devserver devserver-global publish github
+
+deps:
+	PIP_CONFIG_FILE=/dev/null .venv/bin/pip-compile --generate-hashes --output-file=requirements.txt requirements.in
+	./scripts/check_requirements_clean.py requirements.txt
+
+.PHONY: deps
