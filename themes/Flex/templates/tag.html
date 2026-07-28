@@ -1,3 +1,3 @@
 {% extends "index.html" %}
-{% block title %} &ndash; {{ _('Tag %(name)s', name=tag) }}{% endblock %}
+{% block title %}{{ _('Tag %(name)s', name=tag) }} - {{ SITETITLE|default(SITENAME) }}{% endblock %}
 {% set summarise = True %}

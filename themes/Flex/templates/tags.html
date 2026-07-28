@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %} &ndash; {{ _('Tags') }}{% endblock %}
+{% block title %}{{ _('Tags') }} - {{ SITETITLE|default(SITENAME) }}{% endblock %}
 
 {% block content %}
 <article class="single">

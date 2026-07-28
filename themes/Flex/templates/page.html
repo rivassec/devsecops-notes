@@ -11,7 +11,11 @@
 {% endif %}
 {% endblock %}
 
-{% block title %} &ndash; {{ page.title|striptags|escape }}{% endblock %}
+{% block canonical %}
+<link rel="canonical" href="{{ SITEURL }}/{{ page.url }}" />
+{% endblock %}
+
+{% block title %}{{ page.title|striptags|escape }} | {{ SITETITLE|default(SITENAME) }}{% endblock %}
 
 {% block content %}
 <article class="single">

@@ -112,6 +112,12 @@ SITEMAP = {
         'indexes': 'daily',
         'pages': 'monthly',
     },
+    # Tag pages are noindex,follow (see themes/Flex/templates/base.html) because
+    # they are thin taxonomy that overlaps the curated Category pages. Keep them
+    # out of the sitemap too, so we never advertise a URL we ask Google not to
+    # index. Categories remain the indexable taxonomy surface. Matched with
+    # re.match against the output URL (e.g. "tag/aws.html").
+    'exclude': ['tag/'],
 }
 STATIC_PATHS.append('extra')
 EXTRA_PATH_METADATA['extra/robots.txt'] = {'path': 'robots.txt'}
