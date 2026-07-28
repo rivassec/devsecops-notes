@@ -14,10 +14,13 @@
 
 {% include "partial/og_article.html" %}
 {% include "partial/jsonld_article.html" %}
+{% endblock %}
+
+{% block canonical %}
 <link rel="canonical" href="{{ SITEURL }}/{{ article.url }}" />
 {% endblock %}
 
-{% block title %} &ndash; {{ article.title|striptags|escape }}{% endblock %}
+{% block title %}{{ article.title|striptags|escape }} | {{ SITETITLE|default(SITENAME) }}{% endblock %}
 
 {% block content %}
 {% if article.toc %}

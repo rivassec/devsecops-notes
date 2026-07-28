@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %} &ndash; {{ _('Authors') }}{% endblock %}
+{% block title %}{{ _('Authors') }} - {{ SITETITLE|default(SITENAME) }}{% endblock %}
 
 {% block content %}
 <article class="single">
