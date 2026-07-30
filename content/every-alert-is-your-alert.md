@@ -5,7 +5,7 @@ Author: RivasSec
 Category: DevSecOps
 Tags: incident-response, edr, mitre-attack, t1105, runbook, ai-tooling
 Slug: every-alert-is-your-alert
-Summary: An EDR fired a true-positive on my analyst laptop while I was investigating a real cryptominer. The traffic pattern was a textbook T1105 ingress tool transfer because that is exactly what I was doing. The runbook gap is older than the LLM coding assistant that triggered it.
+Summary: My EDR fired a true-positive T1105 ingress-tool-transfer on my own analyst laptop mid-investigation. The runbook gap is older than the tool that tripped it.
 Status: draft
 Published_after: 2026-06-19
 

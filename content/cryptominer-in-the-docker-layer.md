@@ -5,7 +5,7 @@ Author: RivasSec
 Category: DevSecOps
 Tags: incident-response, docker, overlay2, cryptominer, guardduty, aws, forensics
 Slug: cryptominer-in-the-docker-layer
-Summary: A runtime detector said the host was mining. `ps` and `ss` came back clean. The miner was hiding one layer lower, baked into the image's overlay2 diff directory and re-dropped on every container restart. A walk through the IR sweep that almost called it a false-positive.
+Summary: A runtime detector flagged mining but ps and ss came back clean. The miner hid in the image's overlay2 diff layer, re-dropped on every container restart.
 Cover: images/covers/cryptominer-in-the-docker-layer.png
 Status: draft
 Published_after: 2026-06-19

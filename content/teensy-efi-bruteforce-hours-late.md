@@ -5,7 +5,7 @@ Category: Projects
 Tags: hardware, mac, efi, teensy, security-research, hackaday, hacker-news, open-source
 Slug: teensy-efi-bruteforce-hours-late
 Authors: RivasSec
-Summary: In 2013, Hackaday wrote that my MacBook EFI brute force was unsuccessful. Hours after the article shipped, it worked. Three rate-limiting defenses, each leaking information at a different observable seam: the same pattern that shows up daily in modern cloud security architectures. A reread of the project that survived me, plus the invariant that ports cleanly into 2026 work.
+Summary: In 2013 Hackaday called my MacBook EFI brute force a failure; hours later it worked. Three rate-limiting defenses, each leaking at a different seam.
 Cover: images/covers/teensy-efi-bruteforce-hours-late.png
 
 Most security defenses are layered. Each layer is built around a model of who attacks it, how fast, and through which surface. The seams between those layers, where one defense ends and the next begins, are where the threat model assumed an attacker would not be. Which is also where the information leaks live.

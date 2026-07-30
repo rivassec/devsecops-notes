@@ -5,7 +5,7 @@ Author: RivasSec
 Category: DevSecOps
 Tags: aws, iam, devsecops, cloud-security, threat-modeling
 Slug: iam-blast-radius-architecture-problem
-Summary: Most IAM reviews start too late. By the time someone is staring at a JSON policy the account structure, trust boundaries, and CI paths are already decided. Least privilege is not fewer actions; it is smaller failure domains.
+Summary: Most IAM reviews start too late, after the account structure and trust boundaries are set. Least privilege isn't fewer actions; it's smaller failure domains.
 Cover: images/covers/iam-blast-radius-architecture-problem.png
 
 [TOC]

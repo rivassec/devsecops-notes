@@ -5,7 +5,7 @@ Category: DevSecOps
 Tags: pwnagotchi, python, bandit, subprocess, security, supply-chain, hardening
 Slug: pwnagotchi-plugin-bandit-hardening
 Author: RivasSec
-Summary: Pwnagotchi plugins live one `shell=True` away from local code execution. Walking through the hardening of `bt-tether-multi` against Bandit B602/B603/B607: full-path resolution with `shutil.which()`, argv-list invocations, MAC and name validation, and the `# nosec` discipline. The patterns generalize to anything that shells out from Python.
+Summary: Hardening a Pwnagotchi plugin against Bandit B602/B603/B607: shutil.which() full paths, argv-list calls, input validation, and the nosec discipline.
 Cover: images/covers/pwnagotchi-plugin-bandit-hardening.png
 
 [TOC]

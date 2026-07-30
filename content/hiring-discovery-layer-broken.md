@@ -5,7 +5,7 @@ Author: RivasSec
 Category: DevSecOps
 Tags: careers, devsecops, hiring
 Slug: hiring-discovery-layer-broken
-Summary: The senior engineering market does not have a talent shortage. It has a routing failure. Resumes compress judgment into keywords, funnels index for keywords, and the signal that senior roles actually depend on is discarded before anyone qualified sees it.
+Summary: The senior engineering market has a routing failure, not a talent shortage: resumes and funnels index for keywords and discard the signal seniors depend on.
 Cover: images/covers/hiring-discovery-layer-broken.png
 
 [TOC]

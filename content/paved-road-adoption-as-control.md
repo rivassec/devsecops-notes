@@ -5,7 +5,7 @@ Author: RivasSec
 Category: DevSecOps
 Tags: devsecops, platform-security, paved-road, pulumi, ci-cd, cloud-security
 Slug: paved-road-adoption-as-control
-Summary: A security control developers can route around is not a control. Field notes from rebuilding a cloud security model around making the secure path the easy path: 40% lower remediation time, 27% lower pipeline latency, and a four-month adoption stall I caused myself.
+Summary: A control developers route around isn't a control. Field notes on making the secure path the easy path: 40% less remediation time, 27% less pipeline latency.
 Cover: images/covers/paved-road-adoption-as-control.png
 
 [TOC]
