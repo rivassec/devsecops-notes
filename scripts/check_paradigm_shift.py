@@ -20,12 +20,15 @@ Patterns scanned (most precise first):
        "It's not X; it's Y"
        "It isn't X, it's Y"
 
-  C — "<noun> is not X, it is Y"  (subject-led variant)
+  C — "<noun> is not X, it is Y"  (subject-led variant; also matches
+       contracted negation: "<noun> isn't X, it's Y")
+
+  B — "is not X. It is Y"         (period-split; added after the Ralph
+       tuning corpus hit 5+ confirmed cases on 2026-07-31. Restricted
+       to a negated clause followed by an It/They/You + to-be sentence;
+       looser period-split parallelism without negation stays LLM-only)
 
   D — "Not X but Y"               (Aristotelian inversion; informational)
-
-Form B (period-split "Not X. Y.") is deliberately omitted in v1 — too
-noisy without semantic parallelism check.
 """
 from __future__ import annotations
 
@@ -36,22 +39,36 @@ from pathlib import Path
 
 # (regex, label, severity)
 # severity in {"high", "info"}  — high gets warnings, info just listed
+# Posts contain both ASCII (') and typographic (U+2019) apostrophes, so
+# every contraction below accepts either.
+_AP = "['’]"
+
 PATTERNS: list[tuple[re.Pattern[str], str, str]] = [
     (
         re.compile(
-            r"(?i)\bit(?:\s+is|'s|\s+isn'?t|\s+is\s+not)"
-            r"\s+[^,.;\n]{1,80}[,;]\s+"
-            r"(?:it\s+is|it'?s|but\s+(?:it\s+is|it'?s))\b"
+            rf"(?i)\bit(?:\s+is|{_AP}s|\s+isn{_AP}?t|\s+is\s+not)"
+            rf"\s+[^,.;\n]{{1,80}}[,;]\s+"
+            rf"(?:it\s+is|it{_AP}?s|but\s+(?:it\s+is|it{_AP}?s))\b"
         ),
         "antithesis-it-not-it-is",
         "high",
     ),
     (
         re.compile(
-            r"(?i)\b\w+\s+(?:is|are)\s+not\s+[^,.;\n]{1,80}[,;]\s+"
-            r"(?:it|they)(?:\s+is|'s|\s+are)\b"
+            rf"(?i)\b\w+\s+(?:is|are)(?:\s+not|n{_AP}?t)\s+"
+            rf"[^,.;\n]{{1,80}}[,;]\s+"
+            rf"(?:it|they)(?:\s+is|{_AP}s|\s+are)\b"
         ),
         "antithesis-subj-not-itis",
+        "high",
+    ),
+    (
+        re.compile(
+            rf"(?i)\b(?:is|are|was|were)(?:\s+not|n{_AP}?t)\s+"
+            rf"[^.;:\n]{{1,80}}\.\s+"
+            rf"(?:It|They|You)(?:{_AP}s|{_AP}re|\s+(?:is|are|was|were))\b"
+        ),
+        "antithesis-period-split",
         "high",
     ),
     (
