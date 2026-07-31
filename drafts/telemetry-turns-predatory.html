@@ -1,0 +1,370 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+
+  <link rel="stylesheet" type="text/css" href="https://rivassec.com/theme/stylesheet/style.min.css?v=48ee4a71">
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="https://rivassec.com/theme/pygments/monokai.min.css">
+
+
+
+  <link rel="stylesheet" type="text/css" href="https://rivassec.com/static/custom.css?v=48ee4a71">
+
+  <link rel="icon" href="https://rivassec.com/favicon.ico" sizes="any">
+  <link rel="icon" href="https://rivassec.com/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="https://rivassec.com/favicon-16.png" type="image/png" sizes="16x16">
+  <link rel="apple-touch-icon" href="https://rivassec.com/apple-touch-icon.png" sizes="180x180">
+
+  <!-- Chrome, Firefox OS and Opera -->
+  <meta name="theme-color" content="#222222">
+  <!-- Windows Phone -->
+  <meta name="msapplication-navbutton-color" content="#222222">
+  <!-- iOS Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!-- Microsoft EDGE -->
+  <meta name="msapplication-TileColor" content="#222222">
+
+  <link href="https://rivassec.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="RivasSec | DevSecOps, Kubernetes, AWS IAM Atom">
+
+
+
+
+
+<link rel="canonical" href="https://rivassec.com/drafts/telemetry-turns-predatory.html" />
+
+<meta name="author" content="Oliver Rivas" />
+<meta name="description" content="Every SOC pipeline has a shadow version. Using Venezuela as a grounded case study: how the primitives security engineers build become surveillance systems." />
+<meta name="keywords" content="devsecops, security, venezuela, censorship, threat-modeling, privacy, network-security, surveillance, data-minimization, dual-use, soc, detection-engineering, iam">
+
+
+  <meta property="og:site_name" content="RivasSec | DevSecOps, Kubernetes, AWS IAM"/>
+  <meta property="og:title" content="When Telemetry Turns Predatory: A DevSecOps Look at Digital Repression in Venezuela"/>
+  <meta property="og:description" content="Every SOC pipeline has a shadow version. Using Venezuela as a grounded case study: how the primitives security engineers build become surveillance systems."/>
+  <meta property="og:locale" content="en_US"/>
+  <meta property="og:url" content="https://rivassec.com/drafts/telemetry-turns-predatory.html"/>
+  <meta property="og:type" content="article"/>
+  <meta property="article:published_time" content="2026-08-25T00:00:00-07:00"/>
+  <meta property="article:modified_time" content="2026-08-25T00:00:00-07:00"/>
+  <meta property="article:author" content="https://rivassec.com/author/oliver-rivas.html">
+  <meta property="article:section" content="DevSecOps"/>
+  <meta property="article:tag" content="devsecops"/>
+  <meta property="article:tag" content="security"/>
+  <meta property="article:tag" content="venezuela"/>
+  <meta property="article:tag" content="censorship"/>
+  <meta property="article:tag" content="threat-modeling"/>
+  <meta property="article:tag" content="privacy"/>
+  <meta property="article:tag" content="network-security"/>
+  <meta property="article:tag" content="surveillance"/>
+  <meta property="article:tag" content="data-minimization"/>
+  <meta property="article:tag" content="dual-use"/>
+  <meta property="article:tag" content="soc"/>
+  <meta property="article:tag" content="detection-engineering"/>
+  <meta property="article:tag" content="iam"/>
+  <meta property="og:image" content="https://rivassec.com/images/og-default.png">
+  <meta property="og:image:alt" content="RivasSec | DevSecOps, Kubernetes, AWS IAM">
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="When Telemetry Turns Predatory: A DevSecOps Look at Digital Repression in Venezuela"/>
+  <meta name="twitter:description" content="Every SOC pipeline has a shadow version. Using Venezuela as a grounded case study: how the primitives security engineers build become surveillance systems."/>
+  <meta name="twitter:site" content="@rivassec"/>
+  <meta name="twitter:creator" content="@rivassec"/>
+  <meta name="twitter:image" content="https://rivassec.com/images/og-default.png"/>
+  <meta name="twitter:image:alt" content="RivasSec | DevSecOps, Kubernetes, AWS IAM"/>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "name": "When Telemetry Turns Predatory: A DevSecOps Look at Digital Repression in Venezuela",
+    "headline": "When Telemetry Turns Predatory: A DevSecOps Look at Digital Repression in Venezuela",
+    "datePublished": "2026-08-25T00:00:00-07:00",
+    "dateModified": "2026-08-25T00:00:00-07:00",
+    "author": {
+      "@type": "Person",
+      "name": "Oliver Rivas",
+      "url": "https://rivassec.com/author/oliver-rivas.html"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "RivasSec",
+      "url": "https://rivassec.com",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://rivassec.com/images/og-default.png"
+      }
+    },
+    "image": "https://rivassec.com/images/og-default.png",
+    "url": "https://rivassec.com/drafts/telemetry-turns-predatory.html",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https://rivassec.com/drafts/telemetry-turns-predatory.html"
+    },
+    "description": "Every SOC pipeline has a shadow version. Using Venezuela as a grounded case study: how the primitives security engineers build become surveillance systems."
+  }
+  </script>
+
+  <title>When Telemetry Turns Predatory: A DevSecOps Look at Digital Repression in Venezuela | RivasSec</title>
+</head>
+<body class="light-theme">
+<aside>
+  <div>
+    <a href="https://rivassec.com/">
+      <img src="images/avatar.png" alt="RivasSec" title="RivasSec">
+    </a>
+
+    <p class="site-title">
+      <a href="https://rivassec.com/">RivasSec</a>
+    </p>
+
+    <p>Infrastructure. Security. Insight.</p>
+
+
+
+    <ul class="social">
+      <li>
+        <a class="sc-github"
+           aria-label="GitHub"
+           href="https://github.com/rivassec"
+           target="_blank">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512" aria-hidden="true" focusable="false"><path fill="currentColor" d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3 .3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5 .3-6.2 2.3zm44.2-1.7c-2.9 .7-4.9 2.6-4.6 4.9 .3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3 .7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3 .3 2.9 2.3 3.9 1.6 1 3.6 .7 4.3-.7 .7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3 .7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3 .7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>        </a>
+      </li>
+    </ul>
+  </div>
+
+</aside>
+  <main>
+<nav>
+  <a href="https://rivassec.com/">Home</a>
+
+  <a href="https://rivassec.com/pages/about.html">About</a>
+  <a href="https://rivassec.com/categories.html">Categories</a>
+  <a href="https://github.com/rivassec">GitHub</a>
+
+  <a href="https://rivassec.com/feeds/all.atom.xml">Atom</a>
+
+</nav>
+
+
+<article class="single" itemscope itemtype="https://schema.org/BlogPosting">
+  <header>
+      
+    <h1 id="telemetry-turns-predatory" itemprop="headline">When Telemetry Turns Predatory: A DevSecOps Look at Digital Repression in Venezuela</h1>
+    <p>
+      Posted on Tue 25 August 2026 in <a href="https://rivassec.com/category/devsecops.html">DevSecOps</a>
+
+        &#8226; 8 min read
+    </p>
+  </header>
+
+  <div itemprop="articleBody">
+    <h1 id="when-telemetry-turns-predatory-a-devsecops-look-at-digital-repression-in-venezuela">When Telemetry Turns Predatory: A DevSecOps Look at Digital Repression in Venezuela</h1>
+<p>Every Security Operations Center follows a familiar pattern: collect telemetry, correlate identities, prioritize signals, and trigger a response. Security engineers build these pipelines to defend infrastructure. The same architectural primitives, however, are inherently dual-use.</p>
+<p>This article examines publicly documented events in Venezuela through the perspective of a DevSecOps engineer. It distinguishes between documented observations and engineering interpretation.</p>
+<h2 id="a-personal-note">A personal note</h2>
+<p>I have a personal stake in this analysis. I was born in Venezuela and left the Gran Caracas region at eighteen. I still have extended family there. I have also, in more than two decades since I left, been on the receiving end of the regime's information apparatus in ways that are not the subject of this piece. What I write below is not a policy essay - it is what a security engineer sees when he or she watches, over the course of many years, the slow convergence of a state and its telemetry. The technical patterns are familiar to anyone who has designed a SIEM, an identity provider, or an EDR pipeline. That familiarity is the point.</p>
+<h2 id="two-pipelines-same-primitives">Two pipelines, same primitives</h2>
+<p>Enterprise security tooling is not the problem. The problem is what the same collection, correlation, and prioritization patterns become when the customer is coercive power.</p>
+<div class="highlight"><pre><span></span><code>          Enterprise SOC                Venezuela Case Study
+
+  Endpoint                         Citizen
+      |                                |
+  Telemetry                        Online Activity
+      |                            Civic-App Reports
+      |                            Network Metadata
+      |                                |
+  SIEM                             Data Collection
+      |                                |
+  Identity Correlation             Identity Correlation
+      |                                |
+  Alert Prioritization             Operational Prioritization
+      |                                |
+  Incident Response                Enforcement Action
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="n">flowchart</span><span class="w"> </span><span class="n">TB</span>
+<span class="w">  </span><span class="n">subgraph</span><span class="w"> </span><span class="n">Enterprise</span><span class="w"> </span><span class="n">SOC</span>
+<span class="w">    </span><span class="n">E1</span><span class="p">[</span><span class="n">Endpoint</span><span class="p">]</span><span class="w"> </span><span class="o">--&gt;</span><span class="w"> </span><span class="n">E2</span><span class="p">[</span><span class="n">Telemetry</span><span class="p">]</span>
+<span class="w">    </span><span class="n">E2</span><span class="w"> </span><span class="o">--&gt;</span><span class="w"> </span><span class="n">E3</span><span class="p">[</span><span class="n">SIEM</span><span class="p">]</span>
+<span class="w">    </span><span class="n">E3</span><span class="w"> </span><span class="o">--&gt;</span><span class="w"> </span><span class="n">E4</span><span class="p">[</span><span class="n">Identity</span><span class="w"> </span><span class="n">Correlation</span><span class="p">]</span>
+<span class="w">    </span><span class="n">E4</span><span class="w"> </span><span class="o">--&gt;</span><span class="w"> </span><span class="n">E5</span><span class="p">[</span><span class="n">Alert</span><span class="w"> </span><span class="n">Prioritization</span><span class="p">]</span>
+<span class="w">    </span><span class="n">E5</span><span class="w"> </span><span class="o">--&gt;</span><span class="w"> </span><span class="n">E6</span><span class="p">[</span><span class="n">Incident</span><span class="w"> </span><span class="n">Response</span><span class="p">]</span>
+<span class="w">  </span><span class="n">end</span>
+
+<span class="w">  </span><span class="n">subgraph</span><span class="w"> </span><span class="n">Venezuela</span><span class="w"> </span><span class="n">Case</span><span class="w"> </span><span class="n">Study</span>
+<span class="w">    </span><span class="n">V1</span><span class="p">[</span><span class="n">Citizen</span><span class="p">]</span><span class="w"> </span><span class="o">--&gt;</span><span class="w"> </span><span class="n">V2a</span><span class="p">[</span><span class="n">Online</span><span class="w"> </span><span class="n">Activity</span><span class="p">]</span>
+<span class="w">    </span><span class="n">V1</span><span class="w"> </span><span class="o">--&gt;</span><span class="w"> </span><span class="n">V2b</span><span class="p">[</span><span class="n">Civic</span><span class="o">-</span><span class="n">App</span><span class="w"> </span><span class="n">Reports</span><span class="p">]</span>
+<span class="w">    </span><span class="n">V1</span><span class="w"> </span><span class="o">--&gt;</span><span class="w"> </span><span class="n">V2c</span><span class="p">[</span><span class="n">Network</span><span class="w"> </span><span class="n">Metadata</span><span class="p">]</span>
+<span class="w">    </span><span class="n">V2a</span><span class="w"> </span><span class="o">--&gt;</span><span class="w"> </span><span class="n">V3</span><span class="p">[</span><span class="n">Data</span><span class="w"> </span><span class="n">Collection</span><span class="p">]</span>
+<span class="w">    </span><span class="n">V2b</span><span class="w"> </span><span class="o">--&gt;</span><span class="w"> </span><span class="n">V3</span>
+<span class="w">    </span><span class="n">V2c</span><span class="w"> </span><span class="o">--&gt;</span><span class="w"> </span><span class="n">V3</span>
+<span class="w">    </span><span class="n">V3</span><span class="w"> </span><span class="o">--&gt;</span><span class="w"> </span><span class="n">V4</span><span class="p">[</span><span class="n">Identity</span><span class="w"> </span><span class="n">Correlation</span><span class="p">]</span>
+<span class="w">    </span><span class="n">V4</span><span class="w"> </span><span class="o">--&gt;</span><span class="w"> </span><span class="n">V5</span><span class="p">[</span><span class="n">Operational</span><span class="w"> </span><span class="n">Prioritization</span><span class="p">]</span>
+<span class="w">    </span><span class="n">V5</span><span class="w"> </span><span class="o">--&gt;</span><span class="w"> </span><span class="n">V6</span><span class="p">[</span><span class="n">Enforcement</span><span class="w"> </span><span class="n">Action</span><span class="p">]</span>
+<span class="w">  </span><span class="n">end</span>
+</code></pre></div>
+
+<h2 id="methodology">Methodology</h2>
+<p><strong>Observation</strong> refers to findings documented by credible public sources.</p>
+<p><strong>Engineering interpretation</strong> refers to analysis through the lens of cloud security, DevSecOps, and threat modeling.</p>
+<h2 id="what-the-public-evidence-shows">What the Public Evidence Shows</h2>
+<h3 id="electronic-frontier-foundation-eff">Electronic Frontier Foundation (EFF)</h3>
+<p><strong>Observation</strong></p>
+<p>EFF's <em>Unveiling Venezuela's Repression: Surveillance and Censorship Following July's Presidential Election</em> and <em>Unveiling Venezuela's Repression: A Legacy of State Surveillance and Control</em> document the evolution of VenApp after the 2024 presidential election and broader patterns of digital repression.</p>
+<p><strong>Engineering Interpretation</strong></p>
+<p>Viewed as a system, VenApp is a citizen-scale SIEM. The ingest layer is a mobile client; the events are user-attributed reports of "suspicious" behavior; the entity-resolution layer joins those reports against a national identity graph (cédula, phone number, device identifiers) - the same shape as an enterprise correlation against email, SSO subject, and device ID. Any engineer who has built a Splunk ingest pipeline, an Elastic detection rule, or a Sumo Logic content pack recognizes the pattern immediately. Normalization, field extraction, correlation, alert scoring, case creation - these are the same stages that turn raw logs into an IR ticket for a credential-stuffing attempt in an enterprise SOC. The difference is not architectural. The difference is who the tenant is, what the tenant treats as a "threat," and what happens at the response stage. In one pipeline the response is an account lockout and a support ticket. In the other, the response is physical.</p>
+<h3 id="freedom-house">Freedom House</h3>
+<p><strong>Observation</strong></p>
+<p><em>Freedom on the Net 2025: Venezuela</em> documents expanded blocking of websites and communications platforms, reports of device inspections during Operación Tun-Tun, and arrests connected to online activity.</p>
+<p><strong>Engineering Interpretation</strong></p>
+<p>Operación Tun-Tun is what happens when endpoint detection and kinetic response merge into a single workflow. In an enterprise EDR context - Falcon, SentinelOne, Defender - an alert produces a ticket, a triage step, and at worst a device quarantine. The kinetic parallel exists (physical security escorting a compromised laptop off-site) but it is rare and tightly scoped. In the Venezuelan case, the same alert-to-response loop is compressed and applied at population scale: an online post, a device inspection at a checkpoint, and an arrest can function as stages of a single pipeline whose escalation path is physical. From a threat-modeling perspective, the transformation is not "surveillance was added." The transformation is that the response stage of an ordinary detection pipeline was rewired to enforcement rather than remediation.</p>
+<p>The primitives were already in place.</p>
+<h3 id="ve-sin-filtro">VE Sin Filtro</h3>
+<p><strong>Observation</strong></p>
+<p>VE Sin Filtro, using OONI measurement methodologies, documents DNS manipulation, IP blocking, SNI filtering, interference with public DNS resolvers, and blocking of circumvention tools across multiple ISPs.</p>
+<p><strong>Engineering Interpretation</strong></p>
+<p>VE Sin Filtro's measurement work, built on OONI Probe, documents what interference actually looks like on the wire. Their 2025 election report identifies DNS manipulation on CANTV, Movistar, and Digitel - Venezuela's three dominant ISPs - including rewrites of A-record responses for independent media domains, SNI-based filtering that terminates TLS handshakes when the ClientHello advertises a censored hostname, and interference with public resolvers such as 1.1.1.1 and 8.8.8.8 that would otherwise route around the manipulation. Any enterprise security engineer recognizes these techniques. I have configured or debugged most of them from the defensive side: DNS Response Policy Zones and Cloudflare Gateway to block malware; TLS-aware proxies that read the SNI in ClientHello and drop connections to policy-blocked destinations; WAF and firewall ACLs that block by IP or CIDR. The mechanism is identical. Only the block list differs.</p>
+<p>What VE Sin Filtro adds beyond policy reporting is a reproducible measurement methodology, which is what turns "the internet feels broken today" into an evidence-based finding that survives cross-checking.</p>
+<h2 id="every-security-capability-has-an-abuse-case">Every Security Capability Has an Abuse Case</h2>
+<table>
+<thead>
+<tr>
+<th>Security Capability</th>
+<th>Enterprise Security Use</th>
+<th>Potential Abuse</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SIEM</td>
+<td>Detect intrusions</td>
+<td>Monitor political activity</td>
+</tr>
+<tr>
+<td>DNS filtering</td>
+<td>Block malware</td>
+<td>Block independent media</td>
+</tr>
+<tr>
+<td>Endpoint telemetry</td>
+<td>Incident response</td>
+<td>Citizen surveillance</td>
+</tr>
+<tr>
+<td>Identity systems</td>
+<td>Access control</td>
+<td>Population tracking</td>
+</tr>
+<tr>
+<td>Audit logs</td>
+<td>Compliance and forensics</td>
+<td>Behavioral profiling</td>
+</tr>
+<tr>
+<td>Geolocation</td>
+<td>Fraud detection</td>
+<td>Movement monitoring</td>
+</tr>
+</tbody>
+</table>
+<h2 id="security-engineering-lessons">Security Engineering Lessons</h2>
+<p>The value of the Venezuelan case study for a security engineer is that it exposes an assumption embedded in most threat models: that the operator of the pipeline is the good actor. The moment that assumption becomes optional, every design decision changes. Three practices follow.</p>
+<p><strong>1. Add a Weaponization section to every design review.</strong></p>
+<p>Standard threat modeling frameworks - STRIDE, LINDDUN, PASTA - assume an external adversary attempting to compromise the system. They do not model the case where the legitimate operator of the system becomes the adversary. Add a fourth question to every design doc: <em>If an authoritarian tenant owned this pipeline, what would they do with it?</em> For every data flow you draw, write one sentence describing the weaponized use case. The exercise is uncomfortable, which is the point.</p>
+<p>A minimal template lives at <a href="https://github.com/rivassec/weaponization-threat-model">github.com/rivassec/weaponization-threat-model</a>. It provides a one-page addendum to a standard STRIDE doc: for each data element, the authoritarian-tenant reading; for each retention decision, the subpoena-inversion reading; for each correlation-key choice, the population-tracking reading. Adopt it, fork it, or replace it. The specific artifact matters less than the commitment to run the exercise.</p>
+<p><strong>2. Treat metadata as content.</strong></p>
+<p>Encryption of message bodies is now table stakes. Metadata - who talked to whom, when, from where, on which device - is often left in plaintext, retained by default, and joined against identity systems. In the Venezuelan case, metadata is more than sufficient to prioritize enforcement. In your systems, metadata is more than sufficient to reconstruct behavior, relationships, and identity. Log the least metadata your product can function with, and retain it for the shortest window your compliance obligations allow. Ask this question the way you would ask about a security bug: not "is this useful to have?" but "is this dangerous to have?"</p>
+<p><strong>3. Design as if governance will change.</strong></p>
+<p>The tools you build outlive the leadership that scoped them. The privacy commitments made by a founding team do not bind the acquirer, the successor board, or the government that subpoenas the resulting system. Retention sunsets should be the default, not the exception. Owner-change reviews - what happens to this pipeline if the executive who scoped it leaves, if the company is acquired, or if a nation-state compels access - should be a scheduled part of your design cadence. This one I have practiced as a habit but not yet built into tooling; I raise it in design reviews and it lands or it doesn't, depending on the room. It should be built into the process instead.</p>
+<p>I write "should be" because I have seen the shape of what happens when it isn't. Some years ago, I was part of a rollout at a large communications platform of a feature that required users to verify a phone number to keep certain account functions. I raised the abuse concern internally: in jurisdictions where pseudonymous accounts were the only safe way for activists to organize, a phone-verification requirement was going to be a state's dream - a real-name join key against every account operating under a handle. The escalation went to the appropriate teams. It was denied. Later, activists in one of the affected jurisdictions were arrested, and some did not survive their detention. I did not sleep well for a long time after that decision was made. I know correlation is not causation. I do not know whether the verification requirement contributed to those arrests, and I am not claiming that it did. I include this because the shape of the harm is what security engineers need to sit with, not because I claim to know its exact mechanism. It informs how I write every design review now.</p>
+<h2 id="caveats">Caveats</h2>
+<p>Internet censorship measurement is inherently difficult. Network observations demonstrate that interference occurred, but attribution is often incomplete. Separating observations from engineering interpretation improves analytical rigor.</p>
+<h2 id="references">References</h2>
+<p>[1] Laura Vidal. <em>Unveiling Venezuela's Repression: Surveillance and Censorship Following July's Presidential Election</em>. Electronic Frontier Foundation. September 16, 2024.
+https://www.eff.org/deeplinks/2024/09/unveiling-venezuelas-repression-surveillance-and-censorship-following-julys</p>
+<p>[2] Laura Vidal. <em>Unveiling Venezuela's Repression: A Legacy of State Surveillance and Control</em>. Electronic Frontier Foundation. September 18, 2024.
+https://www.eff.org/deeplinks/2024/09/unveiling-venezuelas-repression-legacy-state-surveillance-and-control</p>
+<p>[3] Freedom House. <em>Freedom on the Net 2025: Venezuela</em>.
+https://freedomhouse.org/country/venezuela/freedom-net/2025</p>
+<p>[4] VE Sin Filtro. <em>Reporte Redes de Control: Censura y represión digital en las elecciones presidenciales en Venezuela</em>. March 2025.
+https://vesinfiltro.org/noticias/2025-03-12-reporte-elecciones-presidenciales/</p>
+<p>[5] OONI Documentation.
+https://ooni.org/</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>The technology discussed here is not unique to Venezuela. It is the same telemetry, the same identity graphs, the same pipelines we build in every SOC on every continent. What changes is who operates them and against whom.</p>
+<p>The question I want you to carry into your next design review is no longer only <em>is this design secure?</em> It is <em>who does this design protect, and who does it expose?</em></p>
+<p>I think about the systems I design now knowing that somewhere in the Gran Caracas region, my family is inside systems built with the same primitives. Every security engineer has a version of this thought waiting for them, whether or not they have already noticed it.</p>
+  </div>
+</article>
+
+<div class="tag-cloud">
+  <p>
+    <a href="https://rivassec.com/tag/devsecops.html">devsecops</a>
+    <a href="https://rivassec.com/tag/security.html">security</a>
+    <a href="https://rivassec.com/tag/venezuela.html">venezuela</a>
+    <a href="https://rivassec.com/tag/censorship.html">censorship</a>
+    <a href="https://rivassec.com/tag/threat-modeling.html">threat-modeling</a>
+    <a href="https://rivassec.com/tag/privacy.html">privacy</a>
+    <a href="https://rivassec.com/tag/network-security.html">network-security</a>
+    <a href="https://rivassec.com/tag/surveillance.html">surveillance</a>
+    <a href="https://rivassec.com/tag/data-minimization.html">data-minimization</a>
+    <a href="https://rivassec.com/tag/dual-use.html">dual-use</a>
+    <a href="https://rivassec.com/tag/soc.html">soc</a>
+    <a href="https://rivassec.com/tag/detection-engineering.html">detection-engineering</a>
+    <a href="https://rivassec.com/tag/iam.html">iam</a>
+  </p>
+</div>
+
+
+  <div class="neighbors">
+  </div>
+
+<div class="related-posts">
+  <h2 class="related-heading">You might enjoy</h2>
+  <ul class="related-posts">
+    <li><a href="https://rivassec.com/iam-blast-radius-architecture-problem.html">IAM Blast Radius Is an Architecture Problem, Not a Policy Problem</a></li>
+    <li><a href="https://rivassec.com/iam-safe-defaults-fail-loud.html">IAM Roles That Fail Loud: Small Defaults, Big Difference</a></li>
+    <li><a href="https://rivassec.com/hiring-discovery-layer-broken.html">The Discovery Layer Is Broken: Hiring as an Observability Problem</a></li>
+    <li><a href="https://rivassec.com/paved-road-adoption-as-control.html">Adoption Is a Security Control: Notes from Paving a Road</a></li>
+    <li><a href="https://rivassec.com/trust-decay-adversarial-hiring.html">The Trust Decay: Why Modern Hiring Has Become an Adversarial System</a></li>
+  </ul>
+</div>
+
+
+<footer>
+    <p class="footer-feeds">
+      Subscribe:
+      <a href="https://rivassec.com/feeds/all.atom.xml" rel="alternate" type="application/atom+xml">Atom</a>
+    </p>
+<p>&copy;  RivasSec</p>
+<p class="footer-meta">
+  <a href="https://rivassec.com/accessibility/">Accessibility</a>
+</p>
+<p>
+Built with <a href="https://getpelican.com" target="_blank" rel="noopener">Pelican</a> using <a href="https://github.com/alexandrevicenzi/Flex" target="_blank" rel="noopener">Flex</a> theme
+</p></footer>  </main>
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "WebSite",
+  "name": "RivasSec | DevSecOps, Kubernetes, AWS IAM",
+  "url" : "https://rivassec.com",
+  "image": "https://rivassec.com/images/og-default.png",
+  "description": "Field notes on infrastructure security, cloud hardening, Kubernetes, IAM, and OSINT by RivasSec.",
+  "author": {
+    "@type": "Person",
+    "name": "RivasSec",
+    "url": "https://rivassec.com"    ,"sameAs": [      "https://github.com/rivassec"    ]  }
+}
+</script>
+  <script defer src="https://rivassec.com/static/copy-code.js?v=48ee4a71"></script>
+
+</body>
+</html>
