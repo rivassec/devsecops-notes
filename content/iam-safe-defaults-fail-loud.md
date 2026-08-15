@@ -1,10 +1,11 @@
 Title: IAM Roles That Fail Loud: Small Defaults, Big Difference
 Date: 2026-05-12
 Modified: 2026-06-04
-Author: RivasSec
+Author: Oliver Rivas
 Category: DevSecOps
 Tags: aws, iam, pulumi, python, devsecops
 Slug: iam-safe-defaults-fail-loud
+Og_image: images/og/iam-safe-defaults-fail-loud.png
 Summary: A small Pulumi library that treats IAM safety as a precondition: mandatory permissions boundary, no wildcard trust, no wildcard actions, every opt-out explicit.
 Cover: images/covers/iam-safe-defaults-fail-loud.png
 

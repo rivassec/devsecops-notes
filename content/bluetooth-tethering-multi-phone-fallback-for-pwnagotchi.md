@@ -4,7 +4,8 @@ Modified: 2026-06-04
 Category: Projects
 Tags: pwnagotchi, bluetooth, networking, python
 Slug: pwnagotchi-bluetooth-tethering
-Author: RivasSec
+Og_image: images/og/pwnagotchi-bluetooth-tethering.png
+Author: Oliver Rivas
 Summary: bt-tether-multi is a Pwnagotchi plugin for intelligent multi-phone Bluetooth tethering with automatic WAN failover and silent-disconnect recovery in the field.
 Cover: images/covers/pwnagotchi-bluetooth-tethering.png
 

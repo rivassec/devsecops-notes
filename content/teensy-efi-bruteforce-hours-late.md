@@ -4,7 +4,8 @@ Modified: 2026-06-04
 Category: Projects
 Tags: hardware, mac, efi, teensy, security-research, hackaday, hacker-news, open-source
 Slug: teensy-efi-bruteforce-hours-late
-Authors: RivasSec
+Og_image: images/og/teensy-efi-bruteforce-hours-late.png
+Author: Oliver Rivas
 Summary: In 2013 Hackaday called my MacBook EFI brute force a failure; hours later it worked. Three rate-limiting defenses, each leaking at a different seam.
 Cover: images/covers/teensy-efi-bruteforce-hours-late.png
 

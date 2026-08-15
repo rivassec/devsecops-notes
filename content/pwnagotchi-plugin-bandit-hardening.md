@@ -4,7 +4,8 @@ Modified: 2026-06-10
 Category: DevSecOps
 Tags: pwnagotchi, python, bandit, subprocess, security, supply-chain, hardening
 Slug: pwnagotchi-plugin-bandit-hardening
-Author: RivasSec
+Og_image: images/og/pwnagotchi-plugin-bandit-hardening.png
+Author: Oliver Rivas
 Summary: Hardening a Pwnagotchi plugin against Bandit B602/B603/B607: shutil.which() full paths, argv-list calls, input validation, and the nosec discipline.
 Cover: images/covers/pwnagotchi-plugin-bandit-hardening.png
 

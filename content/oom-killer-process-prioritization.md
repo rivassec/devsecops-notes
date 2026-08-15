@@ -4,7 +4,8 @@ Modified: 2026-05-12
 Tags: linux, oom-killer, sysadmin, hardening, devsecops
 Category: DevSecOps
 Slug: oom-killer-process-prioritization
-Author: RivasSec
+Og_image: images/og/oom-killer-process-prioritization.png
+Author: Oliver Rivas
 Summary: The Linux OOM Killer decides what dies under memory pressure. Protect sshd, mysqld, and other critical processes with oom_score_adj via a small script.
 Cover: images/covers/oom-killer-process-prioritization.png
 

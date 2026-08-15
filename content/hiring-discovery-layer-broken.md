@@ -1,10 +1,11 @@
 Title: The Discovery Layer Is Broken: Hiring as an Observability Problem
 Date: 2026-07-11
 Modified: 2026-07-11
-Author: RivasSec
+Author: Oliver Rivas
 Category: DevSecOps
 Tags: careers, devsecops, hiring
 Slug: hiring-discovery-layer-broken
+Og_image: images/og/hiring-discovery-layer-broken.png
 Summary: The senior engineering market has a routing failure, not a talent shortage: resumes and funnels index for keywords and discard the signal seniors depend on.
 Cover: images/covers/hiring-discovery-layer-broken.png
 

@@ -4,7 +4,8 @@ Modified: 2026-06-04
 Category: DevSecOps
 Tags: careers, devsecops
 Slug: trust-decay-adversarial-hiring
-Author: RivasSec
+Og_image: images/og/trust-decay-adversarial-hiring.png
+Author: Oliver Rivas
 Summary: The tech hiring pipeline has shifted from talent discovery to risk mitigation. In 2026, the engineers who get hired are the ones who are hardest to doubt.
 Cover: images/covers/trust-decay-adversarial-hiring.png
 

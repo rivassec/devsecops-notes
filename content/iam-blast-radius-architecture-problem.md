@@ -1,10 +1,11 @@
 Title: IAM Blast Radius Is an Architecture Problem, Not a Policy Problem
 Date: 2026-07-21
 Modified: 2026-07-21
-Author: RivasSec
+Author: Oliver Rivas
 Category: DevSecOps
 Tags: aws, iam, devsecops, cloud-security, threat-modeling
 Slug: iam-blast-radius-architecture-problem
+Og_image: images/og/iam-blast-radius-architecture-problem.png
 Summary: Most IAM reviews start too late, after the account structure and trust boundaries are set. Least privilege isn't fewer actions; it's smaller failure domains.
 Cover: images/covers/iam-blast-radius-architecture-problem.png
 

@@ -3,6 +3,7 @@ Date: 2026-06-12
 Category: Threat Intelligence
 Tags: ai, supply-chain, prompt-injection, evasion, defensive-architecture
 Slug: prompt-injection-supply-chain-evasion
+Og_image: images/og/prompt-injection-supply-chain-evasion.png
 Cover: images/covers/prompt-injection-supply-chain-evasion.png
 Cover_alt: Cover card with the post title "Prompt Injection Will Become a Supply Chain Evasion Technique" on a dark background, with a Threat Intelligence category badge and the rivassec.com signature.
 Summary: Prompt injection's threat model is older than the term. The mechanism is new, the objective is the evasion goal attackers have pursued for decades.

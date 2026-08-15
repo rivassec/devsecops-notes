@@ -4,7 +4,8 @@ Modified: 2026-05-12
 Tags: kernel, linux, bug, devsecops
 Category: DevSecOps
 Slug: 208-day-kernel-bug-lessons
-Author: RivasSec
+Og_image: images/og/208-day-kernel-bug-lessons.png
+Author: Oliver Rivas
 Summary: A 2012 Linux kernel bug caused CPU lockups after 208.5 days of uptime due to an integer overflow in sched_clock(). RHEL 5/6 lesson: patch and observe uptime.
 Cover: images/covers/208-day-kernel-bug-lessons.png
 

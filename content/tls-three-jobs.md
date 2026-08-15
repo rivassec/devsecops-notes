@@ -4,7 +4,8 @@ Modified: 2026-06-04
 Category: DevSecOps
 Tags: tls, cryptography, security, infrastructure, pki, mtls, operations
 Slug: tls-three-jobs
-Author: RivasSec
+Og_image: images/og/tls-three-jobs.png
+Author: Oliver Rivas
 Summary: TLS gets easier when you stop walking the handshake and name what it's for. It does three jobs; anchor those and it becomes design, not memorization.
 Cover: images/covers/tls-three-jobs.png
 

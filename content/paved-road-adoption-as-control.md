@@ -1,10 +1,11 @@
 Title: Adoption Is a Security Control: Notes from Paving a Road
 Date: 2026-05-21
 Modified: 2026-06-04
-Author: RivasSec
+Author: Oliver Rivas
 Category: DevSecOps
 Tags: devsecops, platform-security, paved-road, pulumi, ci-cd, cloud-security
 Slug: paved-road-adoption-as-control
+Og_image: images/og/paved-road-adoption-as-control.png
 Summary: A control developers route around isn't a control. Field notes on making the secure path the easy path: 40% less remediation time, 27% less pipeline latency.
 Cover: images/covers/paved-road-adoption-as-control.png
 

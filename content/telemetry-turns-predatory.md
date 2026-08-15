@@ -5,6 +5,7 @@ Author: Oliver Rivas
 Category: DevSecOps
 Tags: devsecops, security, venezuela, censorship, threat-modeling, privacy, network-security, surveillance, data-minimization, dual-use, soc, detection-engineering, iam
 Slug: telemetry-turns-predatory
+Og_image: images/og/telemetry-turns-predatory.png
 Summary: Every SOC pipeline has a shadow version. Using Venezuela as a grounded case study: how the primitives security engineers build become surveillance systems.
 
 # When Telemetry Turns Predatory: A DevSecOps Look at Digital Repression in Venezuela

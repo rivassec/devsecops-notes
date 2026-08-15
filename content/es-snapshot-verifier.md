@@ -1,10 +1,11 @@
 Title: Elasticsearch Snapshot Verification, Minimal Privileges
 Date: 2025-04-20
 Modified: 2026-05-12
-Author: RivasSec
+Author: Oliver Rivas
 Category: DevSecOps
 Tags: elasticsearch, prometheus, observability, iam
 Slug: elasticsearch-secure-snapshot-verification
+Og_image: images/og/elasticsearch-secure-snapshot-verification.png
 Summary: Verify Elasticsearch snapshots without manage_snapshot: minimal API key, Prometheus-friendly script, and a public tools repo for hardened monitoring automation.
 Cover: images/covers/elasticsearch-secure-snapshot-verification.png
 

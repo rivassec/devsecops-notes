@@ -1,10 +1,11 @@
 Title: How I Learned to Investigate Docker Image Layers During Incident Response
 Date: 2026-06-24
 Modified: 2026-06-24
-Author: RivasSec
+Author: Oliver Rivas
 Category: DevSecOps
 Tags: incident-response, docker, overlay2, cryptominer, guardduty, aws, forensics
 Slug: cryptominer-in-the-docker-layer
+Og_image: images/og/cryptominer-in-the-docker-layer.png
 Summary: A runtime detector flagged mining but ps and ss came back clean. The miner hid in the image's overlay2 diff layer, re-dropped on every container restart.
 Cover: images/covers/cryptominer-in-the-docker-layer.png
 Status: draft

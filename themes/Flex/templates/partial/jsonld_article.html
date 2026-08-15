@@ -1,5 +1,7 @@
 {% if not PLUGINS or 'seo' not in PLUGINS or 'pelican.plugins.seo' not in PLUGINS%}
-  {% if 'cover' in article.metadata %}
+  {% if 'og_image' in article.metadata %}
+    {% set article_image = SITEURL ~ '/' ~ article.metadata['og_image'] %}
+  {% elif 'cover' in article.metadata %}
     {% set article_image = SITEURL ~ '/' ~ article.metadata['cover'] %}
   {% elif OG_IMAGE %}
     {% set article_image = SITEURL ~ '/' ~ OG_IMAGE %}
@@ -27,7 +29,7 @@
       "url": "{{ SITEURL }}",
       "logo": {
         "@type": "ImageObject",
-        "url": "{{ SITEURL }}/{{ OG_IMAGE }}"
+        "url": "{{ SITEURL }}/{{ SITELOGO }}"
       }
     },
     "image": "{{ article_image }}",
@@ -36,7 +38,22 @@
       "@type": "WebPage",
       "@id": "{{ SITEURL }}/{{ article.url }}"
     },
-    "description": "{{ article.summary|striptags }}"
+    "description": "{% if article.metadata.get('description') %}{{ article.metadata['description']|striptags }}{% else %}{{ article.summary|striptags|truncate(157, True) }}{% endif %}"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type":"ListItem","position":1,"name":"Home","item":"{{ SITEURL }}/"}
+      {%- if article.category %},
+      {"@type":"ListItem","position":2,"name":{{ article.category|string|tojson }},"item":"{{ SITEURL }}/{{ article.category.url }}"},
+      {"@type":"ListItem","position":3,"name":{{ article.title|striptags|tojson }},"item":"{{ SITEURL }}/{{ article.url }}"}
+      {%- else %},
+      {"@type":"ListItem","position":2,"name":{{ article.title|striptags|tojson }},"item":"{{ SITEURL }}/{{ article.url }}"}
+      {%- endif %}
+    ]
   }
   </script>
 {% endif %}

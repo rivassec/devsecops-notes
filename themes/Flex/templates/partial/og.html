@@ -4,20 +4,31 @@
   {% else %}
     {% set default_locale = 'en_US' %}
   {% endif %}
+  {% if page %}
+    {% set og_title = page.title|striptags %}
+    {% set og_desc = (page.description if page.description else page.summary)|striptags|truncate(157, True) %}
+    {% set og_url = SITEURL + '/' + page.url %}
+    {% set og_typ = 'article' %}
+  {% else %}
+    {% set og_title = SITENAME %}
+    {% set og_desc = SITEDESCRIPTION %}
+    {% set og_url = SITEURL %}
+    {% set og_typ = 'blog' %}
+  {% endif %}
   <meta property="og:site_name" content="{{ SITENAME }}"/>
-  <meta property="og:type" content="blog"/>
-  <meta property="og:title" content="{{ SITENAME }}"/>
-  <meta property="og:description" content="{{ SITEDESCRIPTION }}"/>
+  <meta property="og:type" content="{{ og_typ }}"/>
+  <meta property="og:title" content="{{ og_title }}"/>
+  <meta property="og:description" content="{{ og_desc }}"/>
   <meta property="og:locale" content="{{ default_locale }}"/>
-  <meta property="og:url" content="{{ SITEURL }}"/>
+  <meta property="og:url" content="{{ og_url }}"/>
   {% if OG_IMAGE %}
   <meta property="og:image" content="{{ SITEURL }}/{{ OG_IMAGE }}">
   {% elif SITELOGO %}
   <meta property="og:image" content="{{ SITELOGO }}">
   {% endif %}
   <meta name="twitter:card" content="summary_large_image"/>
-  <meta name="twitter:title" content="{{ SITENAME }}"/>
-  <meta name="twitter:description" content="{{ SITEDESCRIPTION }}"/>
+  <meta name="twitter:title" content="{{ og_title }}"/>
+  <meta name="twitter:description" content="{{ og_desc }}"/>
   {% if TWITTER_USERNAME %}
   <meta name="twitter:site" content="@{{ TWITTER_USERNAME }}"/>
   {% endif %}

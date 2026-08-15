@@ -1,7 +1,7 @@
 import os
 import subprocess
 
-AUTHOR = 'RivasSec'
+AUTHOR = 'Oliver Rivas'
 
 
 def _asset_version() -> str:
@@ -103,7 +103,7 @@ MARKDOWN = {
 SITEMAP = {
     'format': 'xml',
     'priorities': {
-        'articles': 0.7,
+        'articles': 0.8,
         'indexes': 0.5,
         'pages': 0.3,
     },
@@ -140,6 +140,16 @@ GITHUB_URL = "https://github.com/rivassec"
 COPYRIGHT_NAME = "RivasSec"
 
 DEFAULT_PAGINATION = 10
+
+# Author-page de-duplication: with a single canonical author (see AUTHOR
+# above) plus DEFAULT_PAGINATION=10, an author with >10 posts would still
+# split into author/<slug>.html AND author/<slug>2.html - a pagination
+# page 2 that looks like a duplicate author page. The Flex author template
+# requires the pagination context, so we cannot drop 'author' from the set;
+# instead we give author pages a very high per-page count so every post by
+# the canonical author lands on one page. index/tag/category keep the
+# default (None -> DEFAULT_PAGINATION).
+PAGINATED_TEMPLATES = {'index': None, 'tag': None, 'category': None, 'author': 10000}
 
 # Auto-defer future-dated posts.
 # Any article with a Date: value in the future gets Status: draft by

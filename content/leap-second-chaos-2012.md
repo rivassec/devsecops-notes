@@ -4,7 +4,8 @@ Modified: 2026-05-12
 Tags: kernel, linux, java, ntp, sre
 Category: Incident Retrospectives
 Slug: leap-second-chaos-2012
-Author: RivasSec
+Og_image: images/og/leap-second-chaos-2012.png
+Author: Oliver Rivas
 Summary: The 2012 leap second broke Reddit, Yelp, Java apps, and more. A retrospective on how fragile timekeeping bit the cloud, and what SRE teams should do today.
 Cover: images/covers/leap-second-chaos-2012.png
 

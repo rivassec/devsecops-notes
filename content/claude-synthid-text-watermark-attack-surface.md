@@ -4,6 +4,8 @@ Author: Oliver Rivas
 Category: Artificial Intelligence
 Tags: AI Security, Anthropic, Claude, SynthID, Watermarking, EU AI Act, Adversarial ML
 Slug: claude-synthid-text-watermark-attack-surface
+Description: Claude's SynthID-Text watermark lives in token selection rather than hidden characters, reshaping detection, scrubbing, spoofing, and enterprise misuse.
+Og_image: images/og/claude-synthid-text-watermark-attack-surface.png
 Summary: Claude's planned text watermark is embedded through token selection rather than hidden characters. Once enterprises automate on its detector, that provenance feature becomes a security control plane with spoofing, evasion, oracle, key-management, supply-chain, and policy-abuse requirements.
 
 Anthropic's planned watermark for future Claude models is embedded during token selection. There is no invisible Unicode string, metadata field, or marker appended after generation.

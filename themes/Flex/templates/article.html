@@ -2,7 +2,7 @@
 
 {% block meta %}
 <meta name="author" content="{{ article.author.name }}" />
-<meta name="description" content="{{ article.summary|striptags|escape }}" />
+<meta name="description" content="{{ (article.description if article.description else article.summary)|striptags|truncate(157,True)|escape }}" />
 <meta name="keywords" content="{{ article.tags|join(', ')|escape }}">
 
 {% if article.translations -%}
@@ -20,13 +20,15 @@
 <link rel="canonical" href="{{ SITEURL }}/{{ article.url }}" />
 {% endblock %}
 
-{% block title %}{{ article.title|striptags|escape }} | {{ SITETITLE|default(SITENAME) }}{% endblock %}
+{% block title %}{{ article.title|striptags|escape }}{% if article.title|length < 55 %} | {{ SITETITLE|default(SITENAME) }}{% endif %}{% endblock %}
 
 {% block content %}
 {% if article.toc %}
 <aside class="article-toc" aria-label="Table of contents">
-  <h2 class="aside-heading">On this page</h2>
-  {{ article.toc }}
+  <details open>
+    <summary class="aside-heading">{{ _('Contents') }}</summary>
+    {{ article.toc }}
+  </details>
 </aside>
 {% endif %}
 
@@ -44,6 +46,10 @@
 
       {% if PLUGINS and 'post_stats' in PLUGINS %}
         &#8226; {{ _('%(minutes)s min read', minutes=article.stats['read_mins']) }}
+      {% endif %}
+
+      {% if article.author %}
+        &#8226; {{ _('By %(author)s', author='<a href="%s/%s">%s</a>'|format(SITEURL, article.author.url, article.author)|safe) }}
       {% endif %}
     </p>
   </header>

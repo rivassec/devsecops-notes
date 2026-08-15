@@ -6,7 +6,7 @@
   {% endif %}
   <meta property="og:site_name" content="{{ SITENAME }}"/>
   <meta property="og:title" content="{{ article.title|striptags|escape }}"/>
-  <meta property="og:description" content="{{ article.summary|striptags|escape }}"/>
+  <meta property="og:description" content="{% if article.metadata.get('description') %}{{ article.metadata['description']|striptags|escape }}{% else %}{{ article.summary|striptags|truncate(157, True)|escape }}{% endif %}"/>
   <meta property="og:locale" content="{{ article.metadata.get('og_locale', default_locale) }}"/>
   <meta property="og:url" content="{{ SITEURL }}/{{ article.url }}"/>
   <meta property="og:type" content="article"/>
@@ -17,7 +17,10 @@
   {% for tag in article.tags %}
   <meta property="article:tag" content="{{ tag.name|escape }}"/>
   {% endfor %}
-  {% if 'cover' in article.metadata %}
+  {% if 'og_image' in article.metadata %}
+  <meta property="og:image" content="{{ SITEURL }}/{{ article.metadata['og_image'] }}">
+  <meta property="og:image:alt" content="{{ article.metadata.get('og_image_alt', article.title)|striptags|escape }}">
+  {% elif 'cover' in article.metadata %}
   <meta property="og:image" content="{{ SITEURL }}/{{ article.metadata['cover'] }}">
   <meta property="og:image:alt" content="{{ article.metadata.get('cover_alt', article.title)|striptags|escape }}">
   {% elif OG_IMAGE %}
@@ -29,12 +32,15 @@
   {% endif %}
   <meta name="twitter:card" content="summary_large_image"/>
   <meta name="twitter:title" content="{{ article.title|striptags|escape }}"/>
-  <meta name="twitter:description" content="{{ article.summary|striptags|escape }}"/>
+  <meta name="twitter:description" content="{% if article.metadata.get('description') %}{{ article.metadata['description']|striptags|escape }}{% else %}{{ article.summary|striptags|truncate(157, True)|escape }}{% endif %}"/>
   {% if TWITTER_USERNAME %}
   <meta name="twitter:site" content="@{{ TWITTER_USERNAME }}"/>
   <meta name="twitter:creator" content="@{{ TWITTER_USERNAME }}"/>
   {% endif %}
-  {% if 'cover' in article.metadata %}
+  {% if 'og_image' in article.metadata %}
+  <meta name="twitter:image" content="{{ SITEURL }}/{{ article.metadata['og_image'] }}"/>
+  <meta name="twitter:image:alt" content="{{ article.metadata.get('og_image_alt', article.title)|striptags|escape }}"/>
+  {% elif 'cover' in article.metadata %}
   <meta name="twitter:image" content="{{ SITEURL }}/{{ article.metadata['cover'] }}"/>
   <meta name="twitter:image:alt" content="{{ article.metadata.get('cover_alt', article.title)|striptags|escape }}"/>
   {% elif OG_IMAGE %}

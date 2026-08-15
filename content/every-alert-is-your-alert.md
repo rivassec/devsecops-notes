@@ -1,10 +1,11 @@
 Title: Every Alert Is Your Alert: When IR Tooling Trips Your Own EDR
 Date: 2026-07-01
 Modified: 2026-07-01
-Author: RivasSec
+Author: Oliver Rivas
 Category: DevSecOps
 Tags: incident-response, edr, mitre-attack, t1105, runbook, ai-tooling
 Slug: every-alert-is-your-alert
+Og_image: images/og/every-alert-is-your-alert.png
 Summary: My EDR fired a true-positive T1105 ingress-tool-transfer on my own analyst laptop mid-investigation. The runbook gap is older than the tool that tripped it.
 Status: draft
 Published_after: 2026-06-19

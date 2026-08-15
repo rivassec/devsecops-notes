@@ -4,7 +4,8 @@ Modified: 2026-05-12
 Category: Kubernetes Security
 Tags: kubernetes, hardening, devsecops
 Slug: hardening-k8s
-Author: RivasSec
+Og_image: images/og/hardening-k8s.png
+Author: Oliver Rivas
 Summary: Pod-level Kubernetes guardrails aligned with the Pod Security Standards Restricted profile: non-root, no caps, read-only FS, NetworkPolicies, SA hardening.
 Cover: images/covers/hardening-k8s.png
 
