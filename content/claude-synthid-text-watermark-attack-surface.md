@@ -1,5 +1,5 @@
 Title: When the Output Carries the Signal: Claude, SynthID-Text, and the New Detection Attack Surface
-Date: 2026-08-15
+Date: 2026-08-14
 Author: Oliver Rivas
 Category: Artificial Intelligence
 Tags: AI Security, Anthropic, Claude, SynthID, Watermarking, EU AI Act, Adversarial ML
