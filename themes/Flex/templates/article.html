@@ -41,7 +41,7 @@
     <h1 id="{{ article.slug }}" itemprop="headline">{{ article.title }}</h1>
     <p>
       {{ _('Posted on %(when)s in %(category)s',
-           when=article.locale_date,
+           when='<time datetime="%s">%s</time>'|format(article.date.isoformat(), article.locale_date)|safe,
            category='<a href="%s/%s">%s</a>'|format(SITEURL, article.category.url, article.category)|safe) }}
 
       {% if PLUGINS and 'post_stats' in PLUGINS %}

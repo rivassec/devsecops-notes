@@ -13,10 +13,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   {% if page in hidden_pages %}
   <meta name="robots" content="noindex, nofollow" />
-  {% elif tag %}
-  {# Tag pages are thin taxonomy aggregation (most have <3 posts) and overlap
-     the curated Category pages. Keep them out of the index but followable so
-     link equity flows to categories. Categories stay indexable. #}
+  {% elif tag or articles_previous_page or page_name == 'tag' or page_name == 'tags' or page_name == 'archives' or page_name == 'period_archives' %}
+  {# Thin/duplicative pages: individual tag pages (most <3 posts, overlap the
+     curated Category pages), paginated index page 2+, and the tags/archive
+     listings. Keep them out of the index but followable so link equity flows
+     to real content. Home page 1, articles, categories, author, and content
+     pages (About) stay indexable. #}
   <meta name="robots" content="noindex, follow" />
   {% elif ROBOTS %}
   <meta name="robots" content="{{ ROBOTS }}" />
@@ -116,6 +118,10 @@
       <link rel="canonical" href="{{ SITEURL }}/{{ articles_page.url }}">
     {% endif %}
   {% endblock %}
+
+  {# Pagination sequence hints for crawlers on the article listing. #}
+  {% if articles_previous_page %}<link rel="prev" href="{{ SITEURL }}/{{ articles_previous_page.url }}">{% endif %}
+  {% if articles_next_page %}<link rel="next" href="{{ SITEURL }}/{{ articles_next_page.url }}">{% endif %}
 
   {% block meta %}
     <meta name="author" content="{{ AUTHOR }}" />

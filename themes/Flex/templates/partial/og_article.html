@@ -12,11 +12,9 @@
   <meta property="og:type" content="article"/>
   <meta property="article:published_time" content="{{ article.date.isoformat() }}"/>
   <meta property="article:modified_time" content="{{ (article.modified or article.date).isoformat() }}"/>
-  <meta property="article:author" content="{{ SITEURL }}/{{ article.author.url }}">
-  <meta property="article:section" content="{{ article.category.name }}"/>
-  {% for tag in article.tags %}
-  <meta property="article:tag" content="{{ tag.name|escape }}"/>
-  {% endfor %}
+  <meta property="article:author" content="{{ article.author|escape }}"/>
+  {% if article.category %}<meta property="article:section" content="{{ article.category|escape }}"/>{% endif %}
+  {% for t in article.tags %}<meta property="article:tag" content="{{ t|escape }}"/>{% endfor %}
   {% if 'og_image' in article.metadata %}
   <meta property="og:image" content="{{ SITEURL }}/{{ article.metadata['og_image'] }}">
   <meta property="og:image:alt" content="{{ article.metadata.get('og_image_alt', article.title)|striptags|escape }}">

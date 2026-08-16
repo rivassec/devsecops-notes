@@ -32,7 +32,9 @@
         "url": "{{ SITEURL }}/{{ SITELOGO }}"
       }
     },
-    "image": "{{ article_image }}",
+    "image": {"@type":"ImageObject","url":"{{ article_image }}","width":1200,"height":630},
+    "wordCount": {{ article.stats['wc'] }},
+    "isAccessibleForFree": true,
     "url": "{{ SITEURL }}/{{ article.url }}",
     "mainEntityOfPage": {
       "@type": "WebPage",
