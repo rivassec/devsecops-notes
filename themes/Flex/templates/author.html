@@ -1,3 +1,18 @@
 {% extends "index.html" %}
 {% block title %}{{ _('Posts by %(name)s', name=author) }} - {{ SITETITLE|default(SITENAME) }}{% endblock %}
-{% set summarise = True %}
+{% block content %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "{{ author }}",
+  "url": "{{ SITEURL }}/{{ author.url }}",
+  "image": "{{ SITEURL }}/images/avatar.png",
+  "jobTitle": "Security Engineer",
+  "knowsAbout": ["DevSecOps", "Kubernetes security", "AWS IAM", "AI security", "OSINT"],
+  "sameAs": ["https://github.com/rivassec"],
+  "description": "Security engineer writing about infrastructure security, cloud hardening, Kubernetes, IAM, and OSINT."
+}
+</script>
+{{ super() }}
+{% endblock %}
