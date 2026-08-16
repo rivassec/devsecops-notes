@@ -118,7 +118,10 @@ SITEMAP = {
     # out of the sitemap too, so we never advertise a URL we ask Google not to
     # index. Categories remain the indexable taxonomy surface. Matched with
     # re.match against the output URL (e.g. "tag/aws.html").
-    'exclude': ['tag/'],
+    # tags.html and archives.html are noindex,follow (see base.html), so keep
+    # them out of the sitemap too - never advertise a URL we ask Google not to
+    # index. Surfaced by GSC 'Discovered - not indexed' 2026-08-16.
+    'exclude': ['tag/', 'tags.html', 'archives.html'],
 }
 STATIC_PATHS.append('extra')
 EXTRA_PATH_METADATA['extra/robots.txt'] = {'path': 'robots.txt'}
