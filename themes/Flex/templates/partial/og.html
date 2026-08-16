@@ -9,6 +9,16 @@
     {% set og_desc = (page.description if page.description else page.summary)|striptags|truncate(157, True) %}
     {% set og_url = SITEURL + '/' + page.url %}
     {% set og_typ = 'article' %}
+  {% elif category is defined and category %}
+    {% set og_title = 'Posts in ' ~ category %}
+    {% set og_desc = ('Browse all posts in the ' ~ category ~ ' category on ' ~ SITENAME ~ '.')|striptags|truncate(157, True) %}
+    {% set og_url = SITEURL + '/' + category.url %}
+    {% set og_typ = 'website' %}
+  {% elif tag is defined and tag %}
+    {% set og_title = 'Posts tagged ' ~ tag %}
+    {% set og_desc = ('Browse all posts tagged ' ~ tag ~ ' on ' ~ SITENAME ~ '.')|striptags|truncate(157, True) %}
+    {% set og_url = SITEURL + '/' + tag.url %}
+    {% set og_typ = 'website' %}
   {% else %}
     {% set og_title = SITENAME %}
     {% set og_desc = SITEDESCRIPTION %}
@@ -23,8 +33,12 @@
   <meta property="og:url" content="{{ og_url }}"/>
   {% if OG_IMAGE %}
   <meta property="og:image" content="{{ SITEURL }}/{{ OG_IMAGE }}">
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="630"/>
   {% elif SITELOGO %}
   <meta property="og:image" content="{{ SITELOGO }}">
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="630"/>
   {% endif %}
   <meta name="twitter:card" content="summary_large_image"/>
   <meta name="twitter:title" content="{{ og_title }}"/>

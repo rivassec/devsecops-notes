@@ -3,5 +3,5 @@
 {% endif %}
 
 {% if FEED_ALL_RSS %}
-  <link href="{{ FEED_DOMAIN }}/{{ FEED_ALL_RSS }}" type="application/rss+xml" rel="alternate" title="{{ SITENAME }} RSS">
+  <link rel="alternate" type="application/rss+xml" title="{{ SITETITLE|default(SITENAME) }} RSS Feed" href="{{ SITEURL }}/feeds/all.rss.xml">
 {% endif %}

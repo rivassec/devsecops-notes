@@ -1,0 +1,21 @@
+{% set _listing = articles_page.object_list if (articles_page is defined and articles_page) else (articles if (articles is defined and articles) else None) %}
+{% if _listing %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "inLanguage": "en-US",
+  "isPartOf": {"@id": "{{ SITEURL }}/#website"},
+  {% if articles_page is defined and articles_page %}"url": "{{ SITEURL }}/{{ articles_page.url }}",
+  {% endif %}"mainEntity": {
+    "@type": "ItemList",
+    "numberOfItems": {{ _listing|length }},
+    "itemListElement": [
+      {%- for article in _listing %}
+      {"@type": "ListItem", "position": {{ loop.index }}, "url": "{{ SITEURL }}/{{ article.url }}", "name": {{ article.title|striptags|tojson }}}{% if not loop.last %},{% endif %}
+      {%- endfor %}
+    ]
+  }
+}
+</script>
+{% endif %}

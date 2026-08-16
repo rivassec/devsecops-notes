@@ -38,6 +38,7 @@
       {% import 'partial/translations.html' as translations with context %}
       {{ translations.translations_for(article) }}
     {% endif %}
+    <nav class="breadcrumb" aria-label="Breadcrumb"><a href="{{ SITEURL }}/">Home</a>{% if article.category %} &rsaquo; <a href="{{ SITEURL }}/{{ article.category.url }}">{{ article.category }}</a>{% endif %} &rsaquo; <span aria-current="page">{{ article.title }}</span></nav>
     <h1 id="{{ article.slug }}" itemprop="headline">{{ article.title }}</h1>
     <p>
       {{ _('Posted on %(when)s in %(category)s',

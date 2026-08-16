@@ -3,6 +3,7 @@
 {% block title %}{{ _('Archives') }} - {{ SITETITLE|default(SITENAME) }}{% endblock %}
 
 {% block content %}
+{% include "partial/jsonld_listing.html" %}
 <article class="single">
   <header>
     <h1 id="archives">{{ _('Archives') }}</h1>

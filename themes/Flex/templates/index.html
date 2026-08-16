@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
+{% include "partial/jsonld_listing.html" %}
 
 {# Above-the-fold intro block — only on first page (not paginated views) #}
 {% if not articles_previous_page %}

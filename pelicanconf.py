@@ -83,6 +83,7 @@ PLUGINS = [
     'post_stats',
     'related_posts',
     'extract_toc',
+    'img_hygiene',
 ]
 
 # related_posts configuration

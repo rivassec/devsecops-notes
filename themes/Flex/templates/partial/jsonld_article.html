@@ -23,15 +23,9 @@
       "name": "{{ article.author.name }}",
       "url": "{{ SITEURL }}/{{ article.author.url }}"
     },
-    "publisher": {
-      "@type": "Organization",
-      "name": "{{ SITETITLE|default(SITENAME) }}",
-      "url": "{{ SITEURL }}",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "{{ SITEURL }}/{{ SITELOGO }}"
-      }
-    },
+    "publisher": {"@id": "{{ SITEURL }}/#organization"},
+    "inLanguage": "en-US",
+    "isPartOf": {"@id": "{{ SITEURL }}/#website"},
     "image": {"@type":"ImageObject","url":"{{ article_image }}","width":1200,"height":630},
     "wordCount": {{ article.stats['wc'] }},
     "isAccessibleForFree": true,

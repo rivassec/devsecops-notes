@@ -28,6 +28,8 @@
   <meta property="og:image" content="{{ SITELOGO }}">
   <meta property="og:image:alt" content="{{ SITENAME }}">
   {% endif %}
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="630"/>
   <meta name="twitter:card" content="summary_large_image"/>
   <meta name="twitter:title" content="{{ article.title|striptags|escape }}"/>
   <meta name="twitter:description" content="{% if article.metadata.get('description') %}{{ article.metadata['description']|striptags|escape }}{% else %}{{ article.summary|striptags|truncate(157, True)|escape }}{% endif %}"/>
