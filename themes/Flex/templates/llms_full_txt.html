@@ -1,0 +1,18 @@
+{% autoescape false %}# {{ SITENAME }} - full index
+
+> DevSecOps, cloud, and platform security notes by Oliver Rivas. Threat-model-driven writing on AWS, Kubernetes, IAM, hardening, and incident retrospectives.
+
+Expanded index for language models. Canonical URL list: {{ SITEURL }}/sitemap.xml
+
+## Posts
+{% for a in articles|sort(attribute='date', reverse=true) %}
+### {{ a.title|striptags }}
+URL: {{ SITEURL }}/{{ a.url }}
+Date: {{ a.date.strftime('%Y-%m-%d') }}{{ (' (updated ' + a.modified.strftime('%Y-%m-%d') + ')') if (a.modified and a.modified.date() != a.date.date()) else '' }}
+Category: {{ a.category }}{{ (' | Tags: ' + (a.tags|join(', '))) if a.tags else '' }}
+Summary: {{ (a.description or a.summary)|striptags|replace('\n', ' ')|truncate(400, true) }}
+
+{% endfor %}## Key pages
+- About: {{ SITEURL }}/pages/about.html
+- DevSecOps Guide: {{ SITEURL }}/devsecops-guide.html
+{% endautoescape %}

@@ -132,6 +132,7 @@ EXTRA_PATH_METADATA['extra/favicon-32.png'] = {'path': 'favicon-32.png'}
 EXTRA_PATH_METADATA['extra/apple-touch-icon.png'] = {'path': 'apple-touch-icon.png'}
 # Legacy slug redirect: PR #15 renamed bt-tether-multi -> pwnagotchi-bluetooth-tethering.
 EXTRA_PATH_METADATA['extra/bt-tether-multi.html'] = {'path': 'bt-tether-multi.html'}
+EXTRA_PATH_METADATA['extra/security.txt'] = {'path': '.well-known/security.txt'}
 
 # Social widget
 SOCIAL = (
@@ -174,6 +175,12 @@ MENUITEMS = [
 ]
 SUMMARY_MAX_LENGTH = 350  # words
 DIRECT_TEMPLATES = ['index', 'categories', 'tags', 'archives']
+
+# Render llms.txt / llms-full.txt for AI-crawler discovery from the article set.
+TEMPLATE_PAGES = {
+    'llms_txt.html': 'llms.txt',
+    'llms_full_txt.html': 'llms-full.txt',
+}
 
 # One-line intros rendered at the top of each /category/<name>.html page.
 # Keys match Category: frontmatter values exactly.

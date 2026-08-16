@@ -45,6 +45,10 @@
            when='<time datetime="%s">%s</time>'|format(article.date.isoformat(), article.locale_date)|safe,
            category='<a href="%s/%s">%s</a>'|format(SITEURL, article.category.url, article.category)|safe) }}
 
+      {% if article.modified and article.modified.date() != article.date.date() %}
+        &#8226; {{ _('Updated %(when)s', when='<time datetime="%s">%s</time>'|format(article.modified.isoformat(), article.modified.strftime('%B %d, %Y'))|safe) }}
+      {% endif %}
+
       {% if PLUGINS and 'post_stats' in PLUGINS %}
         &#8226; {{ _('%(minutes)s min read', minutes=article.stats['read_mins']) }}
       {% endif %}
