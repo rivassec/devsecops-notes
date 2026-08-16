@@ -19,7 +19,8 @@ of them may appear in sitemap.xml.
 What this catches:
 - noindex page whose canonical href != its own URL and which is NOT a redirect
   stub (the canonical does not match its refresh target).
-- 404.html or any redirect-stub URL leaking into sitemap.xml.
+- Any noindex page leaking into sitemap.xml (404, redirect stub, or a
+  tag/archive/tags-index/pagination page carrying meta robots noindex).
 
 What this does NOT flag:
 - A noindex page with a SELF-referential canonical (tag/pagination/404 pages).
@@ -189,6 +190,22 @@ def hidden_page_urls(out: Path, siteurl: str) -> dict[str, str]:
     return hidden
 
 
+def noindex_page_urls(out: Path, siteurl: str) -> dict[str, str]:
+    """Map URL -> reason for every built page carrying meta robots noindex.
+    Such a page must never be advertised in sitemap.xml. This is the general
+    case behind the tags.html/archives.html leak found via GSC on 2026-08-16;
+    hidden_page_urls only covered 404 pages and redirect stubs."""
+    bad: dict[str, str] = {}
+    for html in sorted(out.rglob("*.html")):
+        rel = html.relative_to(out).as_posix()
+        text = html.read_text(encoding="utf-8", errors="replace")
+        rm = ROBOTS_RE.search(text)
+        if rm and "noindex" in rm.group(1).lower():
+            for form in self_urls(rel, siteurl):
+                bad[form] = "noindex page"
+    return bad
+
+
 def scan_sitemap(out: Path, siteurl: str) -> int:
     sitemap = out / "sitemap.xml"
     if not sitemap.is_file():
@@ -201,14 +218,20 @@ def scan_sitemap(out: Path, siteurl: str) -> int:
         return 1
 
     locs = {norm(loc.text or "") for loc in root.iter() if loc.tag.endswith("}loc") or loc.tag == "loc"}
-    hidden = hidden_page_urls(out, siteurl)
+    # Nothing we ask Google not to index may be advertised in the sitemap.
+    # hidden_page_urls = 404 page + redirect stubs; noindex_page_urls = the
+    # general case (tag/archive/tags-index/pagination) that let tags.html and
+    # archives.html leak in (GSC "Discovered - not indexed", 2026-08-16).
+    bad = dict(hidden_page_urls(out, siteurl))
+    for url, reason in noindex_page_urls(out, siteurl).items():
+        bad.setdefault(url, reason)
 
     violations = 0
-    for url, reason in sorted(hidden.items()):
+    for url, reason in sorted(bad.items()):
         if url in locs:
             print(
-                f"::error file={out.name}/sitemap.xml::sitemap advertises a hidden "
-                f"page ({reason}): {url}"
+                f"::error file={out.name}/sitemap.xml::sitemap advertises a page "
+                f"that must not be indexed ({reason}): {url}"
             )
             violations += 1
     return violations
