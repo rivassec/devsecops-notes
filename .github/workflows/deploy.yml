@@ -67,6 +67,7 @@ jobs:
             --max-retries 5
             --retry-wait-time 2
             --exclude "web\.archive\.org"
+            --exclude "linkedin\.com"
             --exclude-path output/feeds
             './output/**/*.html'
           format: detailed
