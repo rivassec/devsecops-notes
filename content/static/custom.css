@@ -204,6 +204,17 @@ main article.single em { color: var(--fg); }
    article on desktop, hidden on mobile so the article title lands
    first in the mobile viewport. */
 main > aside.article-toc {
+  /* Reset the Flex theme's unscoped aside{position:fixed;left:0;width:25vw;
+     height:100vh} (min-width:768px), which otherwise pins this TOC as a
+     fixed left sidebar over the article body. Fixed 2026-08-16. */
+  position: static;
+  width: auto;
+  height: auto;
+  top: auto;
+  left: auto;
+  right: auto;
+  bottom: auto;
+  z-index: auto;
   background: var(--bg-elev);
   border: 1px solid var(--border);
   border-radius: 6px;
