@@ -37,3 +37,9 @@ fires against your own tooling, or the 208th day of uptime.
 - [Adoption Is a Security Control: Notes from Paving a Road](paved-road-adoption-as-control.html)
 - [The Discovery Layer Is Broken: Hiring as an Observability Problem](hiring-discovery-layer-broken.html)
 - [The Trust Decay: Why Modern Hiring Has Become an Adversarial System](trust-decay-adversarial-hiring.html)
+
+## AI Security and Threat Intelligence
+
+- [When the Output Carries the Signal: Claude, SynthID-Text, and the New Detection Attack Surface](claude-synthid-text-watermark-attack-surface.html)
+- [Prompt Injection Will Become a Supply Chain Evasion Technique](prompt-injection-supply-chain-evasion.html)
+- [Catching a Nation-State Proxy: OSINT on Twitter](venezuela-twitter-proxy-osint.html)

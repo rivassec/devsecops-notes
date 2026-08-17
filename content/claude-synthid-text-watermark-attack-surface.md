@@ -90,6 +90,8 @@ Google acknowledges that thorough rewriting and translation can substantially re
 
 The strategic implication is that watermark survival depends on how much control the provider retains over the text's transformation path. Once an untrusted system can regenerate the semantics, token-level provenance becomes fragile.
 
+The same adversarial economics that make scrubbing cheap will normalize other model-level evasions. That trajectory is what turns [prompt injection into a supply-chain evasion technique](prompt-injection-supply-chain-evasion.html): once an evasion is automatable, it becomes routine tooling.
+
 ## The Detector as a Side-Channel Oracle
 
 Anthropic says it will expose a watermark detection API, with implementation details still under development. That interface creates a black-box optimization surface.

@@ -130,7 +130,7 @@ sudo systemctl enable --now oom-adjuster.service
 
 ## Security Considerations
 
-From a DevSecOps perspective, OOM prioritization is not just about uptime. It’s a security hardening technique:
+From a [DevSecOps perspective](devsecops-guide.html), OOM prioritization is not just about uptime. It’s a security hardening technique:
 
 - **SSHD protection** prevents lockouts during memory exhaustion.
 - **Preserving portsentry or IDS processes** ensures defense mechanisms remain active.

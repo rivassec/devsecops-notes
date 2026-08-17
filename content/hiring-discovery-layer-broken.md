@@ -97,7 +97,7 @@ We already produce better artifacts than resumes. Design reviews, postmortems, t
 
 Most hiring systems ignore them because they are not structured for automated parsing. That is the core indexing failure.
 
-The shape works both ways. My own writeup of a program that produced measurable outcomes plus the political stall I caused myself, [Adoption Is a Security Control]({filename}paved-road-adoption-as-control.md), is the kind of artifact I would rather be evaluated on than a bullet list. The failure-mode writeup in [The Teensy That Failed in Public]({filename}teensy-efi-bruteforce-hours-late.md) does more to communicate how I think about hardware trust than any keyword-match ever will. The complement to this post is [The Trust Decay]({filename}trust-decay-adversarial-hiring.md), which frames the same pipeline from the candidate side.
+The shape works both ways. My own writeup of a program that produced measurable outcomes plus the political stall I caused myself, [Adoption Is a Security Control]({filename}paved-road-adoption-as-control.md), is the kind of artifact I would rather be evaluated on than a bullet list. The complement to this post is [The Trust Decay]({filename}trust-decay-adversarial-hiring.md), which frames the same pipeline from the candidate side.
 
 ---
 
