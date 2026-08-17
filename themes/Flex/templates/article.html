@@ -23,15 +23,6 @@
 {% block title %}{{ article.title|striptags|escape }}{% if article.title|length < 55 %} | {{ SITETITLE|default(SITENAME) }}{% endif %}{% endblock %}
 
 {% block content %}
-{% if article.toc %}
-<aside class="article-toc" aria-label="Table of contents">
-  <details open>
-    <summary class="aside-heading">{{ _('Contents') }}</summary>
-    {{ article.toc }}
-  </details>
-</aside>
-{% endif %}
-
 <article class="single" itemscope itemtype="https://schema.org/BlogPosting">
   <header>
     {% if not ARTICLE_HIDE_TRANSLATION %}
@@ -58,6 +49,15 @@
       {% endif %}
     </p>
   </header>
+
+  {% if article.toc %}
+  <aside class="article-toc" aria-label="Table of contents">
+    <details open>
+      <summary class="aside-heading">{{ _('Contents') }}</summary>
+      {{ article.toc }}
+    </details>
+  </aside>
+  {% endif %}
 
   <div itemprop="articleBody">
     {{ article.content }}

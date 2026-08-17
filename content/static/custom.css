@@ -203,7 +203,7 @@ main article.single em { color: var(--fg); }
 /* Article-page TOC card, now a sibling of <article>. Placed above
    article on desktop, hidden on mobile so the article title lands
    first in the mobile viewport. */
-main > aside.article-toc {
+article.single > aside.article-toc {
   /* Reset the Flex theme's unscoped aside{position:fixed;left:0;width:25vw;
      height:100vh} (min-width:768px), which otherwise pins this TOC as a
      fixed left sidebar over the article body. Fixed 2026-08-16. */
@@ -225,7 +225,7 @@ main > aside.article-toc {
   color: var(--fg);
   text-align: left;
 }
-main > aside.article-toc .aside-heading {
+article.single > aside.article-toc .aside-heading {
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 1.5px;
@@ -233,24 +233,24 @@ main > aside.article-toc .aside-heading {
   margin: 0 0 12px;
   font-weight: 700;
 }
-main > aside.article-toc a {
+article.single > aside.article-toc a {
   color: var(--fg);
 }
-main > aside.article-toc a:hover {
+article.single > aside.article-toc a:hover {
   color: var(--accent);
   text-decoration: none;
 }
-main > aside.article-toc .toc { margin-top: 0 !important; }
-main > aside.article-toc .toc > ul {
+article.single > aside.article-toc .toc { margin-top: 0 !important; }
+article.single > aside.article-toc .toc > ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
-main > aside.article-toc .toc > ul > li {
+article.single > aside.article-toc .toc > ul > li {
   padding: 5px 0;
   line-height: 1.4;
 }
-main > aside.article-toc .toc ul ul {
+article.single > aside.article-toc .toc ul ul {
   list-style: none;
   padding-left: 16px;
   margin-top: 4px;
@@ -260,7 +260,7 @@ main > aside.article-toc .toc ul ul {
    TOC dominates the viewport before the article title becomes
    visible, and users scroll rather than jump on mobile. */
 @media (max-width: 767px) {
-  main > aside.article-toc { display: none; }
+  article.single > aside.article-toc { display: none; }
 }
 
 /* Tag cloud at article bottom.
