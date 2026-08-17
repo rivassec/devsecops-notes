@@ -893,3 +893,22 @@ main footer a {
 .literal-block .gu {
   color: #a8a596;
 }
+
+
+/* Author page E-E-A-T bio card (visible content backing the Person schema). */
+.author-bio {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  max-width: 760px;
+  margin: 28px auto 8px;
+  padding: 18px 22px;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  text-align: left;
+}
+.author-bio-avatar { border-radius: 50%; flex-shrink: 0; }
+.author-bio p { margin: 0; color: var(--fg); line-height: 1.5; }
+.author-bio a { color: var(--accent); }
+@media (max-width: 600px) { .author-bio { flex-direction: column; text-align: center; } }
