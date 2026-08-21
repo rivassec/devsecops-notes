@@ -1,6 +1,6 @@
 Title: When Telemetry Turns Predatory: A DevSecOps Look at Digital Repression in Venezuela
 Date: 2026-08-25
-Status: draft
+Status: published
 Author: Oliver Rivas
 Category: DevSecOps
 Tags: devsecops, security, venezuela, censorship, threat-modeling, privacy, surveillance
@@ -60,11 +60,11 @@ Viewed as a system, VenApp is a citizen-scale SIEM. The ingest layer is a mobile
 
 **Observation**
 
-[*Freedom on the Net 2025: Venezuela*](https://freedomhouse.org/country/venezuela/freedom-net/2025) documents expanded blocking of websites and communications platforms during and after the July 2024 election, the Operación Tun-Tun mass-arrest campaign, and arrests connected to online activity. EFF separately documents authorities stopping people to check the content of their phones and detaining those whose devices hold anti-government material.
+[*Freedom on the Net 2025: Venezuela*](https://freedomhouse.org/country/venezuela/freedom-net/2025) documents expanded blocking of websites and communications platforms during and after the July 2024 election, the Operación Tun-Tun mass-arrest campaign, and arrests connected to online activity. [Human Rights Watch](https://www.hrw.org/es/report/2025/04/30/castigados-por-buscar-un-cambio/asesinatos-desapariciones-forzadas-y-detenciones) documents security forces searching phones at Tun-Tun checkpoints and street stops, and EFF documents detentions of people whose devices held anti-government material.
 
 **Engineering interpretation**
 
-Operación Tun-Tun is what happens when endpoint detection and kinetic response merge into a single workflow. In an enterprise EDR context - Falcon, SentinelOne, Defender - an alert produces a ticket, a triage step, and typically at worst a device quarantine. The kinetic parallel exists (physical security escorting a compromised laptop off-site) but it is rare and tightly scoped. In the Venezuelan case, the same alert-to-response loop is compressed and applied at population scale: an online post, a phone-content inspection of the kind EFF documents, and an arrest can function as stages of a single pipeline whose escalation path is physical. From a threat-modeling perspective, the transformation is not "surveillance was added." The transformation is that the response stage of an ordinary detection pipeline was rewired to enforcement rather than remediation.
+Operación Tun-Tun is what happens when endpoint detection and kinetic response merge into a single workflow. In an enterprise EDR context - Falcon, SentinelOne, Defender - an alert produces a ticket, a triage step, and typically at worst a device quarantine. The kinetic parallel exists (physical security escorting a compromised laptop off-site) but it is rare and tightly scoped. In the Venezuelan case, the same alert-to-response loop is compressed and applied at population scale: an online post, a phone search at a Tun-Tun checkpoint of the kind Human Rights Watch documents, and an arrest can function as stages of a single pipeline whose escalation path is physical. From a threat-modeling perspective, the transformation is not "surveillance was added." The transformation is that the response stage of an ordinary detection pipeline was rewired to enforcement rather than remediation.
 
 The primitives were already in place.
 
@@ -128,6 +128,8 @@ Internet censorship measurement is inherently difficult, and the sharpest limita
 [4] VE Sin Filtro. [*Reporte Redes de Control: Censura y represión digital en las elecciones presidenciales en Venezuela*](https://vesinfiltro.org/noticias/2025-03-12-reporte-elecciones-presidenciales/). March 2025.
 
 [5] [OONI Documentation](https://ooni.org/).
+
+[6] Human Rights Watch. [*Castigados por buscar un cambio: Asesinatos, desapariciones forzadas y detenciones arbitrarias tras las elecciones de 2024 en Venezuela*](https://www.hrw.org/es/report/2025/04/30/castigados-por-buscar-un-cambio/asesinatos-desapariciones-forzadas-y-detenciones). April 30, 2025.
 
 ## Conclusion
 
