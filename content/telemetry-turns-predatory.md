@@ -8,15 +8,13 @@ Slug: telemetry-turns-predatory
 Og_image: images/og/telemetry-turns-predatory.png
 Summary: Every SOC pipeline has a shadow version. Using Venezuela as a grounded case study: how the primitives security engineers build become surveillance systems.
 
-# When Telemetry Turns Predatory: A DevSecOps Look at Digital Repression in Venezuela
-
 Every Security Operations Center follows a familiar pattern: collect telemetry, correlate identities, prioritize signals, and trigger a response. Security engineers build these pipelines to defend infrastructure. The same architectural primitives, however, are inherently dual-use.
 
 This article examines publicly documented events in Venezuela through the perspective of a DevSecOps engineer. It distinguishes between documented observations and engineering interpretation.
 
 ## A personal note
 
-I have a personal stake in this analysis. I was born in Venezuela and left the Gran Caracas region at eighteen. I still have extended family there. I have also, in more than two decades since I left, been on the receiving end of the regime's information apparatus in ways that are not the subject of this piece. What I write below is not a policy essay - it is what a security engineer sees when he or she watches, over the course of many years, the slow convergence of a state and its telemetry. The technical patterns are familiar to anyone who has designed a SIEM, an identity provider, or an EDR pipeline. That familiarity is the point.
+I have a personal stake in this analysis. I was born in Venezuela and left the Gran Caracas region at eighteen. I still have extended family there. I have also, in more than two decades since I left, been on the receiving end of the [regime's information apparatus]({filename}/venezuela-twitter-proxy-osint-final.md) in ways that are not the subject of this piece. What I write below is not a policy essay - it is what a security engineer sees when he or she watches, over the course of many years, the slow convergence of a state and its telemetry. The technical patterns are familiar to anyone who has designed a SIEM, an identity provider, or an EDR pipeline. That familiarity is the point.
 
 ## Two pipelines, same primitives
 
@@ -75,9 +73,9 @@ flowchart TB
 
 **Observation**
 
-EFF's *Unveiling Venezuela's Repression: Surveillance and Censorship Following July's Presidential Election* and *Unveiling Venezuela's Repression: A Legacy of State Surveillance and Control* document the evolution of VenApp after the 2024 presidential election and broader patterns of digital repression.
+EFF's [*Unveiling Venezuela's Repression: Surveillance and Censorship Following July's Presidential Election*](https://www.eff.org/deeplinks/2024/09/unveiling-venezuelas-repression-surveillance-and-censorship-following-julys) and [*Unveiling Venezuela's Repression: A Legacy of State Surveillance and Control*](https://www.eff.org/deeplinks/2024/09/unveiling-venezuelas-repression-legacy-state-surveillance-and-control) document the evolution of VenApp after the 2024 presidential election and broader patterns of digital repression.
 
-**Engineering Interpretation**
+**Engineering interpretation**
 
 Viewed as a system, VenApp is a citizen-scale SIEM. The ingest layer is a mobile client; the events are user-attributed reports of "suspicious" behavior; the entity-resolution layer joins those reports against a national identity graph (cédula, phone number, device identifiers) - the same shape as an enterprise correlation against email, SSO subject, and device ID. Any engineer who has built a Splunk ingest pipeline, an Elastic detection rule, or a Sumo Logic content pack recognizes the pattern immediately. Normalization, field extraction, correlation, alert scoring, case creation - these are the same stages that turn raw logs into an IR ticket for a credential-stuffing attempt in an enterprise SOC. The difference is not architectural. The difference is who the tenant is, what the tenant treats as a "threat," and what happens at the response stage. In one pipeline the response is an account lockout and a support ticket. In the other, the response is physical.
 
@@ -85,9 +83,9 @@ Viewed as a system, VenApp is a citizen-scale SIEM. The ingest layer is a mobile
 
 **Observation**
 
-*Freedom on the Net 2025: Venezuela* documents expanded blocking of websites and communications platforms, reports of device inspections during Operación Tun-Tun, and arrests connected to online activity.
+[*Freedom on the Net 2025: Venezuela*](https://freedomhouse.org/country/venezuela/freedom-net/2025) documents expanded blocking of websites and communications platforms, reports of device inspections during Operación Tun-Tun, and arrests connected to online activity.
 
-**Engineering Interpretation**
+**Engineering interpretation**
 
 Operación Tun-Tun is what happens when endpoint detection and kinetic response merge into a single workflow. In an enterprise EDR context - Falcon, SentinelOne, Defender - an alert produces a ticket, a triage step, and at worst a device quarantine. The kinetic parallel exists (physical security escorting a compromised laptop off-site) but it is rare and tightly scoped. In the Venezuelan case, the same alert-to-response loop is compressed and applied at population scale: an online post, a device inspection at a checkpoint, and an arrest can function as stages of a single pipeline whose escalation path is physical. From a threat-modeling perspective, the transformation is not "surveillance was added." The transformation is that the response stage of an ordinary detection pipeline was rewired to enforcement rather than remediation.
 
@@ -97,9 +95,9 @@ The primitives were already in place.
 
 **Observation**
 
-VE Sin Filtro, using OONI measurement methodologies, documents DNS manipulation, IP blocking, SNI filtering, interference with public DNS resolvers, and blocking of circumvention tools across multiple ISPs.
+[VE Sin Filtro](https://vesinfiltro.org/), using [OONI](https://ooni.org/) measurement methodologies, documents DNS manipulation, IP blocking, SNI filtering, interference with public DNS resolvers, and blocking of circumvention tools across multiple ISPs.
 
-**Engineering Interpretation**
+**Engineering interpretation**
 
 VE Sin Filtro's measurement work, built on OONI Probe, documents what interference actually looks like on the wire. Their 2025 election report identifies DNS manipulation on CANTV, Movistar, and Digitel - Venezuela's three dominant ISPs - including rewrites of A-record responses for independent media domains, SNI-based filtering that terminates TLS handshakes when the ClientHello advertises a censored hostname, and interference with public resolvers such as 1.1.1.1 and 8.8.8.8 that would otherwise route around the manipulation. Any enterprise security engineer recognizes these techniques. I have configured or debugged most of them from the defensive side: DNS Response Policy Zones and Cloudflare Gateway to block malware; TLS-aware proxies that read the SNI in ClientHello and drop connections to policy-blocked destinations; WAF and firewall ACLs that block by IP or CIDR. The mechanism is identical. Only the block list differs.
 
@@ -142,20 +140,15 @@ Internet censorship measurement is inherently difficult. Network observations de
 
 ## References
 
-[1] Laura Vidal. *Unveiling Venezuela's Repression: Surveillance and Censorship Following July's Presidential Election*. Electronic Frontier Foundation. September 16, 2024.
-https://www.eff.org/deeplinks/2024/09/unveiling-venezuelas-repression-surveillance-and-censorship-following-julys
+[1] Laura Vidal. [*Unveiling Venezuela's Repression: Surveillance and Censorship Following July's Presidential Election*](https://www.eff.org/deeplinks/2024/09/unveiling-venezuelas-repression-surveillance-and-censorship-following-julys). Electronic Frontier Foundation. September 16, 2024.
 
-[2] Laura Vidal. *Unveiling Venezuela's Repression: A Legacy of State Surveillance and Control*. Electronic Frontier Foundation. September 18, 2024.
-https://www.eff.org/deeplinks/2024/09/unveiling-venezuelas-repression-legacy-state-surveillance-and-control
+[2] Laura Vidal. [*Unveiling Venezuela's Repression: A Legacy of State Surveillance and Control*](https://www.eff.org/deeplinks/2024/09/unveiling-venezuelas-repression-legacy-state-surveillance-and-control). Electronic Frontier Foundation. September 18, 2024.
 
-[3] Freedom House. *Freedom on the Net 2025: Venezuela*.
-https://freedomhouse.org/country/venezuela/freedom-net/2025
+[3] Freedom House. [*Freedom on the Net 2025: Venezuela*](https://freedomhouse.org/country/venezuela/freedom-net/2025).
 
-[4] VE Sin Filtro. *Reporte Redes de Control: Censura y represión digital en las elecciones presidenciales en Venezuela*. March 2025.
-https://vesinfiltro.org/noticias/2025-03-12-reporte-elecciones-presidenciales/
+[4] VE Sin Filtro. [*Reporte Redes de Control: Censura y represión digital en las elecciones presidenciales en Venezuela*](https://vesinfiltro.org/noticias/2025-03-12-reporte-elecciones-presidenciales/). March 2025.
 
-[5] OONI Documentation.
-https://ooni.org/
+[5] [OONI Documentation](https://ooni.org/).
 
 ## Conclusion
 
