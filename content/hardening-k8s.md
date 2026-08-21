@@ -24,7 +24,7 @@ securityContext:
   runAsGroup: 3000
 ```
 
-This enforces that containers don’t run as UID 0, reducing the blast radius of any compromise.
+This enforces that containers don't run as UID 0, reducing the blast radius of any compromise.
 
 ---
 
@@ -132,12 +132,12 @@ Start with a default-deny policy per namespace, then explicitly allow only the t
 automountServiceAccountToken: false
 ```
 
-Disable automatic token mounting for pods that don’t need API server access. Create dedicated ServiceAccounts with minimal RBAC bindings rather than relying on the `default` account, which often accumulates unnecessary permissions.
+Disable automatic token mounting for pods that don't need API server access. Create dedicated ServiceAccounts with minimal RBAC bindings rather than relying on the `default` account, which often accumulates unnecessary permissions.
 
 ---
 
 ## Final Thoughts
 
-Security isn’t just about tools, it’s about secure defaults. These practices help harden your Kubernetes workloads using the Restricted Pod Security Standard and reduce risks across the board.
+Security isn't just about tools, it's about secure defaults. These practices help harden your Kubernetes workloads using the Restricted Pod Security Standard and reduce risks across the board.
 
-If you’re managing production clusters or sensitive environments, these changes are low-hanging fruit with a high return on security posture. The same "safe by default" mindset applied to AWS IAM is the subject of [IAM Roles That Fail Loud]({filename}iam-safe-defaults-fail-loud.md); for the node side of memory pressure, see [Taming the OOM Killer]({filename}oom-killer-process-prioritization.md).
+If you're managing production clusters or sensitive environments, these changes are low-hanging fruit with a high return on security posture. The same "safe by default" mindset applied to AWS IAM is the subject of [IAM Roles That Fail Loud]({filename}iam-safe-defaults-fail-loud.md); for the node side of memory pressure, see [Taming the OOM Killer]({filename}oom-killer-process-prioritization.md).

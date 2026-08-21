@@ -13,7 +13,7 @@ Cover: images/covers/venezuela-twitter-proxy-osint.png
 
 ## Situation
 
-In the lead-up to Venezuela’s 2012 regional elections, I observed unusual behavior around Twitter access within the country. What began as anecdotal reports of DNS outages evolved into a deeper investigation that revealed a state-aligned proxy infrastructure potentially capable of phishing Twitter credentials.
+In the lead-up to Venezuela's 2012 regional elections, I observed unusual behavior around Twitter access within the country. What began as anecdotal reports of DNS outages evolved into a deeper investigation that revealed a state-aligned proxy infrastructure potentially capable of phishing Twitter credentials.
 
 ---
 
@@ -24,8 +24,8 @@ A transparent proxy intercepts user traffic without modifying requests or requir
 
 While it initially showed no malicious behavior, it was:
 
-- Hosted on IP addresses **outside of Twitter’s ranges**
-- Registered under infrastructure owned by the Venezuelan government (PSUV – *Partido Socialista Unido de Venezuela*)
+- Hosted on IP addresses **outside of Twitter's ranges**
+- Registered under infrastructure owned by the Venezuelan government (PSUV - *Partido Socialista Unido de Venezuela*)
 - Promoted through state-controlled media and bot accounts
 - Served from the same IP as a political messaging app
 
@@ -47,7 +47,7 @@ Returned expected Twitter IPs (199.59.x.x), but users in Venezuela were silently
 
 This IP **served Twitter content** but was not operated by Twitter Inc.
 
-It’s unclear whether this redirection was caused by ISP DNS override, local resolver poisoning, or upstream hijack, but the net effect was consistent: Twitter domains were silently redirected to non-Twitter infrastructure under state control.
+It's unclear whether this redirection was caused by ISP DNS override, local resolver poisoning, or upstream hijack, but the net effect was consistent: Twitter domains were silently redirected to non-Twitter infrastructure under state control.
 
 ---
 
@@ -57,10 +57,10 @@ It’s unclear whether this redirection was caused by ISP DNS override, local re
 whois chavezcandanga.org.ve
 ```
 
-Revealed that the domain was registered to **PSUV** (*Partido Socialista Unido de Venezuela*) and managed through CONATEL, Venezuela’s FCC-equivalent telecommunications regulator.
+Revealed that the domain was registered to **PSUV** (*Partido Socialista Unido de Venezuela*) and managed through CONATEL, Venezuela's FCC-equivalent telecommunications regulator.
 
-![WHOIS output showing chavzescandanga.org.ve registered to PSUV]({static}/images/who-is-chavezcandanga-com.jpg)
-*Figure: WHOIS lookup confirms chavzescandanga.org.ve is registered to PSUV, with administrative and technical contacts using @psuv.org.ve emails.*
+![WHOIS output showing chavezcandanga.org.ve registered to PSUV]({static}/images/who-is-chavezcandanga-com.jpg)
+*Figure: WHOIS lookup confirms chavezcandanga.org.ve is registered to PSUV, with administrative and technical contacts using @psuv.org.ve emails.*
 
 ---
 
@@ -68,13 +68,13 @@ Revealed that the domain was registered to **PSUV** (*Partido Socialista Unido d
 
 The same server IP hosted:
 
-- `mensajes.chavezcandanga.org.ve` – a campaign messaging platform
-- A proxy script that mirrored Twitter’s login screen
+- `mensajes.chavezcandanga.org.ve` - a campaign messaging platform
+- A proxy script that mirrored Twitter's login screen
 
-![Screenshot of chavzescandanga.org.ve auto-retweet app]({static}/images/chavezcandanga-web.jpg)
-*Figure: The official chavzescandanga.org.ve campaign app asks users to authenticate with Twitter to enable automatic retweets of Chávez's posts.*
+![Screenshot of chavezcandanga.org.ve auto-retweet app]({static}/images/chavezcandanga-web.jpg)
+*Figure: The official chavezcandanga.org.ve campaign app asks users to authenticate with Twitter to enable automatic retweets of Chávez's posts.*
 
-At the time of discovery, this site **did not contain malicious code**, but the potential for **credential harvesting** during peak election activity was substantial. The authentication flow mimicked Twitter’s branding and prompted users to log in, creating a window for silent credential capture, token misuse, or targeted amplification based on follower behavior.
+At the time of discovery, this site **did not contain malicious code**, but the potential for **credential harvesting** during peak election activity was substantial. The authentication flow mimicked Twitter's branding and prompted users to log in, creating a window for silent credential capture, token misuse, or targeted amplification based on follower behavior.
 
 ---
 

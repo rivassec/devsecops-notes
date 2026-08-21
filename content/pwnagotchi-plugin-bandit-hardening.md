@@ -112,7 +112,7 @@ pcaps = sorted(Path("/root/handshakes").glob("*.pcap"))[:10]
 
 `Path.glob()` does the expansion in-process, returns a list of `Path` objects, and never touches a shell. Anything you would have piped into `head` is a Python slice. Anything you would have piped into another command becomes a list comprehension or a second `subprocess.run()` that takes the list as argv.
 
-The same shape applies if your reason for reaching at `shell=True` was a pipe rather than a glob:
+The same shape applies if your reason for reaching for `shell=True` was a pipe rather than a glob:
 
 ```python
 # Wrong
@@ -150,7 +150,7 @@ The pattern is "validate at the trust boundary, trust everything past it." The t
 
 ## The `# nosec` discipline
 
-Six `# nosec` annotations is six fewer than zero, but it is still six places where you are telling the auditor "trust me." The discipline that keeps that honest:
+Six `# nosec` annotations is six more than zero, but it is still six places where you are telling the auditor "trust me." The discipline that keeps that honest:
 
 1. **Every `# nosec` annotates exactly one call.** No file-level suppressions, no broad ignores. If three calls need it, three `# nosec` comments. Each one is a localized claim.
 2. **The reason is structural, not "it works."** The plugin's `# nosec` comments all sit next to calls where the binary path came from `shutil.which()` and the arguments are either literals or inputs that have already passed `_sanitize_*`. That is the structural reason Bandit's flag is a false positive.

@@ -19,7 +19,7 @@ This is the post-mortem the original Hackaday article should have linked to. It 
 
 ## The setup
 
-A 2012 MacBook Pro I owned. I had wiped the drive with `dd` from another machine because that was the cleanest way to do a full overwrite. When I booted it back up, the firmware presented a six-digit EFI password prompt I had set months earlier and forgotten.
+A 2012 MacBook Pro I owned. I had wiped the drive with `dd` from another machine because that was the cleanest way to do a full overwrite. When I booted it back up, the firmware presented a four-digit EFI password prompt I had set months earlier and forgotten.
 
 The supported paths were:
 
@@ -71,7 +71,7 @@ I built one of those extensions: a follow-up project against the iCloud Activati
 
 In July 2014 the project hit Hacker News with [67 points and 14 comments](https://news.ycombinator.com/item?id=7993435). The HN crowd had useful additions: an EEPROM programmer would be faster than a brute force; some newer models stored passwords in TPM that could be cleared in-circuit; the entire class of attack had been a quietly-known industry secret for years. The HN comments are more thorough than my original writeup.
 
-In May 2015 the [Arduino Forum titled a thread](https://forum.arduino.cc/t/revisiting-orvtechs-efi-firmware-icloud-unlock-for-macs/313576) "Revisiting orvtech's EFI Firmware & iCloud unlock for Macs." Three months later, Charlie_turner posted a working Pro Micro port with LCD support under Apache 2.0. A Spanish-language blog at iivanmendozaa.blogspot.com had translated the writeup the prior year and added LCD documentation for a Latin American audience.
+In May 2015 the [Arduino Forum titled a thread](https://forum.arduino.cc/t/revisiting-orvtechs-efi-firmware-icloud-unlock-for-macs/313576) "Revisiting orvtech's EFI Firmware & iCloud unlock for Macs." Three months later, Charlie_turner posted a working Pro Micro port with LCD support under Apache 2.0. A Spanish-language blog at [iivanmendozaa.blogspot.com](https://iivanmendozaa.blogspot.com/2014/11/ataque-automatizado-de-fuerza-bruta-al.html) had translated the writeup the prior year and added LCD documentation for a Latin American audience.
 
 I did not moderate any of this. I did not accept pull requests, coordinate the downstream ports, or even watch the threads consistently. The project went on without me, in three languages, on at least three hardware platforms, against two distinct password-prompt screens, with one fork eventually outgrowing the original repo by an order of magnitude in stars.
 

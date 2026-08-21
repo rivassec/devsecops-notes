@@ -97,6 +97,6 @@ In a real design review, the handshake recitation is the wrong shape anyway. The
 - **Cipher policy.** TLS 1.2 minimum, AEAD-only, no RSA key exchange, no legacy versions. The defaults from a serious load balancer are usually fine; the failure mode is leaving 1.0 or 1.1 on for "compatibility" and forgetting.
 - **Trust store hygiene.** Pinning, revocation checking, intermediate cert distribution. The boring half of the protocol is where the real attacks land.
 
-The handshake is well understood. The real risk lives in mis-configured trust stores, expired intermediates, and downgrade paths kept around for legacy clients that nobody actually has anymore.
+The handshake is well understood. The real risk lives in misconfigured trust stores, expired intermediates, and downgrade paths kept around for legacy clients that nobody actually has anymore.
 
 Three jobs, in parallel, in every version: key agreement, server authentication, session-key derivation. Once you see the protocol that way, the handshake stops being a sequence to memorize and becomes the smallest, most boring part of running TLS in production.

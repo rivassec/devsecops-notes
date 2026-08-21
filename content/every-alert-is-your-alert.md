@@ -114,4 +114,4 @@ Step five is the one I want to flag. The fourth bucket has a real abuse vector: 
 
 Every alert that fires on your endpoint is your alert. The phrase reads like a corporate poster, and the SOC version of it is fine: take ownership, don't punt, don't let alerts orphan. But the underneath of it, for analysts running modern tooling, is more specific. It means: the runbook for "your EDR pinged on you because you were doing IR" is your runbook to write, because nobody at the EDR vendor wrote it for you. The sensor was right. The disposition is yours.
 
-For the host-side detail of the parent incident, see [The Miner Was In The Image Layer, Not In Memory]({filename}cryptominer-in-the-docker-layer.md).
+For the host-side detail of the parent incident, see [How I Learned to Investigate Docker Image Layers During Incident Response]({filename}cryptominer-in-the-docker-layer.md).

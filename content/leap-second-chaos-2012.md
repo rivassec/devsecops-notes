@@ -13,7 +13,7 @@ Cover: images/covers/leap-second-chaos-2012.png
 
 ## What Happened?
 
-On June 30, 2012, a **leap second** was inserted into atomic time via NTP to keep UTC aligned with Earth’s rotation. At 23:59:60 UTC, global systems experienced a hiccup, a single extra second that caused widespread disruptions across Reddit, LinkedIn, Yelp, Google, FourSquare, and many more.
+On June 30, 2012, a **leap second** was inserted into atomic time via NTP to keep UTC aligned with Earth's rotation. At 23:59:60 UTC, global systems experienced a hiccup, a single extra second that caused widespread disruptions across Reddit, LinkedIn, Yelp, Google, Foursquare, and many more.
 
 What followed were 500 errors, high latency, and CPU usage spikes that crippled backend services.
 
@@ -60,7 +60,7 @@ sudo /etc/init.d/ntp start
 
 ### Modern Resilience Strategies
 
-- **Leap Smearing**: Today’s `ntpd`, `chronyd`, and cloud providers use “leap smear”, slowly adjusting clocks over hours to avoid time jumps entirely.
+- **Leap Smearing**: Today's `ntpd`, `chronyd`, and cloud providers use "leap smear", slowly adjusting clocks over hours to avoid time jumps entirely.
 - **Use Monotonic Clocks**: Time-sensitive logic should rely on `CLOCK_MONOTONIC`, not wall-clock time, to measure durations safely.
 
 ![Line chart titled "Leap Second: Wall Clock vs Monotonic Time" plotting reported time against elapsed monotonic time. Both lines rise together from 0 through 4. At the leap-second insertion (annotated 23:59:60), wall-clock time flattens for one second while monotonic time keeps climbing. Wall-clock then resumes its climb one tick behind monotonic for the rest of the chart.]({static}/images/leap_second_monotonic_vs_wall_clock.png)
@@ -68,21 +68,21 @@ sudo /etc/init.d/ntp start
 
 - **Monitor Clock Drift**: Observability pipelines should expose clock sync state and NTP drift as first-class metrics.
 - **Design for Temporal Anomalies**: Distributed systems should assume wall-clock time can regress, freeze, or desync, and gracefully degrade when it does.
-- **Simulated Testing Isn’t Enough**: Always combine synthetic load with chaos testing under unusual real-world conditions (e.g., leap seconds, DNS failures, NTP skew).
+- **Simulated Testing Isn't Enough**: Always combine synthetic load with chaos testing under unusual real-world conditions (e.g., leap seconds, DNS failures, NTP skew).
 
 ---
 
 ## Epilogue
 
-The 2012 leap second chaos wasn’t caused by incompetence. Many teams patched, prepared, and tested. But the leap second hit during degraded cloud capacity, exposed fragile JVM behavior, and stressed assumptions in time-sensitive code.
+The 2012 leap second chaos wasn't caused by incompetence. Many teams patched, prepared, and tested. But the leap second hit during degraded cloud capacity, exposed fragile JVM behavior, and stressed assumptions in time-sensitive code.
 
 A single second exposed fault lines in the foundations of the modern internet.
 
-In 2022, the ITU voted to abolish leap seconds by 2035, largely driven by incidents like this one. Until then, the mitigations above remain essential for any system that touches wall-clock time.
+In 2022, the CGPM (General Conference on Weights and Measures) voted to abolish leap seconds by 2035, largely driven by incidents like this one. Until then, the mitigations above remain essential for any system that touches wall-clock time.
 
 ---
 
-**What other “just time” failures have caught you off guard in production? Let’s share war stories.**
+**What other "just time" failures have caught you off guard in production? Let's share war stories.**
 
 Related reading: the [208.5-day kernel bug]({filename}208-day-kernel-bug-lessons.md) - another case where a piece of time math, left unpatched, was a silent countdown to an outage.
 
