@@ -1,0 +1,118 @@
+# RivasSec | DevSecOps, Kubernetes, AWS IAM - full index
+
+> DevSecOps, cloud, and platform security notes by Oliver Rivas. Threat-model-driven writing on AWS, Kubernetes, IAM, hardening, and incident retrospectives.
+
+Expanded index for language models. Canonical URL list: https://rivassec.com/sitemap.xml
+
+## Posts
+### The DevSecOps Guide: Hardening, IAM, and Incident Response
+URL: https://rivassec.com/devsecops-guide.html
+Date: 2026-08-15
+Category: DevSecOps | Tags: devsecops, security, iam, kubernetes, incident-response, tls
+Summary: A hub for the DevSecOps writing on rivassec.com: IAM blast radius, TLS, incident response, and controls that hold up in production.
+
+### When the Output Carries the Signal: Claude, SynthID-Text, and the New Detection Attack Surface
+URL: https://rivassec.com/claude-synthid-text-watermark-attack-surface.html
+Date: 2026-08-14
+Category: Artificial Intelligence | Tags: AI Security, Anthropic, Claude, SynthID, Watermarking, EU AI Act, Adversarial ML
+Summary: Claude's SynthID-Text watermark lives in token selection rather than hidden characters, reshaping detection, scrubbing, spoofing, and enterprise misuse.
+
+### IAM Blast Radius Is an Architecture Problem, Not a Policy Problem
+URL: https://rivassec.com/iam-blast-radius-architecture-problem.html
+Date: 2026-07-21
+Category: DevSecOps | Tags: aws, iam, devsecops, cloud-security, threat-modeling
+Summary: Most IAM reviews start too late, after the account structure and trust boundaries are set. Least privilege isn't fewer actions; it's smaller failure domains.
+
+### The Discovery Layer Is Broken: Hiring as an Observability Problem
+URL: https://rivassec.com/hiring-discovery-layer-broken.html
+Date: 2026-07-11
+Category: DevSecOps | Tags: careers, devsecops, hiring
+Summary: The senior engineering market has a routing failure, not a talent shortage: resumes and funnels index for keywords and discard the signal seniors depend on.
+
+### Prompt Injection Will Become a Supply Chain Evasion Technique
+URL: https://rivassec.com/prompt-injection-supply-chain-evasion.html
+Date: 2026-06-12
+Category: Threat Intelligence | Tags: ai, supply-chain, prompt-injection, evasion, defensive-architecture
+Summary: Prompt injection's threat model is older than the term. The mechanism is new, the objective is the evasion goal attackers have pursued for decades.
+
+### Bandit-Clean Pwnagotchi Plugins: How `subprocess` Goes From Risk to Routine
+URL: https://rivassec.com/pwnagotchi-plugin-bandit-hardening.html
+Date: 2026-06-10
+Category: DevSecOps | Tags: pwnagotchi, python, bandit, subprocess, security, supply-chain, hardening
+Summary: Hardening a Pwnagotchi plugin against Bandit B602/B603/B607: shutil.which() full paths, argv-list calls, input validation, and the nosec discipline.
+
+### TLS Has Three Jobs. Forget the Rest.
+URL: https://rivassec.com/tls-three-jobs.html
+Date: 2026-06-04
+Category: DevSecOps | Tags: tls, cryptography, security, infrastructure, pki, mtls, operations
+Summary: TLS gets easier when you stop walking the handshake and name what it's for. It does three jobs; anchor those and it becomes design, not memorization.
+
+### Adoption Is a Security Control: Notes from Paving a Road
+URL: https://rivassec.com/paved-road-adoption-as-control.html
+Date: 2026-05-21 (updated 2026-06-04)
+Category: DevSecOps | Tags: devsecops, platform-security, paved-road, pulumi, ci-cd, cloud-security
+Summary: A control developers route around isn't a control. Field notes on making the secure path the easy path: 40% less remediation time, 27% less pipeline latency.
+
+### The Teensy That Failed in Public: An EFI Brute Force, Hours Late
+URL: https://rivassec.com/teensy-efi-bruteforce-hours-late.html
+Date: 2026-05-21 (updated 2026-06-04)
+Category: Projects | Tags: hardware, mac, efi, teensy, security-research, hackaday, hacker-news, open-source
+Summary: In 2013 Hackaday called my MacBook EFI brute force a failure; hours later it worked. Three rate-limiting defenses, each leaking at a different seam.
+
+### IAM Roles That Fail Loud: Small Defaults, Big Difference
+URL: https://rivassec.com/iam-safe-defaults-fail-loud.html
+Date: 2026-05-12 (updated 2026-06-04)
+Category: DevSecOps | Tags: aws, iam, pulumi, python, devsecops
+Summary: A small Pulumi library that treats IAM safety as a precondition: mandatory permissions boundary, no wildcard trust, no wildcard actions, every opt-out explicit.
+
+### The Trust Decay: Why Modern Hiring Has Become an Adversarial System
+URL: https://rivassec.com/trust-decay-adversarial-hiring.html
+Date: 2026-05-04 (updated 2026-06-04)
+Category: DevSecOps | Tags: careers, devsecops
+Summary: The tech hiring pipeline has shifted from talent discovery to risk mitigation. In 2026, the engineers who get hired are the ones who are hardest to doubt.
+
+### Never Lose Connection: Multi-Phone Bluetooth Tethering for Pwnagotchi
+URL: https://rivassec.com/pwnagotchi-bluetooth-tethering.html
+Date: 2025-07-22 (updated 2026-06-04)
+Category: Projects | Tags: pwnagotchi, bluetooth, networking, python
+Summary: bt-tether-multi is a Pwnagotchi plugin for intelligent multi-phone Bluetooth tethering with automatic WAN failover and silent-disconnect recovery in the field.
+
+### Elasticsearch Snapshot Verification, Minimal Privileges
+URL: https://rivassec.com/elasticsearch-secure-snapshot-verification.html
+Date: 2025-04-20 (updated 2026-05-12)
+Category: DevSecOps | Tags: elasticsearch, prometheus, observability, iam
+Summary: Verify Elasticsearch snapshots without manage_snapshot: minimal API key, Prometheus-friendly script, and a public tools repo for hardened monitoring automation.
+
+### Hardening Kubernetes Deployments
+URL: https://rivassec.com/hardening-k8s.html
+Date: 2025-04-19 (updated 2026-05-12)
+Category: Kubernetes Security | Tags: kubernetes, hardening, devsecops
+Summary: Pod-level Kubernetes guardrails aligned with the Pod Security Standards Restricted profile: non-root, no caps, read-only FS, NetworkPolicies, SA hardening.
+
+### Taming the OOM Killer: Process Priorities on Linux
+URL: https://rivassec.com/oom-killer-process-prioritization.html
+Date: 2025-04-18 (updated 2026-05-12)
+Category: DevSecOps | Tags: linux, oom-killer, sysadmin, hardening, devsecops
+Summary: The Linux OOM Killer decides what dies under memory pressure. Protect sshd, mysqld, and other critical processes with oom_score_adj via a small script.
+
+### Catching a Nation-State Proxy: OSINT on Twitter
+URL: https://rivassec.com/venezuela-twitter-proxy-osint.html
+Date: 2025-04-17 (updated 2026-06-04)
+Category: Threat Intelligence | Tags: osint, threat-intelligence, phishing, devsecops, venezuela
+Summary: In 2012 I traced a state-aligned Twitter proxy tied to Venezuela's ruling party. OSINT lessons for spotting subtle, credential-phishing nation-state infra.
+
+### The 208.5-Day Kernel Bug: Uptime, Overflow, and Risk
+URL: https://rivassec.com/208-day-kernel-bug-lessons.html
+Date: 2025-04-16 (updated 2026-05-12)
+Category: DevSecOps | Tags: kernel, linux, bug, devsecops
+Summary: A 2012 Linux kernel bug caused CPU lockups after 208.5 days of uptime due to an integer overflow in sched_clock(). RHEL 5/6 lesson: patch and observe uptime.
+
+### The 2012 Leap Second: When Time Broke Java and the Cloud
+URL: https://rivassec.com/leap-second-chaos-2012.html
+Date: 2025-04-15 (updated 2026-05-12)
+Category: Incident Retrospectives | Tags: kernel, linux, java, ntp, sre
+Summary: The 2012 leap second broke Reddit, Yelp, Java apps, and more. A retrospective on how fragile timekeeping bit the cloud, and what SRE teams should do today.
+
+## Key pages
+- About: https://rivassec.com/pages/about.html
+- DevSecOps Guide: https://rivassec.com/devsecops-guide.html

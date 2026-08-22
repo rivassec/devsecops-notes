@@ -1,0 +1,468 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+
+  <link rel="stylesheet" type="text/css" href="https://rivassec.com/theme/stylesheet/style.min.css?v=f69932e4">
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="https://rivassec.com/theme/pygments/monokai.min.css">
+
+
+
+  <link rel="stylesheet" type="text/css" href="https://rivassec.com/static/custom.css?v=f69932e4">
+
+  <link rel="icon" href="https://rivassec.com/favicon.ico" sizes="any">
+  <link rel="icon" href="https://rivassec.com/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="https://rivassec.com/favicon-16.png" type="image/png" sizes="16x16">
+  <link rel="apple-touch-icon" href="https://rivassec.com/apple-touch-icon.png" sizes="180x180">
+
+  <!-- Chrome, Firefox OS and Opera -->
+  <meta name="theme-color" content="#222222">
+  <!-- Windows Phone -->
+  <meta name="msapplication-navbutton-color" content="#222222">
+  <!-- iOS Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!-- Microsoft EDGE -->
+  <meta name="msapplication-TileColor" content="#222222">
+
+  <link href="https://rivassec.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="RivasSec Atom Feed">
+
+  <link rel="alternate" type="application/rss+xml" title="RivasSec RSS Feed" href="https://rivassec.com/feeds/all.rss.xml">
+
+
+
+
+<link rel="canonical" href="https://rivassec.com/claude-synthid-text-watermark-attack-surface.html" />
+
+
+<meta name="author" content="Oliver Rivas" />
+<meta name="description" content="Claude&#39;s SynthID-Text watermark lives in token selection rather than hidden characters, reshaping detection, scrubbing, spoofing, and enterprise misuse." />
+<meta name="keywords" content="AI Security, Anthropic, Claude, SynthID, Watermarking, EU AI Act, Adversarial ML">
+
+
+  <meta property="og:site_name" content="RivasSec | DevSecOps, Kubernetes, AWS IAM"/>
+  <meta property="og:title" content="When the Output Carries the Signal: Claude, SynthID-Text, and the New Detection Attack Surface"/>
+  <meta property="og:description" content="Claude&#39;s SynthID-Text watermark lives in token selection rather than hidden characters, reshaping detection, scrubbing, spoofing, and enterprise misuse."/>
+  <meta property="og:locale" content="en_US"/>
+  <meta property="og:url" content="https://rivassec.com/claude-synthid-text-watermark-attack-surface.html"/>
+  <meta property="og:type" content="article"/>
+  <meta property="article:published_time" content="2026-08-14T00:00:00-07:00"/>
+  <meta property="article:modified_time" content="2026-08-14T00:00:00-07:00"/>
+  <meta property="article:author" content="Oliver Rivas"/>
+<meta property="article:section" content="Artificial Intelligence"/><meta property="article:tag" content="AI Security"/><meta property="article:tag" content="Anthropic"/><meta property="article:tag" content="Claude"/><meta property="article:tag" content="SynthID"/><meta property="article:tag" content="Watermarking"/><meta property="article:tag" content="EU AI Act"/><meta property="article:tag" content="Adversarial ML"/>  <meta property="og:image" content="https://rivassec.com/images/og/claude-synthid-text-watermark-attack-surface.png">
+  <meta property="og:image:alt" content="When the Output Carries the Signal: Claude, SynthID-Text, and the New Detection Attack Surface">
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="630"/>
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="When the Output Carries the Signal: Claude, SynthID-Text, and the New Detection Attack Surface"/>
+  <meta name="twitter:description" content="Claude&#39;s SynthID-Text watermark lives in token selection rather than hidden characters, reshaping detection, scrubbing, spoofing, and enterprise misuse."/>
+  <meta name="twitter:site" content="@rivassec"/>
+  <meta name="twitter:creator" content="@rivassec"/>
+  <meta name="twitter:image" content="https://rivassec.com/images/og/claude-synthid-text-watermark-attack-surface.png"/>
+  <meta name="twitter:image:alt" content="When the Output Carries the Signal: Claude, SynthID-Text, and the New Detection Attack Surface"/>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "name": "When the Output Carries the Signal: Claude, SynthID-Text, and the New Detection Attack Surface",
+    "headline": "When the Output Carries the Signal: Claude, SynthID-Text, and the New Detection Attack Surface",
+    "datePublished": "2026-08-14T00:00:00-07:00",
+    "dateModified": "2026-08-14T00:00:00-07:00",
+    "author": {
+      "@type": "Person",
+      "name": "Oliver Rivas",
+      "url": "https://rivassec.com/author/oliver-rivas.html"
+    },
+    "publisher": {"@id": "https://rivassec.com/#organization"},
+    "inLanguage": "en-US",
+    "isPartOf": {"@id": "https://rivassec.com/#website"},
+    "image": {"@type":"ImageObject","url":"https://rivassec.com/images/og/claude-synthid-text-watermark-attack-surface.png","width":1200,"height":630},
+    "wordCount": 4170,
+    "isAccessibleForFree": true,
+    "url": "https://rivassec.com/claude-synthid-text-watermark-attack-surface.html",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https://rivassec.com/claude-synthid-text-watermark-attack-surface.html"
+    },
+    "description": "Claude's SynthID-Text watermark lives in token selection rather than hidden characters, reshaping detection, scrubbing, spoofing, and enterprise misuse."
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type":"ListItem","position":1,"name":"Home","item":"https://rivassec.com/"},
+      {"@type":"ListItem","position":2,"name":"Artificial Intelligence","item":"https://rivassec.com/category/artificial-intelligence.html"},
+      {"@type":"ListItem","position":3,"name":"When the Output Carries the Signal: Claude, SynthID-Text, and the New Detection Attack Surface","item":"https://rivassec.com/claude-synthid-text-watermark-attack-surface.html"}    ]
+  }
+  </script>
+
+  <title>When the Output Carries the Signal: Claude, SynthID-Text, and the New Detection Attack Surface</title>
+</head>
+<body class="light-theme">
+<aside>
+  <div>
+    <a href="https://rivassec.com/">
+      <img src="images/avatar.png" alt="RivasSec" title="RivasSec">
+    </a>
+
+    <p class="site-title">
+      <a href="https://rivassec.com/">RivasSec</a>
+    </p>
+
+    <p>Infrastructure. Security. Insight.</p>
+
+
+
+    <ul class="social">
+      <li>
+        <a class="sc-github"
+           aria-label="GitHub"
+           href="https://github.com/rivassec"
+           target="_blank">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512" aria-hidden="true" focusable="false"><path fill="currentColor" d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3 .3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5 .3-6.2 2.3zm44.2-1.7c-2.9 .7-4.9 2.6-4.6 4.9 .3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3 .7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3 .3 2.9 2.3 3.9 1.6 1 3.6 .7 4.3-.7 .7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3 .7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3 .7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>        </a>
+      </li>
+    </ul>
+  </div>
+
+</aside>
+  <main>
+<nav>
+  <a href="https://rivassec.com/">Home</a>
+
+  <a href="https://rivassec.com/pages/about.html">About</a>
+  <a href="https://rivassec.com/categories.html">Categories</a>
+  <a href="https://rivassec.com/tools/iam-blast-radius/">Tools</a>
+  <a href="https://github.com/rivassec">GitHub</a>
+
+  <a href="https://rivassec.com/feeds/all.atom.xml">Atom</a>
+
+  <a href="https://rivassec.com/feeds/all.rss.xml">RSS</a>
+</nav>
+
+<article class="single" itemscope itemtype="https://schema.org/BlogPosting">
+  <header>
+      
+    <nav class="breadcrumb" aria-label="Breadcrumb"><a href="https://rivassec.com/">Home</a> &rsaquo; <a href="https://rivassec.com/category/artificial-intelligence.html">Artificial Intelligence</a> &rsaquo; <span aria-current="page">When the Output Carries the Signal: Claude, SynthID-Text, and the New Detection Attack Surface</span></nav>
+    <h1 id="claude-synthid-text-watermark-attack-surface" itemprop="headline">When the Output Carries the Signal: Claude, SynthID-Text, and the New Detection Attack Surface</h1>
+    <p>
+      Posted on <time datetime="2026-08-14T00:00:00-07:00">Fri 14 August 2026</time> in <a href="https://rivassec.com/category/artificial-intelligence.html">Artificial Intelligence</a>
+
+
+        &#8226; 17 min read
+
+        &#8226; By <a href="https://rivassec.com/author/oliver-rivas.html">Oliver Rivas</a>
+    </p>
+  </header>
+
+
+  <div itemprop="articleBody">
+    <p>Anthropic's planned watermark for future Claude models is embedded during token selection. There is no invisible Unicode string, metadata field, or marker appended after generation.</p>
+<p>The text carries the signal.</p>
+<p>Once an enterprise automates on the detector's output, the detector becomes a control plane. A provenance feature now influences access, alerts, investigations, employment decisions, and compliance workflows. It therefore inherits spoofing, evasion, oracle, key-management, supply-chain, and abuse-resistance requirements.</p>
+<p>Copying the text does not remove the signal by itself, because the signal lives in the token relationships and there is no separate marker to delete. Detection remains probabilistic, depends on a secret configuration, and says nothing by itself about who generated the text or whether its use was authorized. From a security perspective, three assets must be protected: the watermark configuration, the detector's decision boundary, and the trust that downstream systems place in its result.</p>
+<p>The watermark provides useful provenance evidence under controlled conditions. That same detection system carries bypass, forgery, side-channel, supply-chain, and operational-abuse paths. Enterprise teams should model all of them before connecting watermark detection to DLP, insider-risk, compliance, or incident-response workflows.</p>
+<p>Anthropic introduced the change to support the EU AI Act's Article 50 transparency requirements and plans to apply it globally at launch. That regulatory context explains why the capability is shipping. It does not justify treating detector output as safe to automate against.</p>
+<h2 id="how-the-signal-is-embedded">How the Signal Is Embedded</h2>
+<p>An LLM generates text one token at a time. At each position, it produces logits representing the relative likelihood of possible next tokens. Sampling controls such as temperature, top-k, and top-p reshape or narrow that candidate set before a token is selected.</p>
+<p>Claude will use a version of Google DeepMind's <a href="https://www.nature.com/articles/s41586-024-08025-4">SynthID-Text</a>. Anthropic describes the shared design principle as changing the source of randomness used to choose among plausible words. It has not disclosed Claude's exact tokenizer, key structure, thresholds, or production pipeline.</p>
+<p>Public SynthID-Text designs work roughly like this: Google's documentation describes a <a href="https://ai.google.dev/responsible/docs/safeguards/synthid">logits processor applied after top-k and top-p filtering</a>. In the public implementation, a pseudorandom function uses preceding token context and a private watermark configuration to score candidates and adjust their logits before sampling.</p>
+<div class="highlight"><pre><span></span><code>[Prompt Context] ──&gt; [LLM Base Logits] ──&gt; [Top-K / Top-P Filter]
+                                                    │
+[Private Configuration] ──&gt; [Keyed Candidate Scores] ──┼──&gt; [Logit Adjustment] ──&gt; [Sampled Token]
+                                                    │
+                                             (Signal Embedded)
+</code></pre></div>
+
+<p>This diagram represents the public SynthID-Text design. Anthropic's production configuration remains undisclosed.</p>
+<p>No single token proves anything. In the public design, the detector retokenizes a passage, reconstructs the expected keyed scores across its token sequences, and aggregates the evidence. Longer, higher-entropy passages provide more opportunities to embed a signal. Short answers, facts with one correct completion, proofreading, SQL, source code, and infrastructure templates provide fewer interchangeable choices and therefore less signal.</p>
+<p>Google's reference design supports <code>watermarked</code>, <code>not watermarked</code>, and <code>uncertain</code> states, with thresholds calibrated for different false-positive and false-negative rates. The mechanism performs statistical classification, and its output is a calibrated confidence level. It provides likelihood rather than the deterministic guarantee of a cryptographic signature.</p>
+<p>Base rates matter as much as the published error rate. A detector with a 0.1 percent false-positive rate sounds precise, yet across ten million scanned documents it produces roughly ten thousand false positives before any adversary intervenes. When genuine Claude-generated content is rare in a corpus, the positive predictive value of a single hit falls sharply, and a majority of positives can be false. Consider a detector with a 95 percent true-positive rate and a 0.1 percent false-positive rate. If 1 percent of a corpus is genuine Claude output, a positive hit carries a positive predictive value near 91 percent. If prevalence drops to 0.1 percent, the same detector's positive predictive value falls below 50 percent, so most positives are wrong even though the error rate never changed. Enterprise deployment must reason about prevalence and scanning volume together with the error rate.</p>
+<p>The narrow defensible interpretation is:</p>
+<blockquote>
+<p>The submitted text contains a statistical signal consistent with Claude having generated or substantially processed some portion of it, subject to detector calibration, passage length and language, input preprocessing, and the chosen threshold.</p>
+</blockquote>
+<p>It does not identify the user, tenant, prompt, time of generation, authorization context, or owner. It cannot separate authorized use from policy violation. Anthropic also says it cannot distinguish "Claude wrote this" from "Claude heavily edited this."</p>
+<h2 id="threat-model-assets-adversaries-and-failure-modes">Threat Model: Assets, Adversaries, and Failure Modes</h2>
+<p>Two questions matter here. The first is whether a user can remove the watermark. The larger one is which new trust decisions depend on it and how an adversary can manipulate those decisions. The system exposes multiple trust boundaries, and each of them invites a different attack.</p>
+<table>
+<thead>
+<tr>
+<th>Threat class</th>
+<th>Security asset or trust decision</th>
+<th>Resulting failure</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Removal</td>
+<td>Watermark signal</td>
+<td>Meaning-preserving edits erase enough evidence to produce a negative or uncertain result</td>
+</tr>
+<tr>
+<td>Dilution</td>
+<td>Aggregate detector score</td>
+<td>Watermarked text mixed with human or unwatermarked text falls below the decision threshold</td>
+</tr>
+<tr>
+<td>Spoofing</td>
+<td>Provider attribution</td>
+<td>Unrelated or harmful text is made to appear consistent with Claude generation</td>
+</tr>
+<tr>
+<td>Oracle probing</td>
+<td>Detector decision boundary</td>
+<td>Repeated queries converge on low-edit bypasses or manufactured positives</td>
+</tr>
+<tr>
+<td>Key/config compromise</td>
+<td>Watermark configuration</td>
+<td>Attackers gain scalable forgery, evasion, or selective watermark corruption</td>
+</tr>
+<tr>
+<td>Detector supply-chain</td>
+<td>Detector code, model, thresholds, or dependencies</td>
+<td>Detection is silently weakened, biased, disabled, or manipulated</td>
+</tr>
+<tr>
+<td>Calibration poisoning</td>
+<td>Detector thresholds and any adaptive abuse or allow-block model</td>
+<td>Crafted submissions skew tuning or feedback so the detector systematically mislabels a chosen class</td>
+</tr>
+<tr>
+<td>Policy overreach</td>
+<td>Enterprise decision workflow</td>
+<td>A probabilistic indicator causes blocking, false accusations, or disciplinary action without corroboration</td>
+</tr>
+<tr>
+<td>Privacy and retention</td>
+<td>Text submitted to the detector</td>
+<td>Sensitive content sent to a detection API is exposed, logged, or retained by a third party</td>
+</tr>
+</tbody>
+</table>
+<p>The likely adversaries range from a user running a local rewrite model to an insider with access to inference infrastructure. A mature threat model must also include compromised dependencies, malicious service operators, state actors targeting attribution systems, and external parties who never used Claude but can inject Claude-generated text into an enterprise ingestion path.</p>
+<h2 id="scrubbing-is-an-automation-problem">Scrubbing Is an Automation Problem</h2>
+<p>Copying the output preserves the watermark when the byte sequence is carried verbatim, because the token sequence is the carrier. Copy paths that reflow or convert the text, such as Markdown rendering, PDF extraction, OCR, or Unicode and whitespace normalization, can shift token boundaries and weaken the signal without any deliberate rewrite. Regenerating or perturbing that sequence changes the evidence the detector evaluates.</p>
+<p>Low-effort scrubbing paths include:</p>
+<ul>
+<li>Passing the passage through a non-watermarked local model, such as a Llama-family model served through Ollama, with instructions to preserve meaning while changing wording and sentence structure.</li>
+<li>Back-translation or chained translation through a different model.</li>
+<li>Automated synonym replacement, sentence reordering, compression, expansion, or style transfer.</li>
+<li>Character-level changes such as homoglyph substitution, zero-width characters, whitespace insertion, typos, or swaps that alter tokenization.</li>
+<li>Mixing generated passages with human or non-watermarked text to dilute the aggregate score.</li>
+</ul>
+<p>Character-level attacks deserve attention because token watermarks depend on tokenization and preceding context. Homoglyphs, zero-width insertions, and other Unicode variations can change several token IDs and disturb keyed scores beyond the visible edit. Google's public documentation recommends an <code>ngram_len</code> of 5 as a default, but the precise effect is tokenizer- and configuration-dependent, and Anthropic has not disclosed Claude's values.</p>
+<p>Research has found that <a href="https://arxiv.org/abs/2406.11239">homoglyph substitutions can degrade multiple AI-text detectors</a>, including evaluated watermarking methods. A later study found <a href="https://arxiv.org/abs/2509.09112">character-level perturbations more effective than token-level or sentence-level edits</a> across several watermark schemes under limited-query threat models.</p>
+<p>Canonicalizing Unicode and removing zero-width characters should defeat naive versions of these attacks, but normalization must occur at detector ingress before the detector tokenizes the passage. The normalization policy must also be language-aware and consistent with the detector's expected input; aggressive canonicalization can destroy meaningful distinctions in some scripts. Normalization is a necessary input-control layer with clear limits. It does nothing against a semantically equivalent rewrite produced by another model.</p>
+<p>Google acknowledges that thorough rewriting and translation can substantially reduce detector confidence. ETH Zurich researchers found that a default SynthID-Text configuration was <a href="https://www.sri.inf.ethz.ch/blog/probingsynthid">comparatively easy to scrub through paraphrasing</a>, reporting greater than 90 percent success in their specific setup. These results do not establish that Anthropic's unreleased configuration has the same parameters or performance. They establish that meaning-preserving transformation is a practical attack class.</p>
+<p>The strategic implication is that watermark survival depends on how much control the provider retains over the text's transformation path. Once an untrusted system can regenerate the semantics, token-level provenance becomes fragile.</p>
+<p>The same adversarial economics that make scrubbing cheap will normalize other model-level evasions. That trajectory is what turns <a href="prompt-injection-supply-chain-evasion.html">prompt injection into a supply-chain evasion technique</a>: once an evasion is automatable, it becomes routine tooling.</p>
+<h2 id="the-detector-as-a-side-channel-oracle">The Detector as a Side-Channel Oracle</h2>
+<p>Anthropic says it will expose a watermark detection API, with implementation details still under development. That interface creates a black-box optimization surface.</p>
+<p>Let <code>D(x)</code> be the detector's output for text <code>x</code>. An attacker wants to find a modified passage <code>x'</code> that minimizes the watermark result while keeping semantic similarity and readability above acceptable thresholds:</p>
+<div class="highlight"><pre><span></span><code>minimize:    D(x&#39;)
+subject to:  semantic_similarity(x, x&#39;) &gt;= tau
+             readability(x&#39;) &gt;= rho
+             edit_distance(x, x&#39;) &lt;= epsilon
+</code></pre></div>
+
+<p>If the API returns a confidence value, that score becomes a fitness function. The attacker can generate candidate rewrites, retain the changes that reduce confidence, and repeat. Gradient access is unnecessary. Genetic algorithms, evolutionary search, bandit optimization, or reinforcement-learning policies can use the detector's response as feedback.</p>
+<p>Recent ACL research demonstrates the shape of this attack. <a href="https://aclanthology.org/2026.findings-acl.459/">TSAPA</a> formulates watermark removal as a constrained multi-objective optimization problem and uses a genetic algorithm to balance erasure, semantic fidelity, naturalness, and lexical diversity. Other work shows that a lightweight reference detector trained from a limited query budget can guide later perturbations.</p>
+<p>A binary endpoint still leaks information. The attacker can mutate a candidate until <code>D(x')</code> crosses from <code>1</code> to <code>0</code>, then minimize the edits while staying on the unwatermarked side of the boundary. A ternary <code>uncertain</code> state is safer for downstream interpretation but still exposes boundary information if repeated near-duplicate queries are allowed.</p>
+<p>Granular confidence scores reduce the query cost because every response reveals direction as well as outcome. Stable thresholds, anonymous access, high quotas, and token-level explanations would further amplify the side channel.</p>
+<p>This section is a threat model for Anthropic's forthcoming API. It describes how such an interface could be attacked, and the actual risk will depend on response granularity, threshold stability, authentication, rate limits, similarity clustering, abuse monitoring, and key segmentation.</p>
+<p>Calibration poisoning targets any part of the detection pipeline that adapts from prior inputs rather than the query interface itself. The exposure lives in the adaptive layers. A static vendor detector faces little direct risk, while provider-side threshold tuning, an abuse model, or an enterprise allow-and-block policy that learns from a stream of submissions can be steered. An adversary who seeds crafted text over time can shift the decision boundary, suppress a target class of positives, or manufacture false positives against a chosen source. Any feedback loop that tunes on unauthenticated input becomes part of the attack surface and should be trained only on curated, provenance-bound data.</p>
+<h2 id="spoofing-and-watermark-stealing">Spoofing and Watermark Stealing</h2>
+<p>Evasion is one attacker goal. Spoofing is its reverse: an adversary may want unrelated text to test positive.</p>
+<p>Successful spoofing could associate Claude with fraudulent instructions, disinformation, malware documentation, fabricated evidence, or politically sensitive material. The impact rises if employers, platforms, regulators, or courts treat detector output as authoritative.</p>
+<p>At ICML 2024, researchers demonstrated that <a href="https://proceedings.mlr.press/v235/jovanovic24a.html">black-box watermark stealing</a> could approximately learn watermark behavior through repeated model queries, supporting both spoofing and more effective scrubbing against evaluated schemes. Follow-up work found SynthID-Text harder to spoof than earlier approaches in its experimental setup, but increased query budgets improved attacker performance.</p>
+<p>The security objective must therefore include unforgeability alongside detectability and resistance to removal. A detector with a low false-positive rate under benign evaluation can still be unsafe if an adaptive adversary can intentionally manufacture positives.</p>
+<h2 id="radioactivity-when-the-signal-survives-training">Radioactivity: When the Signal Survives Training</h2>
+<p>A watermark placed at generation time can outlive the text that carried it. Research on watermark radioactivity shows that training a model on watermarked outputs leaves a detectable statistical trace in the resulting model, which then emits weakly watermarked text of its own (<a href="https://arxiv.org/abs/2402.14904">Sander et al., Watermarking Makes Language Models Radioactive</a>). The signal propagates from teacher to student even when the original training passages are unavailable to the examiner.</p>
+<p>This cuts in two directions.</p>
+<p>As a provenance tool, radioactivity is useful. A provider that suspects a competitor distilled its model can look for the watermark's imprint in the competitor's outputs and gather evidence of unauthorized training on protected generations. Detection remains feasible at modest watermarked-data fractions, so a distillation attempt does not need to copy a large corpus to become detectable.</p>
+<p>As a contamination risk, radioactivity is a problem the whole ecosystem inherits. Claude-watermarked text will spread across the public web, and general-purpose models trained on scraped data will absorb some of it. A model that never had a licensing relationship with Anthropic can therefore become weakly radioactive and produce outputs that a detector might flag. A positive result may then reflect model lineage rather than a person choosing to use Claude for the task under investigation.</p>
+<p>Distillation also degrades the signal in ways that are hard to predict. A student model trained through temperature sampling, aggressive filtering, or reinforcement learning may inherit an attenuated, shifted, or partially erased version of the teacher's watermark. The examiner sees a weaker or ambiguous signal without a reliable way to separate deliberate use from inherited contamination.</p>
+<p>The evidentiary consequence is direct. A detector hit can indicate several different histories: direct generation, heavy editing of Claude output, retrieval of watermarked source, or training lineage that passed the signal through one or more models. An investigation that treats a positive as "this person used Claude here" ignores every path except the first.</p>
+<h2 id="attribution-in-rag-and-agentic-pipelines">Attribution in RAG and Agentic Pipelines</h2>
+<p>Modern systems rarely present a single model's raw output. Retrieval-augmented generation pulls in source documents, agents call tools and other models, memory and summarization compress prior turns, and orchestration layers stitch the pieces together. The final artifact is often a blend of user-authored text, retrieved passages, tool results, and tokens generated by more than one model.</p>
+<p>A watermark detector evaluates that blend as one string. A positive result tells you a watermarked span exists somewhere in the artifact's lineage. It does not tell you which stage produced it, which model held the key, or whether the watermarked span was authored, retrieved, or injected.</p>
+<p>Several pipeline behaviors make attribution harder:</p>
+<ul>
+<li>Retrieval can insert watermarked Claude text into an output that a different model assembled, so the assembling system reads as Claude-influenced even though Claude never ran in that request.</li>
+<li>Summarization and compression of a watermarked source may preserve, weaken, or destroy the signal depending on how much of the original token sequence survives.</li>
+<li>Memory compaction and multi-turn context let a watermarked span persist across a session and resurface in later outputs, spreading a single generation's signal across many artifacts.</li>
+<li>Agentic systems that call Claude as one tool among many produce outputs where only a fraction of the tokens carry signal, which dilutes the aggregate score and blurs which component was responsible.</li>
+<li>Prompt injection turns this into an attack. An adversary who seeds watermarked text into a retrieval corpus, a tool response, or a scraped page can force a downstream positive on demand, which connects directly to the watermark-pollution problem described later.</li>
+</ul>
+<p>For enterprise detection, the practical rule is that a hit describes the composed artifact and cannot single out one actor. Attribution has to account for pipeline topology and custody at each hop: what was retrieved, what each agent generated, which model served each step, and where the text entered the system. Without that lineage, a positive on a RAG or agent output is a statement about the corpus, and it reads as a statement about a person only by accident.</p>
+<h2 id="key-seed-and-inference-pipeline-compromise">Key, Seed, and Inference-Pipeline Compromise</h2>
+<p>Google's public SynthID configuration uses a list of integer keys, an n-gram length, a sampling-table seed, and related parameters. These are not necessarily cryptographic signing keys, but their operational security role is comparable: Google warns that a disclosed configuration may make the watermark trivially reproducible. The analogy is operational rather than cryptographic. A signature is deterministic and publicly verifiable, while a watermark configuration behaves more like a shared secret whose disclosure both breaks detection integrity and enables forgery, though forging a chosen passage may still require model or logit access and a search budget.</p>
+<p>Unlike an offline signing key, the watermark configuration must be available in the model-serving path at generation time. That creates practical extraction and manipulation opportunities:</p>
+<ul>
+<li>An insider or compromised workload reads the configuration from process memory, environment variables, mounted files, or an adjacent service.</li>
+<li>CI/CD logs, crash dumps, profiling data, support bundles, or observability payloads capture seed material.</li>
+<li>A privileged container, debug endpoint, sidecar, or node-level agent observes the post-processing layer or modifies it in memory.</li>
+<li>A compromised inference dependency changes the PRNG implementation, disables repeated-context masking, or selectively bypasses watermarking.</li>
+<li>An attacker compromises the detector service and uses its access to recover configuration or submit unmetered adaptive queries.</li>
+<li>A state actor steals historical keys, then forges or disputes attribution for content generated during that key epoch.</li>
+</ul>
+<p>The configuration should be governed like high-impact signing material even if the implementation cannot place every token decision behind an HSM call. Minimum controls include workload-identity-based retrieval, envelope encryption, memory-only injection, strict separation between generation and detection services, locked-down debugging, short key epochs, versioned rotation, immutable audit records, and tested compromise recovery.</p>
+<p>Rotation also creates an evidentiary requirement. A future detector must know which configuration and threshold apply to a given model generation. If old keys are destroyed, historical verification may become impossible. If they are retained indefinitely, the compromise window expands.</p>
+<blockquote>
+<p><strong>Key retention under two models.</strong> Public-key signatures can preserve historical verification through certificates, revocation records, and trusted timestamps after the private signing key is retired. SynthID-style detection stays dependent on secret watermark configurations. Keeping every historical epoch online therefore expands the material that could enable forgery or more efficient evasion if compromised. A safer design keeps only active and recent epochs online and moves older configurations to encrypted, dual-control escrow for isolated historical verification.</p>
+</blockquote>
+<h2 id="what-this-means-for-enterprise-devsecops-and-incident-response">What This Means for Enterprise DevSecOps and Incident Response</h2>
+<p>Most enterprises will consume watermark results rather than operate the watermark. Their largest risk is turning a probabilistic indicator into a deterministic control.</p>
+<h3 id="do-not-do-this">Do Not Do This</h3>
+<ul>
+<li>Do not block employees or content solely on detector output.</li>
+<li>Do not treat a detector hit as proof of authorship, misconduct, or policy violation.</li>
+<li>Do not expose confidence scores or token-level explanations interactively to untrusted users.</li>
+<li>Do not centralize raw sensitive text in a third-party detector without a data-flow, retention, residency, and access-control review. A detection API often receives the exact text DLP already considers sensitive, which turns detection into a "send suspect data to a third party" pattern unless the contract and controls forbid it.</li>
+<li>Do not assume paraphrasing, translation, summarization, or format conversion preserves the signal.</li>
+</ul>
+<h3 id="dlp-and-casb-policy">DLP and CASB policy</h3>
+<p>Do not configure DLP, CASB, secure web gateway, email, or source-control controls to block content solely because a watermark detector returns positive. A Claude watermark indicates likely model involvement at some point. It does not show that regulated data was submitted to Claude, that the user violated policy, or that the detected content came from the employee being investigated.</p>
+<p>A negative result is also unsafe to rely on, because it does not establish that AI was absent. Constrained outputs such as SQL, shell commands, concise functions, Kubernetes manifests, and IaC templates contain less sampling freedom and may carry a weaker signal. A local rewrite or translation layer may remove what remains. An attacker can even weaponize watermark absence as exculpatory theater: a user or vendor scrubs the content and then claims non-use.</p>
+<p>Use watermark detection as enrichment alongside egress telemetry, sanctioned-AI gateway logs, browser and endpoint events, SaaS audit records, data-classification findings, and identity context.</p>
+<h3 id="watermark-pollution-and-alert-denial-of-service">Watermark pollution and alert denial of service</h3>
+<p>Any enterprise workflow that automatically escalates watermarked text can be intentionally triggered. An external actor could place Claude-generated text in support tickets, inbound email, pull-request comments, documents, threat-intelligence feeds, scraped webpages, or prompt-injection payloads. A downstream scanner may then create a compliance case or insider-risk alert against the employee or system that merely received or processed it.</p>
+<p>This is watermark pollution: attacker-controlled provenance contaminates a trusted decision path. At scale, it becomes an alert-denial-of-service technique that consumes analyst time, blocks ingestion, or forces business processes into manual review.</p>
+<p>Controls should bind the detector result to source and custody. Distinguish authored, pasted, received, retrieved, and transformed content. Rate-limit alert creation, correlate duplicate passages, and avoid assigning attribution based solely on where the text was found.</p>
+<h3 id="dfir-and-evidentiary-handling">DFIR and evidentiary handling</h3>
+<p>In an investigation, preserve the original bytes before normalization or editing. Record a hash of the submitted text, detector and model versions, threshold, result state, timestamp, language, token count, and any preprocessing performed. Retain the <code>uncertain</code> result rather than collapsing it into a Boolean field. The result should be reproducible later from the preserved original bytes with the recorded detector configuration; if it cannot be reproduced, its evidentiary value drops sharply.</p>
+<p>A positive detection can support the hypothesis that Claude interacted with the content. It does not establish intent, execution context, user identity, policy violation, or chain of custody. Corroboration should come from provider audit logs where available, enterprise proxy or AI gateway records, endpoint telemetry, identity events, document history, and witness context.</p>
+<p>Anyone presenting this in a legal or disciplinary setting should expect the same scrutiny applied to other forensic classifiers: known error rates, threshold disclosure, reproducibility, operator bias, peer-reviewed validity, and adversarial robustness. Security teams should prohibit detector scores from appearing as a standalone "AI probability" figure in executive or legal reporting. The wording should state exactly what the detector measured and list the known limitations.</p>
+<h2 id="strategic-takeaways">Strategic Takeaways</h2>
+<p>For model providers:</p>
+<ol>
+<li>Treat the detector as a hostile public interface and red-team it with adaptive, near-duplicate queries.</li>
+<li>Prefer coarse states over raw confidence and never expose token-level contribution scores.</li>
+<li>Normalize inputs, enforce minimum evidence requirements, authenticate callers, and cluster similar submissions across accounts and networks.</li>
+<li>Separate generation, detection, and key-management duties; version every key, detector, threshold, and model combination.</li>
+<li>Measure targeted false-positive and false-negative rates across languages, lengths, code, factual text, human-AI mixtures, and adversarial transformations.</li>
+<li>Test spoofing and pollution scenarios alongside watermark removal.</li>
+</ol>
+<p>For enterprise security teams:</p>
+<ol>
+<li>Treat watermark detection as low-fidelity provenance metadata, and keep it out of any standalone enforcement path.</li>
+<li>Keep it out of inline blocking paths until false-positive, false-negative, evasion, and pollution behavior are measured in your environment.</li>
+<li>Correlate results with identity, egress, endpoint, SaaS, and content-classification telemetry.</li>
+<li>Update incident-response procedures to preserve detector inputs, versions, thresholds, and uncertainty.</li>
+<li>Threat-model inbound watermarked content as attacker-controlled data capable of triggering internal controls.</li>
+<li>Establish human review and an appeal path before using detection in employment, academic, legal, or disciplinary decisions.</li>
+</ol>
+<h2 id="the-signal-and-the-systems-around-it">The Signal and the Systems Around It</h2>
+<p>SynthID-Text is materially stronger than invisible Unicode or removable metadata for plain text. It embeds a probabilistic, content-carried signal during generation and can survive transport and light editing without visible artifacts. Content Credentials such as C2PA offer a different guarantee: explicit, signed provenance that is strong where a format, signing chain, and custody are preserved, and absent once content is retyped or copied as plain text. The two approaches cover different failure modes and are best deployed together.</p>
+<p>The reliability of watermarking ends where its threat model ends. Semantic regeneration can erase the token pattern. Adaptive access can turn the detector into an optimization oracle. Configuration compromise can enable evasion or forgery. Enterprise automation can transform a weak provenance indicator into a high-impact false accusation or an attacker-controlled denial-of-service condition.</p>
+<p>The useful security objective is defensible provenance under documented conditions. Achieving it requires watermarking, explicit disclosure, content credentials where formats support them, provider and enterprise audit trails, calibrated uncertainty, and human review.</p>
+<p>The text carries the signal. The surrounding systems determine whether that signal becomes evidence, noise, or an attack primitive.</p>
+<h2 id="sources">Sources</h2>
+<ul>
+<li>Anthropic, <a href="https://www.anthropic.com/news/claude-text-watermark">How Claude's text watermark works</a>, August 14, 2026.</li>
+<li>European Commission, <a href="https://digital-strategy.ec.europa.eu/en/policies/code-practice-ai-generated-content">Code of Practice on Transparency of AI-Generated Content</a>, updated July 31, 2026.</li>
+<li>European Commission, <a href="https://digital-strategy.ec.europa.eu/en/policies/guidelines-ai-transparency-obligations">Guidelines on transparency obligations for providers and deployers of certain AI systems</a>, August 6, 2026.</li>
+<li>Sumanth Dathathri et al., <a href="https://www.nature.com/articles/s41586-024-08025-4">Scalable watermarking for identifying large language model outputs</a>, <em>Nature</em>, 2024.</li>
+<li>Google AI for Developers, <a href="https://ai.google.dev/responsible/docs/safeguards/synthid">SynthID: Tools for watermarking and detecting LLM-generated text</a>.</li>
+<li>Google DeepMind, <a href="https://github.com/google-deepmind/synthid-text">SynthID-Text reference implementation</a>.</li>
+<li>Nikola Jovanovic, Robin Staab, and Martin Vechev, <a href="https://proceedings.mlr.press/v235/jovanovic24a.html">Watermark Stealing in Large Language Models</a>, ICML 2024.</li>
+<li>Tom Sander, Pierre Fernandez, Alain Durmus, Matthijs Douze, and Teddy Furon, <a href="https://arxiv.org/abs/2402.14904">Watermarking Makes Language Models Radioactive</a>, NeurIPS 2024.</li>
+<li>Nikola Jovanovic, Thibaud Gloaguen, and Martin Vechev, <a href="https://www.sri.inf.ethz.ch/blog/probingsynthid">Probing Google DeepMind's SynthID-Text Watermark</a>, December 20, 2024.</li>
+<li>Aldan Creo and Shushanta Pudasaini, <a href="https://arxiv.org/abs/2406.11239">Evading AI-Generated Content Detectors Using Homoglyphs</a>, 2024.</li>
+<li>Zhaoxi Zhang et al., <a href="https://arxiv.org/abs/2509.09112">Character-Level Perturbations Disrupt LLM Watermarks</a>, NDSS 2026.</li>
+<li>Yusheng Zhao et al., <a href="https://aclanthology.org/2026.findings-acl.459/">The Mark Fades: Adaptive Evolutionary Paraphrase-Based Attack Against LLM Watermarks</a>, Findings of ACL 2026.</li>
+</ul>
+  </div>
+</article>
+
+<div class="tag-cloud">
+  <p>
+    <a href="https://rivassec.com/tag/ai-security.html">AI Security</a>
+    <a href="https://rivassec.com/tag/anthropic.html">Anthropic</a>
+    <a href="https://rivassec.com/tag/claude.html">Claude</a>
+    <a href="https://rivassec.com/tag/synthid.html">SynthID</a>
+    <a href="https://rivassec.com/tag/watermarking.html">Watermarking</a>
+    <a href="https://rivassec.com/tag/eu-ai-act.html">EU AI Act</a>
+    <a href="https://rivassec.com/tag/adversarial-ml.html">Adversarial ML</a>
+  </p>
+</div>
+
+
+  <div class="neighbors">
+    <a class="btn float-left" href="https://rivassec.com/iam-blast-radius-architecture-problem.html" title="IAM Blast Radius Is an Architecture Problem, Not a Policy Problem">
+      <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512" aria-hidden="true" focusable="false"><path fill="currentColor" d="M192 448c-8.188 0-16.38-3.125-22.62-9.375l-160-160c-12.5-12.5-12.5-32.75 0-45.25l160-160c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25L77.25 256l137.4 137.4c12.5 12.5 12.5 32.75 0 45.25C208.4 444.9 200.2 448 192 448z"/></svg>
+      Previous Post
+    </a>
+    <a class="btn float-right" href="https://rivassec.com/devsecops-guide.html" title="The DevSecOps Guide: Hardening, IAM, and Incident Response">
+      Next Post
+      <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512" aria-hidden="true" focusable="false"><path fill="currentColor" d="M64 448c-8.188 0-16.38-3.125-22.62-9.375c-12.5-12.5-12.5-32.75 0-45.25L178.8 256L41.38 118.6c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0l160 160c12.5 12.5 12.5 32.75 0 45.25l-160 160C80.38 444.9 72.19 448 64 448z"/></svg>
+    </a>
+  </div>
+
+
+
+<footer>
+    <p class="footer-feeds">
+      Subscribe:
+      <a href="https://rivassec.com/feeds/all.atom.xml" rel="alternate" type="application/atom+xml">Atom</a>
+        &middot; <a href="https://rivassec.com/feeds/all.rss.xml" rel="alternate" type="application/rss+xml">RSS</a>
+    </p>
+<p>&copy;  RivasSec</p>
+<p class="footer-meta">
+  <a href="https://rivassec.com/accessibility/">Accessibility</a>
+</p>
+<p>
+Built with <a href="https://getpelican.com" target="_blank" rel="noopener">Pelican</a> using <a href="https://github.com/alexandrevicenzi/Flex" target="_blank" rel="noopener">Flex</a> theme
+</p></footer>  </main>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://rivassec.com/#website",
+      "name": "RivasSec | DevSecOps, Kubernetes, AWS IAM",
+      "url": "https://rivassec.com",
+      "inLanguage": "en-US",
+      "description": "Field notes on infrastructure security, cloud hardening, Kubernetes, IAM, and OSINT by RivasSec.",
+      "image": "https://rivassec.com/images/og-default.png",
+      "publisher": {"@id": "https://rivassec.com/#organization"},
+      "author": {
+        "@type": "Person",
+        "@id": "https://rivassec.com/#person",
+        "name": "Oliver Rivas",
+        "url": "https://rivassec.com",
+        "sameAs": ["https://github.com/rivassec"],
+        "jobTitle": "Security Engineer",
+        "knowsAbout": ["DevSecOps", "Kubernetes security", "AWS IAM", "AI security", "OSINT"]
+      }
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://rivassec.com/#organization",
+      "name": "RivasSec | DevSecOps, Kubernetes, AWS IAM",
+      "url": "https://rivassec.com",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://rivassec.com/images/avatar.png"
+      }
+    }
+  ]
+}
+</script>
+  <script defer src="https://rivassec.com/static/copy-code.js?v=f69932e4"></script>
+
+</body>
+</html>
