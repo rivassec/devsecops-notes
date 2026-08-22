@@ -124,6 +124,9 @@ SITEMAP = {
     'exclude': ['tag/', 'tags.html', 'archives.html'],
 }
 STATIC_PATHS.append('extra')
+# Client-side tools ship verbatim: content/tools/ -> /tools/ (no remap, no
+# Pelican processing). See tools/iam-blast-radius/docs/DEPLOY.md.
+STATIC_PATHS.append('tools')
 EXTRA_PATH_METADATA['extra/robots.txt'] = {'path': 'robots.txt'}
 # Favicons ship at the site root so /favicon.ico resolves on every request.
 EXTRA_PATH_METADATA['extra/favicon.ico'] = {'path': 'favicon.ico'}
