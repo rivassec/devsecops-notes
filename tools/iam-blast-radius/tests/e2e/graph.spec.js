@@ -49,7 +49,11 @@ test('renders the attack path as an inline SVG with styled edges', async ({ page
 test('clicking an edge opens the evidence panel with statement + certainty', async ({ page }) => {
   await page.fill('#policy-input', fixture('pass-role/passrole-lambda-positive.json'));
   await page.click('#analyze-btn');
-  await page.locator('#graph .graph-edge').first().click();
+  // The edge is a <g role="button"> whose child <text> label overlays the
+  // center, tripping Playwright's "subtree intercepts pointer events" guard.
+  // The <g> is the real focusable button (a click bubbles to it in a real
+  // browser), so force past the actionability intercept check.
+  await page.locator('#graph .graph-edge').first().click({ force: true });
 
   const panel = page.locator('#evidence');
   await expect(panel).toContainText('Certainty');
@@ -81,7 +85,11 @@ test('SVG/HTML payloads in policy fields render inert in the graph', async ({ pa
   await expect(page.locator('#graph svg')).toHaveCount(1);
 
   // Inspecting the edge keeps the payload inert in the evidence panel too.
-  await page.locator('#graph .graph-edge').first().click();
+  // The edge is a <g role="button"> whose child <text> label overlays the
+  // center, tripping Playwright's "subtree intercepts pointer events" guard.
+  // The <g> is the real focusable button (a click bubbles to it in a real
+  // browser), so force past the actionability intercept check.
+  await page.locator('#graph .graph-edge').first().click({ force: true });
   await expect(page.locator('#evidence script')).toHaveCount(0);
   await expect(page.locator('#evidence img')).toHaveCount(0);
 });
@@ -118,7 +126,11 @@ test('zero network egress during graph render + edge inspection', async ({ page 
   });
   await page.fill('#policy-input', fixture('graph/svg-injection-inert.json'));
   await page.click('#analyze-btn');
-  await page.locator('#graph .graph-edge').first().click();
+  // The edge is a <g role="button"> whose child <text> label overlays the
+  // center, tripping Playwright's "subtree intercepts pointer events" guard.
+  // The <g> is the real focusable button (a click bubbles to it in a real
+  // browser), so force past the actionability intercept check.
+  await page.locator('#graph .graph-edge').first().click({ force: true });
   await expect(page.locator('#evidence')).toContainText('Certainty');
   expect(external, `unexpected network egress: ${external.join(', ')}`).toEqual([]);
 });
