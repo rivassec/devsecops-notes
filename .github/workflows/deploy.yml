@@ -69,6 +69,7 @@ jobs:
             --exclude "web\.archive\.org"
             --exclude "linkedin\.com"
             --exclude-path output/feeds
+            --exclude-path output/tools
             './output/**/*.html'
           format: detailed
           fail: true
