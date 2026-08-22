@@ -135,6 +135,10 @@ EXTRA_PATH_METADATA['extra/favicon-32.png'] = {'path': 'favicon-32.png'}
 EXTRA_PATH_METADATA['extra/apple-touch-icon.png'] = {'path': 'apple-touch-icon.png'}
 # Legacy slug redirect: PR #15 renamed bt-tether-multi -> pwnagotchi-bluetooth-tethering.
 EXTRA_PATH_METADATA['extra/bt-tether-multi.html'] = {'path': 'bt-tether-multi.html'}
+# The tool's index.html is a static .html; without an explicit metadata entry
+# Pelican's article reader claims it (dateless -> dropped from output), the way
+# bt-tether above needs one too. The sibling .js/.css copy fine via STATIC_PATHS.
+EXTRA_PATH_METADATA['tools/iam-blast-radius/index.html'] = {'path': 'tools/iam-blast-radius/index.html'}
 EXTRA_PATH_METADATA['extra/security.txt'] = {'path': '.well-known/security.txt'}
 
 # Social widget
@@ -174,6 +178,7 @@ TAG_CLOUD_MAX_ITEMS = 10
 MENUITEMS = [
     ('About', 'https://rivassec.com/pages/about.html'),
     ('Categories', 'https://rivassec.com/categories.html'),
+    ('Tools', 'https://rivassec.com/tools/iam-blast-radius/'),
     ('GitHub', 'https://github.com/rivassec'),
 ]
 SUMMARY_MAX_LENGTH = 350  # words
