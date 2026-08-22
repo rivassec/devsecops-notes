@@ -135,10 +135,13 @@ EXTRA_PATH_METADATA['extra/favicon-32.png'] = {'path': 'favicon-32.png'}
 EXTRA_PATH_METADATA['extra/apple-touch-icon.png'] = {'path': 'apple-touch-icon.png'}
 # Legacy slug redirect: PR #15 renamed bt-tether-multi -> pwnagotchi-bluetooth-tethering.
 EXTRA_PATH_METADATA['extra/bt-tether-multi.html'] = {'path': 'bt-tether-multi.html'}
-# The tool's index.html is a static .html; without an explicit metadata entry
-# Pelican's article reader claims it (dateless -> dropped from output), the way
-# bt-tether above needs one too. The sibling .js/.css copy fine via STATIC_PATHS.
 EXTRA_PATH_METADATA['tools/iam-blast-radius/index.html'] = {'path': 'tools/iam-blast-radius/index.html'}
+# Serve raw HTML files (the tool's index.html, the bt-tether redirect stub) as
+# static assets. Without this, Pelican's HTML reader claims a dateless static
+# .html and skips it ("could not find information about 'date'") so it never
+# reaches output. Both content .html files are static (no Pelican metadata),
+# verified with an isolated build. See tools/iam-blast-radius/docs/DEPLOY.md.
+READERS = {'html': None}
 EXTRA_PATH_METADATA['extra/security.txt'] = {'path': '.well-known/security.txt'}
 
 # Social widget
