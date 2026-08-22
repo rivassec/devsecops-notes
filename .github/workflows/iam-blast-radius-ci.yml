@@ -1,0 +1,87 @@
+name: IAM Blast Radius CI
+
+# Deterministic gates + browser acceptance for the client-side IAM analyzer.
+# The tool ships verbatim (no build step); CI proves the shipped files are
+# safe and correct.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "content/tools/iam-blast-radius/**"
+      - "tools/iam-blast-radius/**"
+      - ".github/workflows/iam-blast-radius-ci.yml"
+  pull_request:
+    paths:
+      - "content/tools/iam-blast-radius/**"
+      - "tools/iam-blast-radius/**"
+      - ".github/workflows/iam-blast-radius-ci.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: tools/iam-blast-radius
+
+jobs:
+  unit-and-gates:
+    name: node --test + security gates
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 1
+
+      - name: Set up Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+
+      - name: Unit tests (deterministic engine + UI orchestration)
+        run: node --test "tests/**/*.test.js"
+
+      - name: Gate - no network API in shipped JS
+        run: npm run --silent gate:no-network
+
+      - name: Gate - no unsafe DOM / eval in shipped JS
+        run: npm run --silent gate:no-unsafe-dom
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.13"
+
+      - name: Gate - CSP audit (no inline style/script/on-handlers)
+        working-directory: .
+        run: python3 scripts/csp_audit.py content/tools/iam-blast-radius
+
+  e2e:
+    name: Playwright browser acceptance
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 1
+
+      - name: Set up Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.13"
+
+      - name: Install Playwright (CI-only dev tool; not a shipped dependency)
+        run: npm install --no-save @playwright/test@1.55.0
+
+      - name: Install browsers
+        run: npx playwright install --with-deps chromium firefox webkit
+
+      - name: Run e2e (Chromium/Firefox/WebKit)
+        run: npx playwright test
