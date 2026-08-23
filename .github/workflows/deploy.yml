@@ -47,6 +47,24 @@ jobs:
       - name: Add CNAME file
         run: echo rivassec.com > output/CNAME
 
+      - name: Add static tool to sitemap
+        # The IAM Blast Radius tool ships as a static file (STATIC_PATHS), so
+        # Pelican's sitemap plugin does not emit it. Inject its canonical URL
+        # after the build. Idempotent. The page is index,follow, so the
+        # canonical/noindex guard is satisfied.
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('output/sitemap.xml')
+          s = p.read_text(encoding='utf-8')
+          url = '<url><loc>https://rivassec.com/tools/iam-blast-radius/</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>'
+          if 'tools/iam-blast-radius' not in s and '</urlset>' in s:
+              p.write_text(s.replace('</urlset>', url + '\n</urlset>'), encoding='utf-8')
+              print('sitemap: tool URL injected')
+          else:
+              print('sitemap: tool URL already present or no </urlset>')
+          PY
+
       - name: Enforce strict CSP preconditions (no inline styles/scripts)
         # Keeps style-src 'self' / script-src 'self' safe: if a template
         # change ever introduces an inline style="..." or <style> block
