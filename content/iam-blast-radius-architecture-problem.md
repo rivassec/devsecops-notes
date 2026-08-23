@@ -56,6 +56,8 @@ The better questions are:
 
 Those questions move IAM reviews out of the policy document and back into the architecture.
 
+I turned those questions into a browser tool: [IAM Blast Radius analyzer](/tools/iam-blast-radius/) checks a pasted IAM policy for escalation paths, role-assumption reach, and data-access exposure locally, grading each finding by certainty - potential blast radius, not effective permissions.
+
 ---
 
 ## Attackers experience the environment as a graph

@@ -68,6 +68,7 @@ jobs:
             --retry-wait-time 2
             --exclude "web\.archive\.org"
             --exclude "linkedin\.com"
+            --exclude "rivassec\.com/tools/iam-blast-radius"
             --exclude-path output/feeds
             --exclude-path output/tools
             './output/**/*.html'

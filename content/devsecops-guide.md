@@ -20,6 +20,7 @@ fires against your own tooling, or the 208th day of uptime.
 
 - [IAM Blast Radius Is an Architecture Problem, Not a Policy Problem](iam-blast-radius-architecture-problem.html)
 - [IAM Roles That Fail Loud: Small Defaults, Big Difference](iam-safe-defaults-fail-loud.html)
+- Interactive: [IAM Blast Radius analyzer](/tools/iam-blast-radius/) - paste an IAM policy, see its potential blast radius in your browser
 
 ## Cryptography and Transport
 
