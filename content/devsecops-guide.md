@@ -21,6 +21,7 @@ fires against your own tooling, or the 208th day of uptime.
 - [IAM Blast Radius Is an Architecture Problem, Not a Policy Problem](iam-blast-radius-architecture-problem.html)
 - [IAM Roles That Fail Loud: Small Defaults, Big Difference](iam-safe-defaults-fail-loud.html)
 - Interactive: [IAM Blast Radius analyzer](/tools/iam-blast-radius/) - paste an IAM policy, see its potential blast radius in your browser
+- [Testing an IAM Analyzer Against Its Own Claims](testing-an-iam-analyzer-against-its-own-claims.html)
 
 ## Cryptography and Transport
 
@@ -44,3 +45,4 @@ fires against your own tooling, or the 208th day of uptime.
 - [When the Output Carries the Signal: Claude, SynthID-Text, and the New Detection Attack Surface](claude-synthid-text-watermark-attack-surface.html)
 - [Prompt Injection Will Become a Supply Chain Evasion Technique](prompt-injection-supply-chain-evasion.html)
 - [Catching a Nation-State Proxy: OSINT on Twitter](venezuela-twitter-proxy-osint.html)
+- [When Telemetry Turns Predatory: A DevSecOps Look at Digital Repression in Venezuela](telemetry-turns-predatory.html)
