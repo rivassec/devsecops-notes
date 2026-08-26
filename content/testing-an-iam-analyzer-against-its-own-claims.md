@@ -5,7 +5,7 @@ Category: DevSecOps
 Tags: aws, iam, security-tooling, testing, devsecops
 Slug: testing-an-iam-analyzer-against-its-own-claims
 Og_image: images/og/testing-an-iam-analyzer-against-its-own-claims.png
-Summary: I built a client-side IAM blast-radius analyzer, then validated it against 100 adversarial cases I did not write. The useful results were two places a green build hid a wrong answer, and the same principle fixed both.
+Summary: I validated my client-side IAM blast-radius analyzer against 100 adversarial cases I did not write. Twice, a green build hid a wrong answer.
 Cover: images/covers/testing-an-iam-analyzer-against-its-own-claims.png
 
 [TOC]
