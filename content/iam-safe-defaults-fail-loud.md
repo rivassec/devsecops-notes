@@ -63,7 +63,7 @@ It also doesn't inject `Condition` blocks. Adding `aws:SourceAccount` or `aws:Pr
 
 ## Supply chain
 
-One thing I did do all the way: the CI workflow that runs Bandit on every push is pinned by commit SHA for every third-party action, and every pip dependency is hash-verified. `actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd`, not `v6`, not `v6.0.2`, the 40-char hash. Bandit 1.9.4 and its six transitive dependencies install via `pip install --require-hashes` against a generated lockfile with sha256 pins for every wheel. The runner explicitly nukes any private pip registry config so everything resolves against PyPI.
+One thing I did do all the way: the CI workflow that runs Bandit on every push to main and every pull request is pinned by commit SHA for every third-party action, and every pip dependency is hash-verified. `actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd`, not `v6`, not `v6.0.2`, the 40-char hash. Bandit 1.9.4 and its six transitive dependencies install via `pip install --require-hashes` against a generated lockfile with sha256 pins for every wheel. The runner explicitly nukes any private pip registry config so everything resolves against PyPI.
 
 It felt performative to pin the tooling this hard until I remembered this is a security library. A library that lectures other people about IAM footguns and then pulls dependencies by loose version name is a joke. The bar for "I trust this" is higher than for most repos.
 

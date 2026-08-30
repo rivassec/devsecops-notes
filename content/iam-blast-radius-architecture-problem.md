@@ -13,7 +13,7 @@ Cover: images/covers/iam-blast-radius-architecture-problem.png
 
 ## Most IAM reviews start too late
 
-Most IAM reviews start too late.
+The problem is not the policy itself. It is that the policy shows up last.
 
 By the time someone is staring at a JSON policy, many of the important security decisions have already been made. The account structure exists. The trust relationships exist. The CI/CD path exists. The Terraform state exists. The production data, deployment roles, and trust boundaries are already in place.
 
@@ -32,7 +32,7 @@ Least privilege is not just fewer actions. Least privilege is smaller failure do
 - A CI role that can deploy to every environment is not just a deployment role. It is a production-wide failure domain.
 - A Terraform role that can modify IAM, networking, logging, and state stores is not just infrastructure automation. It is a control plane for the company.
 - A workload identity that can read secrets, write artifacts, or assume a runner role is not just an application permission. It may be a persistence path.
-- A Kubernetes service account that can patch workloads, mount secrets, or read nodes is not just a cluster detail. It can become a lateral movement primitive.
+- A Kubernetes service account that can patch workloads, mount secrets, or exec into pods is not just a cluster detail. It can become a lateral movement primitive.
 
 This is why reviewing IAM as JSON hygiene misses the point.
 
@@ -97,7 +97,7 @@ Containment is a design choice made before the policy review begins:
 - **Protect Terraform state like sensitive production data.** Treat state files as high-risk assets containing secrets, architecture maps, and privileged paths.
 - **Treat CI/CD as privileged infrastructure.** Build pipelines are not generic automation; they are execution engines with direct access to production state.
 - **Make role assumption paths explicit.** Require clear, auditable trust policies rather than broad, ambient role-chaining.
-- **Detect sensitive actions, not just policy drift.** Monitor for abnormal role assumptions, key generation, and identity mutation in real time.
+- **Detect sensitive actions, not just policy drift.** Monitor for abnormal role assumptions, key generation, and identity mutation in near-real time.
 - **Make rollback work without the compromised identity.** Break-glass and incident containment paths must not depend on the very principals being isolated.
 
 This is slower than rubber-stamping a policy PR. It is also the work that actually matters.

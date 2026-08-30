@@ -10,7 +10,7 @@ Cover: images/covers/testing-an-iam-analyzer-against-its-own-claims.png
 
 [TOC]
 
-I built a client-side IAM blast-radius analyzer. You paste an AWS IAM policy and it shows the potential blast radius - escalation paths, role-assumption reach, data exposure - entirely in the browser. The page is served with a Content-Security-Policy that blocks the page from making network requests (`connect-src 'none'`) and loads no third-party scripts, so the policy never leaves the tab.
+I built a client-side IAM blast-radius analyzer. You paste an AWS IAM policy and it shows the potential blast radius - escalation paths, role-assumption reach, data exposure - entirely in the browser. The page makes no network calls at all, and loads no third-party scripts; a strict Content-Security-Policy (`default-src 'self'`, `connect-src 'none'`, `form-action 'none'`) is layered on top as defense in depth, so the policy never leaves the tab.
 
 Building it was the easy half. The half that decides whether anyone should trust it was validation, and the useful results were not the attacks it caught. They were the two places the tool was confidently wrong while every test stayed green.
 
@@ -34,7 +34,7 @@ During one build, an upstream API had a rough few minutes and returned overload 
 
 The reviewers did not approve that change. They never ran. The code had converted "no findings returned" into "no findings exist" - an absent result read as approval. That is a fail-open bug in the control itself, and it is worse than the false positive. A false positive is a wrong answer you can see. A review step that passes without running hides the absence of review behind a green check.
 
-The fix was to model the outcome, not to retry harder. A review result is now one of five explicit states: PASS, BLOCKER, ERROR, TIMEOUT, INVALID_RESPONSE. Promotion requires that every required critic returned PASS. A missing critic, a null result, a timeout, an error, or a malformed response is a blocker: it stops promotion, writes a durable record of what failed, retries within a bounded policy, and requires a real review before anything ships. Fifteen fault-injection cases now assert that no combination of missing or broken critic results can ever reach "approved".
+The fix was to model the outcome, not to retry harder. A review result is now one of five explicit states: PASS, BLOCKER, ERROR, TIMEOUT, INVALID_RESPONSE. Promotion requires that every required critic returned PASS. A missing critic, a null result, a timeout, an error, or a malformed response is a blocker: it stops promotion, writes a durable record of what failed, retries within a bounded policy, and requires a real review before anything ships. Fifteen fault-injection cases now assert that the enumerated combinations of missing or broken critic results cannot reach "approved".
 
 ## The control caught a bug in its own construction
 
