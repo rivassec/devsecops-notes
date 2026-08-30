@@ -5,12 +5,12 @@ Category: DevSecOps
 Tags: aws, iam, security-tooling, testing, devsecops
 Slug: testing-an-iam-analyzer-against-its-own-claims
 Og_image: images/og/testing-an-iam-analyzer-against-its-own-claims.png
-Summary: I validated my client-side IAM blast-radius analyzer against 100 adversarial cases I did not write. Twice, a green build hid a wrong answer.
+Summary: I validated my client-side IAM blast-radius analyzer against a published catalog of privilege-escalation methods I did not write, and a harness that attacks its own tests. Twice, a green build hid a wrong answer.
 Cover: images/covers/testing-an-iam-analyzer-against-its-own-claims.png
 
 [TOC]
 
-I built a client-side IAM blast-radius analyzer. You paste an AWS IAM policy and it shows the potential blast radius - escalation paths, role-assumption reach, data exposure - entirely in the browser. The page is served with a Content-Security-Policy that blocks all outbound connections and loads no third-party scripts, so the policy never leaves the tab.
+I built a client-side IAM blast-radius analyzer. You paste an AWS IAM policy and it shows the potential blast radius - escalation paths, role-assumption reach, data exposure - entirely in the browser. The page is served with a Content-Security-Policy that blocks the page from making network requests (`connect-src 'none'`) and loads no third-party scripts, so the policy never leaves the tab.
 
 Building it was the easy half. The half that decides whether anyone should trust it was validation, and the useful results were not the attacks it caught. They were the two places the tool was confidently wrong while every test stayed green.
 
@@ -42,10 +42,28 @@ The run that built that fail-closed control - implement the model, then review i
 
 A green pipeline would have merged it.
 
+## Testing the tests
+
+A passing suite tells you the code does what the tests check. It does not tell you the tests would notice if someone quietly weakened a safety check. Those are different claims, and for a fail-closed tool the second one is the one that matters.
+
+So I wrote a small harness that attacks the tests directly. It takes each fail-open class the review had already fixed, reintroduces it in the real engine source - one surgical edit that re-opens the hole - runs the entire suite, and asserts the suite goes red. A mutation the suite still passes is a fail-closed gap: a weakening no test would catch.
+
+On its first run it caught one. A `Deny` whose match depended on a runtime variable was allowed to read as a certain block, which dropped a real finding while every test stayed green. The blast-radius verdict itself still failed closed, because a second, independent signal - the tool marking its coverage incomplete - kept the command-line exit non-clean. But the specific finding vanished with no test to notice, which is exactly the blind spot the harness exists to find. I pinned the behavior with a test. That mutation, and the seven others, now all turn the suite red.
+
+## Grading against a catalog I did not write
+
+Tests you write can only check the behavior you thought of. The stronger question is whether the tool catches the attacks the field already knows about, described by someone else. There is a canonical public list for this: Rhino Security Labs' original catalog of twenty-one IAM privilege-escalation methods, the set wired into offensive tooling. (Rhino's repository has since grown to twenty-eight; I started with the original twenty-one.)
+
+I encoded all twenty-one as minimal policies, each scoped to concrete resource ARNs so a catch cannot ride on a generic "this resource is wildcarded" warning - the escalation primitive itself has to be recognized. The benchmark asserts two things per method: the scan never reads clean, and the specific named detector fires, not just the catch-all "coverage incomplete" backstop.
+
+The tool caught all twenty-one. But building the benchmark is what earned the number, because it surfaced one method the tool had been catching only by that weak backstop: updating an existing Glue development endpoint to inject an SSH key and run code as its attached role. Mechanically it is the same "overwrite existing compute, execute under its already-bound role" move the tool already modeled for Lambda and other services, so I promoted it to a named detector. Then all twenty-one were caught by name.
+
 ## The evidence that mattered
 
-The scale numbers are fine - 1,397 passing tests, three browsers, 100 adversarial cases across three independent suites, seven AWS policy families each analyzed or explicitly failed closed. But the signals worth trusting are the ones about failure behavior:
+The scale numbers are fine - over 2,700 passing tests, three browsers, and seven AWS policy families each analyzed or explicitly failed closed. But the signals worth trusting are the ones about failure behavior:
 
+- A mutation harness that reintroduces each fixed fail-open in the real engine and proves a test catches it - eight of eight, after the one gap it found on its first run was pinned.
+- Rhino's original twenty-one-method privilege-escalation catalog, every one caught by name at its hardest resource-scoped form, not by a generic wildcard warning.
 - Parser hardening that fails closed on duplicate JSON keys, which can hide a dangerous permission behind a benign one, and on Unicode homoglyph action names.
 - Rendering and export that treat every policy-controlled string as untrusted text, with no injection in the UI or in Markdown export.
 - A 52 MB, 10,000-statement policy rejected in about 9 ms, before any graph work.
