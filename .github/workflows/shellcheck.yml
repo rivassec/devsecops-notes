@@ -1,0 +1,31 @@
+name: ShellCheck
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  shellcheck:
+    name: ShellCheck (error severity)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        # Pinned to the v4.2.2 commit SHA (tags are mutable; a SHA is not).
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: Run shellcheck on all shell scripts
+        # shellcheck is preinstalled on ubuntu-latest runners.
+        # -S error keeps CI focused on genuine breakage (syntax/quoting bugs
+        # that will actually misbehave), not style/info nags. NUL-delimited
+        # find|xargs so paths with spaces are safe; -r skips the empty-set run.
+        run: |
+          find . -type f -name '*.sh' \
+            -not -path '*/node_modules/*' \
+            -not -path '*/vendor/*' \
+            -not -path '*/.git/*' \
+            -print0 | xargs -0 -r shellcheck -S error
