@@ -5,7 +5,7 @@ Category: DevSecOps
 Tags: aws, iam, security-tooling, testing, devsecops
 Slug: testing-an-iam-analyzer-against-its-own-claims
 Og_image: images/og/testing-an-iam-analyzer-against-its-own-claims.png
-Summary: I validated my client-side IAM blast-radius analyzer against a published catalog of privilege-escalation methods I did not write, and a harness that attacks its own tests. Twice, a green build hid a wrong answer.
+Summary: I checked my IAM blast-radius analyzer against a catalog I did not write and a harness that attacks its own tests. Twice, a green build hid a wrong answer.
 Cover: images/covers/testing-an-iam-analyzer-against-its-own-claims.png
 
 [TOC]
