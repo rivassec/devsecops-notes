@@ -3,6 +3,7 @@ Date: 2026-05-04
 Modified: 2026-06-04
 Category: DevSecOps
 Tags: careers, devsecops
+Series: Hiring as an Adversarial System
 Slug: trust-decay-adversarial-hiring
 Og_image: images/og/trust-decay-adversarial-hiring.png
 Author: Oliver Rivas

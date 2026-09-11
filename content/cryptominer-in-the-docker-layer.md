@@ -4,6 +4,7 @@ Modified: 2026-09-11 09:00
 Author: Oliver Rivas
 Category: DevSecOps
 Tags: incident-response, devsecops, docker, forensics
+Series: Anatomy of a Container Incident
 Slug: cryptominer-in-the-docker-layer
 Og_image: images/og/cryptominer-in-the-docker-layer.png
 Summary: A runtime detector flagged mining but ps and ss came back clean. The miner lived in the image's overlay2 diff layer, relaunched on every container restart.

@@ -912,3 +912,20 @@ main footer a {
 .author-bio p { margin: 0; color: var(--fg); line-height: 1.5; }
 .author-bio a { color: var(--accent); }
 @media (max-width: 600px) { .author-bio { flex-direction: column; text-align: center; } }
+
+/* Series navigation box (partial/series_nav.html): ordered part list shown
+   when a post belongs to a Series: with 2+ published members. */
+.series-nav {
+  max-width: 760px;
+  margin: 20px auto;
+  padding: 14px 22px;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 8px;
+}
+.series-nav-title { margin: 0 0 6px; color: var(--fg); }
+.series-nav ol { margin: 0; padding-left: 22px; }
+.series-nav li { margin: 2px 0; line-height: 1.5; }
+.series-nav a { color: var(--accent); }
+.series-nav [aria-current="page"] { font-weight: 600; color: var(--fg); }
