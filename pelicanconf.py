@@ -127,7 +127,8 @@ SITEMAP = {
     # tags.html and archives.html are noindex,follow (see base.html), so keep
     # them out of the sitemap too - never advertise a URL we ask Google not to
     # index. Surfaced by GSC 'Discovered - not indexed' 2026-08-16.
-    'exclude': ['tag/', 'tags.html', 'archives.html'],
+    # search/ is a noindex client-side search shell (see pagefind_search.html).
+    'exclude': ['tag/', 'tags.html', 'archives.html', 'search/'],
 }
 STATIC_PATHS.append('extra')
 # Client-side tools ship verbatim: content/tools/ -> /tools/ (no remap, no
@@ -187,6 +188,7 @@ TAG_CLOUD_MAX_ITEMS = 10
 MENUITEMS = [
     ('About', 'https://rivassec.com/pages/about.html'),
     ('Categories', 'https://rivassec.com/categories.html'),
+    ('Search', 'https://rivassec.com/search/'),
     ('Tools', 'https://rivassec.com/tools/iam-blast-radius/'),
     ('GitHub', 'https://github.com/rivassec'),
 ]
@@ -199,6 +201,9 @@ TEMPLATE_PAGES = {
     'llms_txt.html': 'llms.txt',
     'llms_full_txt.html': 'llms-full.txt',
     'llms_txt_wellknown.html': '.well-known/llms.txt',
+    # Client-side search shell; the index under /pagefind/ is generated at
+    # deploy time (see deploy.yml's Pagefind step). noindex + sitemap-excluded.
+    'pagefind_search.html': 'search/index.html',
 }
 
 # Single source of truth for the llms.txt header blockquote, referenced by all

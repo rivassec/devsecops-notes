@@ -61,7 +61,10 @@
   </aside>
   {% endif %}
 
-  <div itemprop="articleBody">
+  {# data-pagefind-body scopes the search index: with the attribute present
+     anywhere, Pagefind indexes ONLY elements carrying it - so drafts (which
+     also render through this template) stay out of the search index. #}
+  <div itemprop="articleBody"{% if article.status != 'draft' %} data-pagefind-body{% endif %}>
     {{ article.content }}
   </div>
 </article>
