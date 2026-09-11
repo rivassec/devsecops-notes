@@ -1,0 +1,28 @@
+{# Series navigation: posts sharing a `Series:` frontmatter value get an
+   ordered part list (by date). Computed from `articles`, which contains only
+   PUBLISHED posts - a draft member never renders a link, and the box hides
+   itself entirely until a series has at least two published parts. These are
+   structural navigation links generated at build time, not in-body editorial
+   links, so they are invisible to check_link_graph.py's outbound cap. #}
+{% set series_name = article.metadata.get('series') %}
+{% if series_name %}
+  {% set parts = articles | selectattr('metadata.series', 'defined')
+                          | selectattr('metadata.series', 'equalto', series_name)
+                          | sort(attribute='date') | list %}
+  {% if parts | length > 1 %}
+<aside class="series-nav" aria-label="Series: {{ series_name }}">
+  <p class="series-nav-title">Series: <strong>{{ series_name }}</strong></p>
+  <ol>
+    {% for p in parts %}
+    <li>
+      {% if p.slug == article.slug %}
+      <span aria-current="page">{{ p.title|striptags }}</span>
+      {% else %}
+      <a href="{{ SITEURL }}/{{ p.url }}">{{ p.title|striptags }}</a>
+      {% endif %}
+    </li>
+    {% endfor %}
+  </ol>
+</aside>
+  {% endif %}
+{% endif %}
