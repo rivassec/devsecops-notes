@@ -60,7 +60,7 @@ Some shortages are real. Security, infrastructure, identity, Kubernetes, cloud a
 
 The deeper problem is that current hiring systems are also bad at recognizing them when they appear.
 
-The cost is not just candidate frustration. It is organizational velocity. Teams spend months searching for the perfect resume while security debt, platform fragility, and operational risk keep accumulating.
+Candidate frustration is only the visible cost. The buried one is organizational velocity: teams spend months searching for the perfect resume while security debt, platform fragility, and operational risk keep accumulating.
 
 A staff or principal engineer may have the exact experience a team needs, but describe it in production language instead of job-post language. They may write about reducing IAM blast radius instead of listing every AWS service in the account. They may talk about evidence quality, auditability, and rollback paths instead of using the phrase "DevSecOps transformation." They may have done the work without wrapping it in the vocabulary the filter expects.
 
