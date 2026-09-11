@@ -43,7 +43,11 @@ OG_IMAGE = 'images/og-default.png'
 TWITTER_USERNAME = 'rivassec'
 
 PATH = "content"
-ARTICLE_EXCLUDES = ['_external', 'extra']
+# 'tools' is static-shipped (see STATIC_PATHS below); excluding it here stops
+# the markdown reader from logging an ERROR on tools/iam-blast-radius/VENDORED.md
+# ("could not find information about 'title'") on every single build.
+ARTICLE_EXCLUDES = ['_external', 'extra', 'tools']
+PAGE_EXCLUDES = ['_external', 'extra', 'tools']
 STATIC_PATHS = ['images', 'static']
 CUSTOM_CSS = 'static/custom.css'
 THEME = 'themes/Flex'

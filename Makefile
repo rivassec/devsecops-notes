@@ -70,13 +70,14 @@ devserver:
 devserver-global:
 	"$(PELICAN)" -lr "$(INPUTDIR)" -o "$(OUTPUTDIR)" -s "$(CONFFILE)" $(PELICANOPTS) -b 0.0.0.0
 
-#publish:
-#	"$(PELICAN)" "$(INPUTDIR)" -o "$(OUTPUTDIR)" -s "$(PUBLISHCONF)" $(PELICANOPTS)
-
+# Direct publishing is intentionally disabled. It built with the DEV config
+# (pelicanconf.py: RELATIVE_URLS=True, wrong canonicals, no feeds) and
+# force-pushed gh-pages, bypassing every CI guard. Deploys happen only via
+# GitHub Actions (deploy.yml) on merge to main.
 publish:
-	pelican content -o output -s pelicanconf.py
-	ghp-import output -b gh-pages
-	git push origin gh-pages --force
+	@echo "ERROR: 'make publish' is disabled - it bypasses CI and deploys a dev-config build." >&2
+	@echo "Publish via the PR flow instead: branch -> PR -> checks -> merge to main (deploy.yml ships it)." >&2
+	@exit 1
 
 github: publish
 	ghp-import -m "Generate Pelican site" -b $(GITHUB_PAGES_BRANCH) "$(OUTPUTDIR)"
