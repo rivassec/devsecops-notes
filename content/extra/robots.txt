@@ -2,4 +2,26 @@ User-agent: *
 Allow: /
 Disallow: /drafts/
 
+# AI crawlers are explicitly welcome; a curated index is published for them at
+# https://rivassec.com/llms.txt (full content: https://rivassec.com/llms-full.txt).
+User-agent: GPTBot
+Allow: /
+Disallow: /drafts/
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /drafts/
+
+User-agent: Claude-Web
+Allow: /
+Disallow: /drafts/
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /drafts/
+
+User-agent: Google-Extended
+Allow: /
+Disallow: /drafts/
+
 Sitemap: https://rivassec.com/sitemap.xml

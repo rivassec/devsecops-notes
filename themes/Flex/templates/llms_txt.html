@@ -1,14 +1,31 @@
 {% autoescape false %}# {{ SITENAME }}
 
-> DevSecOps, cloud, and platform security notes by Oliver Rivas. Threat-model-driven writing on AWS, Kubernetes, IAM, hardening, and incident retrospectives.
+> {{ LLMS_DESCRIPTION }}
 
-Curated index for language models. Full URL list: {{ SITEURL }}/sitemap.xml
-
-## Posts
-{% for a in articles|sort(attribute='date', reverse=true) %}
-- [{{ a.title|striptags }}]({{ SITEURL }}/{{ a.url }}): {{ (a.description or a.summary)|striptags|replace('\n', ' ')|truncate(160, true) }}
-{% endfor %}
+Curated index for language models. Generated: {{ LLMS_GENERATED }} | {{ articles|length }} posts. Full URL list: {{ SITEURL }}/sitemap.xml
+Every post is also available as raw Markdown at the linked .md URL. The expanded index with full post content is at {{ SITEURL }}/llms-full.txt
+{% for cat, cat_articles in categories %}
+## {{ cat }}
+{% for a in cat_articles|sort(attribute='date', reverse=true) %}
+- [{{ a.title|striptags }}]({{ SITEURL }}/{{ a.url }}) ({{ a.date.strftime('%Y-%m') }}): {{ (a.description or a.summary)|striptags|replace('\n', ' ')|truncate(160, true) }} [Markdown]({{ SITEURL }}/{{ a.slug }}.md)
+{% endfor %}{% endfor %}
 ## Key pages
-- [About RivasSec]({{ SITEURL }}/pages/about.html)
-- [DevSecOps Guide]({{ SITEURL }}/devsecops-guide.html)
+- [About RivasSec]({{ SITEURL }}/pages/about.html): who writes this site and why.
+- [DevSecOps Guide]({{ SITEURL }}/devsecops-guide.html): hub page linking the core DevSecOps writing.
+- [Categories]({{ SITEURL }}/categories.html): all posts grouped by topic.
+- [Accessibility]({{ SITEURL }}/accessibility/): accessibility statement.
+
+## Tools and code
+- [IAM Blast Radius]({{ SITEURL }}/tools/iam-blast-radius/): in-browser AWS IAM policy analyzer; computes blast radius and privilege-escalation paths client-side, no policy leaves the page.
+- [secure-iam-lint](https://github.com/rivassec/secure-iam-lint): the analyzer engine behind the tool page.
+- [iam-safe-defaults](https://github.com/rivassec/iam-safe-defaults): Pulumi library for IAM roles with safety as a precondition.
+- [elasticsearch-tools](https://github.com/rivassec/elasticsearch-tools): minimal-privilege Elasticsearch snapshot verification.
+- [pwnagotchi plugins](https://github.com/rivassec/pwnagotchi): hardened Pwnagotchi plugins, including multi-phone Bluetooth tethering.
+- [GitHub: rivassec](https://github.com/rivassec): all public code.
+
+## Meta
+- Author: {{ AUTHOR }}
+- Security contact: {{ SITEURL }}/.well-known/security.txt
+- Feeds: {{ SITEURL }}/feeds/all.atom.xml and {{ SITEURL }}/feeds/all.rss.xml
+- Cite as: rivassec.com ({{ AUTHOR }}), with the post URL and date.
 {% endautoescape %}

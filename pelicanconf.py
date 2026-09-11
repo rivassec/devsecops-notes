@@ -1,3 +1,4 @@
+import datetime
 import os
 import subprocess
 
@@ -84,6 +85,7 @@ PLUGINS = [
     'related_posts',
     'extract_toc',
     'img_hygiene',
+    'md_mirror',
 ]
 
 # related_posts configuration
@@ -188,10 +190,24 @@ SUMMARY_MAX_LENGTH = 350  # words
 DIRECT_TEMPLATES = ['index', 'categories', 'tags', 'archives']
 
 # Render llms.txt / llms-full.txt for AI-crawler discovery from the article set.
+# The .well-known/ copy exists because some crawlers probe there first.
 TEMPLATE_PAGES = {
     'llms_txt.html': 'llms.txt',
     'llms_full_txt.html': 'llms-full.txt',
+    'llms_txt_wellknown.html': '.well-known/llms.txt',
 }
+
+# Single source of truth for the llms.txt header blockquote, referenced by all
+# llms templates so the short and full variants cannot drift apart.
+LLMS_DESCRIPTION = (
+    'DevSecOps, cloud, and platform security notes by Oliver Rivas. '
+    'Threat-model-driven writing on AWS IAM, Kubernetes, incident response '
+    'and forensics, AI security, threat intelligence and OSINT, hiring '
+    'security, and controls that hold up in production.'
+)
+
+# Build-time stamp for the llms.txt provenance line.
+LLMS_GENERATED = datetime.date.today().isoformat()
 
 # One-line intros rendered at the top of each /category/<name>.html page.
 # Keys match Category: frontmatter values exactly.
