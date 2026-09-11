@@ -1,0 +1,13 @@
+# Pelican source-link syntax ({filename}/{static}); resolves at build time and
+# the internal link graph has its own per-PR guard (check_link_graph.py).
+%7B(filename|static)%7D
+\{(filename|static)\}
+# Placeholders and local addresses from code examples - never real links.
+^https?://localhost
+^https?://host(:|$|/)
+^https?://127\.0\.0\.1
+# Hosts that block automated checkers while working fine in browsers
+# (LinkedIn returns 999 to bots; X/Twitter gates aggressively).
+^https?://(www\.)?linkedin\.com
+^https?://(www\.)?x\.com
+^https?://(www\.)?twitter\.com
