@@ -1,0 +1,28 @@
+# Unit tests for the repo's own tooling - primarily the CI guard scripts.
+#
+# The guards are the merge gate for every content PR; a guard that silently
+# breaks fails OPEN (a green check that verified nothing). This suite pins
+# each guard's failure classes with fixture site trees. Stdlib unittest only,
+# no third-party test deps.
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  unittest:
+    name: Guard-script tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Run test suite
+        run: python3 -m unittest discover tests -v
