@@ -1,18 +1,27 @@
 {% autoescape false %}# {{ SITENAME }} - full index
 
-> DevSecOps, cloud, and platform security notes by Oliver Rivas. Threat-model-driven writing on AWS, Kubernetes, IAM, hardening, and incident retrospectives.
+> {{ LLMS_DESCRIPTION }}
 
-Expanded index for language models. Canonical URL list: {{ SITEURL }}/sitemap.xml
+Expanded index for language models: every published post with its full text (tags and markup stripped; code blocks and tables flattened - fetch the Markdown URL for exact formatting). Generated: {{ LLMS_GENERATED }} | {{ articles|length }} posts. Curated index: {{ SITEURL }}/llms.txt | Canonical URL list: {{ SITEURL }}/sitemap.xml
 
 ## Posts
 {% for a in articles|sort(attribute='date', reverse=true) %}
 ### {{ a.title|striptags }}
 URL: {{ SITEURL }}/{{ a.url }}
+Markdown: {{ SITEURL }}/{{ a.slug }}.md
 Date: {{ a.date.strftime('%Y-%m-%d') }}{{ (' (updated ' + a.modified.strftime('%Y-%m-%d') + ')') if (a.modified and a.modified.date() != a.date.date()) else '' }}
 Category: {{ a.category }}{{ (' | Tags: ' + (a.tags|join(', '))) if a.tags else '' }}
-Summary: {{ (a.description or a.summary)|striptags|replace('\n', ' ')|truncate(400, true) }}
+Summary: {{ (a.description or a.summary)|striptags|replace('\n', ' ') }}
+Content: {{ a.content|striptags|truncate(24000, true) }}
 
 {% endfor %}## Key pages
 - About: {{ SITEURL }}/pages/about.html
 - DevSecOps Guide: {{ SITEURL }}/devsecops-guide.html
+- IAM Blast Radius tool: {{ SITEURL }}/tools/iam-blast-radius/
+- Accessibility: {{ SITEURL }}/accessibility/
+
+## Meta
+- Author: {{ AUTHOR }}
+- Security contact: {{ SITEURL }}/.well-known/security.txt
+- Feeds: {{ SITEURL }}/feeds/all.atom.xml and {{ SITEURL }}/feeds/all.rss.xml
 {% endautoescape %}
