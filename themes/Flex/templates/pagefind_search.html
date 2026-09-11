@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Search - {{ SITETITLE|default(SITENAME) }}{% endblock %}
+{% block canonical %}<link rel="canonical" href="{{ SITEURL }}/search/">{% endblock %}
+{% block meta %}
+  <meta name="author" content="{{ AUTHOR }}" />
+  <meta name="description" content="Search the posts on rivassec.com." />
+  {# Search shells are thin content; keep out of the index but followable.
+     Matched by the sitemap exclude for search/ so the canonical/noindex
+     guard stays satisfied. #}
+  <meta name="robots" content="noindex, follow" />
+  <link rel="stylesheet" href="{{ SITEURL }}/pagefind/pagefind-ui.css" />
+{% endblock %}
+{% block content %}
+<article class="single">
+  <header>
+    <h1 id="search-heading">Search</h1>
+  </header>
+  <p>Search every published post. Results are computed in your browser from a
+  static index; no query leaves this page.</p>
+  <div id="search" aria-labelledby="search-heading"></div>
+  <noscript>
+    <p>Search needs JavaScript. Browse by
+    <a href="{{ SITEURL }}/categories.html">category</a> or read the
+    <a href="{{ SITEURL }}/devsecops-guide.html">DevSecOps Guide</a> instead.</p>
+  </noscript>
+</article>
+{% endblock %}
+{% block additional_js %}
+<script src="{{ SITEURL }}/pagefind/pagefind-ui.js" defer></script>
+<script src="{{ SITEURL }}/theme/js/search-init.js" defer></script>
+{% endblock %}

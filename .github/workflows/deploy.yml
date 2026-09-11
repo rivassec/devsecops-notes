@@ -44,6 +44,15 @@ jobs:
       - name: Build site
         run: pelican content -o output -s publishconf.py
 
+      - name: Build search index (Pagefind)
+        # Static same-origin search: writes the UI assets and chunked index to
+        # output/pagefind/, all fetched same-origin, so a strict script-src /
+        # connect-src 'self' CSP keeps working. Indexing is scoped by
+        # data-pagefind-body (articles + content pages only), which keeps the
+        # noindexed /drafts/ pages OUT of the search index. Version pinned;
+        # the runner's preinstalled Node is sufficient.
+        run: npx --yes pagefind@1.5.2 --site output
+
       - name: Add CNAME file
         run: echo rivassec.com > output/CNAME
 
