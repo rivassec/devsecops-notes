@@ -1,0 +1,60 @@
+# External-link rot check.
+#
+# Scheduled (not per-PR) on purpose: external checks are network-flaky and a
+# third-party outage must never block merges. The internal link graph is
+# already guarded per-PR by check_link_graph.py; this covers the external
+# citations (DOJ, IC3, vendor docs, papers) that rot silently.
+#
+# Failures open/update a single tracking issue rather than emailing a red run
+# nobody reads. Exclusions live in .lycheeignore (placeholders from code
+# examples, bot-hostile hosts).
+name: Link rot check
+
+on:
+  schedule:
+    - cron: '0 14 * * 1'  # Mondays 14:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  lychee:
+    name: External link check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Check external links in content
+        id: lychee
+        uses: lycheeverse/lychee-action@v2
+        with:
+          # Source markdown only; {filename} internal links are non-http and
+          # skipped via --scheme, and the built site's internal graph has its
+          # own per-PR guard.
+          args: >-
+            --scheme https --scheme http
+            --base-url 'https://rivassec.com'
+            --accept '200..=206,429'
+            --timeout 20
+            --max-retries 2
+            --max-concurrency 8
+            --no-progress
+            'content/**/*.md' 'README.md'
+          output: lychee-report.md
+          fail: false
+
+      - name: Open or update tracking issue on failures
+        if: steps.lychee.outputs.exit_code != 0
+        uses: peter-evans/create-issue-from-file@v5
+        with:
+          title: 'Link rot: broken external links detected'
+          content-filepath: lychee-report.md
+          labels: link-rot
+
+      - name: Fail the run if links are broken
+        if: steps.lychee.outputs.exit_code != 0
+        run: |
+          echo "::error::lychee found broken external links (see lychee-report.md / tracking issue)"
+          exit 1
