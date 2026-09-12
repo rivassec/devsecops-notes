@@ -29,7 +29,8 @@
       {% import 'partial/translations.html' as translations with context %}
       {{ translations.translations_for(article) }}
     {% endif %}
-    <nav class="breadcrumb" aria-label="Breadcrumb"><a href="{{ SITEURL }}/">Home</a>{% if article.category %} &rsaquo; <a href="{{ SITEURL }}/{{ article.category.url }}">{{ article.category }}</a>{% endif %} &rsaquo; <span aria-current="page">{{ article.title }}</span></nav>
+    {# Visual breadcrumb removed by request; the BreadcrumbList JSON-LD in
+       partial/jsonld_article.html still gives crawlers the trail. #}
     <h1 id="{{ article.slug }}" itemprop="headline">{{ article.title }}</h1>
     <p>
       {{ _('Posted on %(when)s in %(category)s',
