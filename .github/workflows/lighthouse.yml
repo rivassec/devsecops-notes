@@ -103,6 +103,6 @@ jobs:
         if: steps.lhci.outcome != 'success'
         uses: peter-evans/create-issue-from-file@v5
         with:
-          title: 'Lighthouse: performance budget warnings detected'
+          title: 'Lighthouse CI report'
           content-filepath: lighthouse-report.md
           labels: lighthouse
