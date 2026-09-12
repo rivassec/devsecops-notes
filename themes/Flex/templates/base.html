@@ -71,19 +71,8 @@
           href="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/pygments/{{ PYGMENTS_STYLE|default('github') }}.min.css">
   {% endif %}
 
-  {% if PLUGINS and ('tipue_search' in PLUGINS or 'pelican.plugins.tipue_search' in PLUGINS) %}
-      {% if USE_GOOGLE_FONTS != False %}
-      <link href="https://fonts.googleapis.com/css?family=Merriweather:300,400|Open+Sans" rel="stylesheet">
-      {% endif %}
-    <link rel="stylesheet"
-    href="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/tipuesearch/tipuesearch.min.css" />
-  {% endif %}
-
-  {% if 'pelican.plugins.search' in PLUGINS %}
-  <link rel="stylesheet"
-        type="text/css"
-        href="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/stork/stork.css" />
-  {% endif %}
+  {# Search is Pagefind (see pagefind_search.html); the upstream Flex
+     tipue/stork hooks and their vendored assets were removed. #}
 
   {% if CUSTOM_CSS %}
   <link rel="stylesheet" type="text/css" href="{% if main_siteurl is defined %}{{ main_site }}{% else %}{{ SITEURL }}{% endif %}/{{ CUSTOM_CSS }}{% if ASSET_VERSION %}?v={{ ASSET_VERSION }}{% endif %}">
