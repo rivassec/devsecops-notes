@@ -12,7 +12,7 @@ Cover: images/covers/testing-an-iam-analyzer-against-its-own-claims.png
 
 I built a client-side IAM blast-radius analyzer. You paste an AWS IAM policy and it shows the potential blast radius - escalation paths, role-assumption reach, data exposure - entirely in the browser. The page makes no network calls at all, and loads no third-party scripts; a strict Content-Security-Policy (`default-src 'self'`, `connect-src 'none'`, `form-action 'none'`) is layered on top as defense in depth, so the policy never leaves the tab.
 
-Building it was the easy half. The half that decides whether anyone should trust it was validation, and the useful results were not the attacks it caught. They were the two places the tool was confidently wrong while every test stayed green.
+Building it was the easy half. The half that decides whether anyone should trust it was validation, and the most useful results were the two places the tool was confidently wrong while every test stayed green, more than any attack it caught.
 
 ## A green build that was still wrong
 

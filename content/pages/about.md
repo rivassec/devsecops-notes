@@ -76,6 +76,6 @@ Work under [@oliveratprimer](https://github.com/oliveratprimer) includes:
 
 ---
 
-> Security is not a feature. It is infrastructure.
+> Security is infrastructure, not a feature.
 
 All contributions are built for clarity, reproducibility, and operational reliability.

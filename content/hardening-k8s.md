@@ -11,7 +11,7 @@ Cover: images/covers/hardening-k8s.png
 
 [TOC]
 
-Securing Kubernetes workloads isn't just about scanning images or tweaking RBAC, it's about enforcing the right guardrails at the pod level to minimize risk by default. This post shares field-tested strategies aligned with the Pod Security Standards (Restricted profile) to help you build safer, production-grade deployments.
+Scanning images and tweaking RBAC only get you so far; securing Kubernetes workloads means enforcing the right guardrails at the pod level so risk is minimized by default. This post shares field-tested strategies aligned with the Pod Security Standards (Restricted profile) to help you build safer, production-grade deployments.
 
 ## Key Practices for Hardening Kubernetes Deployments
 
@@ -138,6 +138,6 @@ Disable automatic token mounting for pods that don't need API server access. Cre
 
 ## Final Thoughts
 
-Security isn't just about tools, it's about secure defaults. These practices help harden your Kubernetes workloads using the Restricted Pod Security Standard and reduce risks across the board.
+Tools matter less than secure defaults. These practices help harden your Kubernetes workloads using the Restricted Pod Security Standard and reduce risks across the board.
 
 If you're managing production clusters or sensitive environments, these changes are low-hanging fruit with a high return on security posture. The same "safe by default" mindset applied to AWS IAM is the subject of [IAM Roles That Fail Loud]({filename}iam-safe-defaults-fail-loud.md); for the node side of memory pressure, see [Taming the OOM Killer]({filename}oom-killer-process-prioritization.md).
