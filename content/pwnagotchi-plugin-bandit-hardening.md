@@ -37,7 +37,7 @@ Bandit is `pip install bandit` and it ships with rules numbered B602, B603, B607
 - **B603**: `subprocess` without an explicit shell, but the binary path comes from a variable rather than a literal. Bandit can't tell whether that variable is trusted.
 - **B607**: starting a process with a partial executable path. `subprocess.run(["nmcli", "..."])` triggers this because `nmcli` is resolved through `$PATH`, and `$PATH` is something you should not trust on a device whose disk has been out of your sight.
 
-Pyflakes, Ruff, mypy will not flag any of these. They are not type or syntax errors. They are policy.
+Pyflakes, Ruff, mypy will not flag any of these, because these are policy findings, not type or syntax errors.
 
 A clean Bandit run on a hardened plugin looks like this:
 
@@ -175,7 +175,7 @@ Pin the Bandit version. Bandit's rule set evolves; an unpinned `bandit` in CI me
 
 ## The pattern generalizes
 
-The four moves (resolve binaries with `shutil.which()` at init, pass argv as lists, validate inputs at the trust boundary, annotate `# nosec` per-call with a structural reason) are not Pwnagotchi-specific. They are the entire defense for any Python that shells out:
+The four moves (resolve binaries with `shutil.which()` at init, pass argv as lists, validate inputs at the trust boundary, annotate `# nosec` per-call with a structural reason) are the entire defense for any Python that shells out, Pwnagotchi or not:
 
 - A homelab MCP server that runs `docker exec` on user-supplied container names.
 - A CI script that calls `kubectl` against a cluster name from environment.

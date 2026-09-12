@@ -46,7 +46,7 @@ As presentation becomes commoditized through AI, "looking the part" no longer se
 
 ### 3. Upstream Trust Migration
 
-Because the public pipeline is compromised, hiring teams are retreating to "pre-validated" channels. This explains the heavy reliance on internal referrals and known networks. It's not necessarily cronyism; it's an architectural necessity to find signal in a sea of noise.
+Because the public pipeline is compromised, hiring teams are retreating to "pre-validated" channels. This explains the heavy reliance on internal referrals and known networks. Less cronyism than architectural necessity: it is how teams find signal in a sea of noise.
 
 ---
 
@@ -78,4 +78,4 @@ If we treat the job market as a security problem, the solution becomes clear. Th
 
 The market isn't "broken" - it has simply changed its objective function. It no longer prioritizes finding the best; it prioritizes avoiding the unverified.
 
-Success in 2026 and beyond isn't about having the most optimized resume. It's about being the most difficult to doubt. In a world of automated noise, reliability is the only signal that scales.
+Success in 2026 and beyond belongs to whoever is the most difficult to doubt, not whoever has the most optimized resume. In a world of automated noise, reliability is the only signal that scales.

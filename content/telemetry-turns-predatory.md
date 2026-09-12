@@ -133,7 +133,7 @@ Internet censorship measurement is inherently difficult, and the sharpest limita
 
 ## Conclusion
 
-The technology discussed here is not unique to Venezuela. It is the same telemetry, the same identity graphs, the same pipelines we build in every SOC on every continent. What changes is who operates them and against whom.
+Nothing in the technology discussed here is unique to Venezuela: the same telemetry, the same identity graphs, the same pipelines we build in every SOC on every continent. What changes is who operates them and against whom.
 
 The question I want you to carry into your next design review is no longer only *is this design secure?* It is *who does this design protect, and who does it expose?*
 

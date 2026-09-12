@@ -39,4 +39,4 @@ GitHub issues on any of my repos, or reach out through this profile.
 
 ---
 
-> Security is not a feature. It is infrastructure.
+> Security is infrastructure, not a feature.

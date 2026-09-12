@@ -45,7 +45,7 @@ Returned expected Twitter IPs (199.59.x.x), but users in Venezuela were silently
 190.202.80.20
 ```
 
-This IP **served Twitter content** but was not operated by Twitter Inc.
+This IP **served Twitter content** without being operated by Twitter Inc.
 
 It's unclear whether this redirection was caused by ISP DNS override, local resolver poisoning, or upstream hijack, but the net effect was consistent: Twitter domains were silently redirected to non-Twitter infrastructure under state control.
 

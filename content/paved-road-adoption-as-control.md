@@ -13,7 +13,7 @@ Cover: images/covers/paved-road-adoption-as-control.png
 
 ## Adoption is a security control
 
-A security control developers can route around is not a control. It is a checkbox.
+A security control developers can route around is a checkbox, not a control.
 
 In a previous life, I watched our cloud security model fail in a very specific way. Developers would hit a build break, file a ticket, and ship the workload through a side door. The controls all worked on paper. The audit report read fine. Adoption was the problem, and adoption is what determines whether a control exists in practice or only in slides.
 
@@ -53,7 +53,7 @@ Adoption stalled for **four months**.
 
 What was happening in retrospect is obvious: as long as two paths existed, the new path was extra work for any team that already had a working pattern in the old one. The new path was easier for greenfield workloads, but most workloads were not greenfield, and the migration cost is what dominated.
 
-I retired the legacy patterns hard. Stopped accepting them in CI, marked them deprecated in code review, and gave teams a fixed window to migrate. Adoption climbed within a single sprint. The lesson - one I keep relearning in different forms - is that *paths in addition* are not adopted, paths in *replacement* are. If you are not willing to break the side door, you are not actually building a paved road. You are building a recommendation.
+I retired the legacy patterns hard. Stopped accepting them in CI, marked them deprecated in code review, and gave teams a fixed window to migrate. Adoption climbed within a single sprint. The lesson - one I keep relearning in different forms - is that *paths in addition* are not adopted, paths in *replacement* are. Unless you are willing to break the side door, what you are building is a recommendation, not a paved road.
 
 ## What I underestimated: the political cost
 
