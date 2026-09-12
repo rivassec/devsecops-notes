@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Page Not Found - {{ SITETITLE|default(SITENAME) }}{% endblock %}
+{% block meta %}
+  <meta name="author" content="{{ AUTHOR }}" />
+  <meta name="description" content="Page not found. Search rivassec.com or use these links to get back on track." />
+  {# Hidden page: base.html already emits noindex,nofollow for hidden_pages.
+     Mirror pagefind_search.html and load the Pagefind UI stylesheet here. #}
+  <link rel="stylesheet" href="{{ SITEURL }}/pagefind/pagefind-ui.css" />
+{% endblock %}
+{% block content %}
+<article class="single">
+  <header>
+    <h1 id="search-heading">Page Not Found</h1>
+  </header>
+  <p>That page is not here. It may have moved or never existed. Search every
+  published post below, or jump to one of the curated links.</p>
+  <div id="search" aria-labelledby="search-heading"></div>
+  <noscript>
+    <p>Search needs JavaScript. Use the links below instead.</p>
+  </noscript>
+  <nav aria-label="Recovery links">
+    <ul>
+      <li><a href="{{ SITEURL }}/">Home</a></li>
+      <li><a href="{{ SITEURL }}/devsecops-guide.html">DevSecOps Guide</a></li>
+      <li><a href="{{ SITEURL }}/categories.html">Browse all categories</a></li>
+      <li><a href="{{ SITEURL }}/search/">Full search page</a></li>
+    </ul>
+  </nav>
+</article>
+{% endblock %}
+{% block additional_js %}
+<script src="{{ SITEURL }}/pagefind/pagefind-ui.js" defer></script>
+<script src="{{ SITEURL }}/theme/js/search-init.js" defer></script>
+{% endblock %}
