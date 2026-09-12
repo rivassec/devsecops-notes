@@ -16,18 +16,8 @@
     <p>{{ SITESUBTITLE }}</p>
     {% endif %}
 
-    {% if PLUGINS %}
-    {% if ('tipue_search' in PLUGINS or 'pelican.plugins.tipue_search' in PLUGINS) %}
-    <form class="navbar-search" action="{{ SITEURL }}/search.html" role="search">
-      <input type="text" name="q" id="tipue_search_input" placeholder="{{ _('Search...') }}">
-    </form>
-    {% elif 'pelican.plugins.search' in PLUGINS %}
-    <div class="stork">
-      <input class="stork-input" type="text" autocomplete="off" name="q" data-stork="sitesearch" placeholder="{{ _('Search...') }}" onclick="loadStorkIndex()"/>
-      <div class="stork-output" data-stork="sitesearch-output"></div>
-    </div>
-    {% endif %}
-    {% endif %}
+    {# Search lives at /search/ (Pagefind), linked from MENUITEMS; the dead
+       tipue/stork sidebar hooks were removed with their vendored assets. #}
 
     {% if (pages and DISPLAY_PAGES_ON_MENU) or LINKS %}
     <nav>
