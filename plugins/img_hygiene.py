@@ -90,7 +90,10 @@ def _dimensions(filepath):
         try:
             with Image.open(filepath) as im:
                 result = im.size  # (width, height)
-        except (OSError, ValueError) as exc:
+        except Exception as exc:  # noqa: BLE001 - never let image reads break the build
+            # Broad on purpose: Pillow raises DecompressionBombError (subclasses
+            # Exception, not OSError) on very large images; dimension injection
+            # is best-effort and must degrade to "no dims", never fail the build.
             logger.debug("img_hygiene: cannot read dimensions of %s: %s", filepath, exc)
     _DIM_CACHE[filepath] = result
     return result
