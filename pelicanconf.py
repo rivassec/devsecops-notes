@@ -218,14 +218,63 @@ LLMS_DESCRIPTION = (
 # Build-time stamp for the llms.txt provenance line.
 LLMS_GENERATED = datetime.date.today().isoformat()
 
-# One-line intros rendered at the top of each /category/<name>.html page.
-# Keys match Category: frontmatter values exactly.
+# Intros rendered at the top of each /category/<name>.html page. Keys match
+# Category: frontmatter values exactly. Rendered with the |safe filter (see
+# themes/Flex/templates/category.html), so each value carries its own <p>
+# blocks and may link key posts. Links are absolute (config strings cannot
+# resolve Pelican {filename} refs). The well-populated categories get pillar
+# intros that describe the cluster and point to its key posts; single-post
+# categories keep a one-line intro.
 CATEGORY_INTROS = {
-    'DevSecOps': 'Security defaults, pipeline hardening, and operational lessons from running production infrastructure under real adversary pressure.',
-    'Kubernetes Security': 'Pod-level guardrails, RBAC, and the Pod Security Standards applied to production workloads.',
-    'Incident Retrospectives': 'Post-mortems on real outages - what broke, why it broke, and what the industry should have learned.',
-    'Projects': 'Tools, plugins, and one-off builds from my homelab and field work.',
-    'Threat Intelligence': 'OSINT investigations and case studies on phishing infrastructure, nation-state operations, and emerging threats.',
+    'DevSecOps': (
+        '<p>DevSecOps here means security controls that survive contact with '
+        'production, not checklists that pass an audit and then rot. The '
+        'through-line is making the safe path the default path so engineers '
+        'take it without being told, and building guardrails that fail loud '
+        'instead of failing open.</p>'
+        '<p>Start with <a href="https://rivassec.com/paved-road-adoption-as-control.html">'
+        'adoption as a security control</a> for why a control nobody uses is '
+        'not a control, then see it applied to identity in '
+        '<a href="https://rivassec.com/iam-safe-defaults-fail-loud.html">IAM '
+        'roles that fail loud</a> and '
+        '<a href="https://rivassec.com/iam-blast-radius-architecture-problem.html">'
+        'IAM blast radius as an architecture problem</a>. For the discipline '
+        'of not trusting your own tooling, read '
+        '<a href="https://rivassec.com/testing-an-iam-analyzer-against-its-own-claims.html">'
+        'testing an IAM analyzer against its own claims</a>.</p>'
+    ),
+    'Kubernetes Security': (
+        '<p>Pod-level guardrails, RBAC, and the Pod Security Standards applied '
+        'to production workloads.</p>'
+    ),
+    'Incident Retrospectives': (
+        '<p>Post-mortems on real outages - what broke, why it broke, and what '
+        'the industry should have learned.</p>'
+    ),
+    'Projects': (
+        '<p>Builds from the homelab and field work, written up for the '
+        'mechanism and the failure modes rather than the demo. Each one exists '
+        'because a real gap needed closing and the off-the-shelf answer did '
+        'not fit.</p>'
+        '<p>See <a href="https://rivassec.com/teensy-efi-bruteforce-hours-late.html">'
+        'the Teensy EFI brute force that failed in public</a> for what timing '
+        'assumptions cost you, and '
+        '<a href="https://rivassec.com/pwnagotchi-bluetooth-tethering.html">'
+        'multi-phone Bluetooth tethering for Pwnagotchi</a> for building a '
+        'fallback that holds when the primary link drops.</p>'
+    ),
+    'Threat Intelligence': (
+        '<p>Threat intelligence here is investigative work, not a feed '
+        'subscription: pulling on infrastructure, tradecraft, and public '
+        'signals until an operation is named. The focus is method you can '
+        'reproduce, not attribution you have to take on faith.</p>'
+        '<p>See <a href="https://rivassec.com/venezuela-twitter-proxy-osint.html">'
+        'OSINT on a nation-state proxy</a> for tracing phishing and influence '
+        'infrastructure from open sources, and '
+        '<a href="https://rivassec.com/prompt-injection-supply-chain-evasion.html">'
+        'prompt injection as a coming supply chain evasion technique</a> for '
+        'where the next class of attacker tradecraft is heading.</p>'
+    ),
 }
 
 # Homepage featured posts: hand-picked slugs, ordered. Surfaced at the

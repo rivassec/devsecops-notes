@@ -6,7 +6,9 @@
 {% if CATEGORY_INTROS and category.name in CATEGORY_INTROS %}
 <section class="category-intro">
   <h1>{{ category.name }}</h1>
-  <p>{{ CATEGORY_INTROS[category.name] }}</p>
+  {# Intros are our own trusted config strings and may carry their own <p>
+     blocks and <a> links, so render them as HTML rather than escaped text. #}
+  {{ CATEGORY_INTROS[category.name]|safe }}
 </section>
 {% endif %}
 {{ super() }}
