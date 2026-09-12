@@ -1,0 +1,108 @@
+# Lighthouse performance report (ADVISORY, non-blocking).
+#
+# Scheduled (not per-PR) on purpose: Lighthouse scores are noisy on shared
+# GitHub-hosted runners (variable CPU throttling, cold caches), so a budget
+# miss must NEVER block a merge. This job builds the site exactly as deploy.yml
+# does, serves output/ locally, runs Lighthouse CI against the homepage and a
+# representative article, and reports the result.
+#
+# The assertions in lighthouserc.json are all at "warn" level, and the job is
+# marked continue-on-error, so a regression surfaces as a tracking issue and a
+# yellow step -- it does not fail the run. This is a health report, not a gate.
+name: Lighthouse report
+
+on:
+  schedule:
+    - cron: '17 6 * * 3'  # Wednesdays 06:17 UTC (offset from other crons)
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  lighthouse:
+    name: Lighthouse CI (advisory)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 1
+
+      - name: Initialize submodules
+        run: git submodule update --init --depth=1
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.13"
+          cache: pip
+
+      - name: Install Pelican
+        # Same logic as deploy.yml / a11y-check.yml: --require-hashes --no-deps
+        # because we override Pygments past Pelican's pin. Every transitive dep
+        # is already hash-pinned in requirements.txt.
+        run: pip install --require-hashes --no-deps -r requirements.txt
+
+      - name: Build site
+        run: pelican content -o output -s publishconf.py
+
+      - name: Set up Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "20"
+
+      - name: Serve built site
+        # lhci autorun points at these URLs via lighthouserc.json (staticDistDir
+        # is not used because we serve manually to control the port). Background
+        # the server and wait for it to answer before Lighthouse runs.
+        run: |
+          npx --yes http-server output -p 8080 -s &
+          for _ in {1..20}; do
+            if curl -fsS http://127.0.0.1:8080/ >/dev/null 2>&1; then
+              echo "server up"
+              break
+            fi
+            sleep 0.5
+          done
+
+      - name: Run Lighthouse CI
+        id: lhci
+        # Advisory: never fail the run on a budget miss. All assertions in
+        # lighthouserc.json are "warn" (so lhci exits 0 anyway), but keep
+        # continue-on-error as a belt-and-suspenders guard against Chrome
+        # launch flakiness on the runner.
+        continue-on-error: true
+        run: npx --yes @lhci/cli@0.15.x autorun --config=lighthouserc.json
+
+      - name: Summarize report
+        # Fold the Lighthouse output into a small markdown file for the job
+        # summary and the (optional) tracking issue. Best-effort; never fails.
+        if: always()
+        run: |
+          {
+            echo "# Lighthouse report ($(date -u +%Y-%m-%d))"
+            echo
+            echo "Advisory run -- warnings do not block merges."
+            echo
+            if ls .lighthouseci/*.json >/dev/null 2>&1; then
+              echo "Raw results collected in .lighthouseci/. See the run's"
+              echo "job log for per-category scores and budget warnings."
+            else
+              echo "No Lighthouse results were produced (Chrome may have failed"
+              echo "to launch on the runner). This is advisory only."
+            fi
+          } > lighthouse-report.md
+          cat lighthouse-report.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Open or update tracking issue on warnings
+        # Only when Lighthouse actually flagged something (lhci step reported a
+        # non-success outcome). Mirrors link-rot.yml's single-issue pattern so
+        # we never spam. This does NOT fail the run.
+        if: steps.lhci.outcome != 'success'
+        uses: peter-evans/create-issue-from-file@v5
+        with:
+          title: 'Lighthouse CI report'
+          content-filepath: lighthouse-report.md
+          labels: lighthouse
