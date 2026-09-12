@@ -59,7 +59,7 @@ whois chavezcandanga.org.ve
 
 Revealed that the domain was registered to **PSUV** (*Partido Socialista Unido de Venezuela*) and managed through CONATEL, Venezuela's FCC-equivalent telecommunications regulator.
 
-![WHOIS output showing chavezcandanga.org.ve registered to PSUV]({static}/images/who-is-chavezcandanga-com.jpg)
+![WHOIS output showing chavezcandanga.org.ve registered to PSUV]({static}/images/who-is-chavezcandanga-com.webp)
 *Figure: WHOIS lookup confirms chavezcandanga.org.ve is registered to PSUV, with administrative and technical contacts using @psuv.org.ve emails.*
 
 ---
@@ -71,7 +71,7 @@ The same server IP hosted:
 - `mensajes.chavezcandanga.org.ve` - a campaign messaging platform
 - A proxy script that mirrored Twitter's login screen
 
-![Screenshot of chavezcandanga.org.ve auto-retweet app]({static}/images/chavezcandanga-web.jpg)
+![Screenshot of chavezcandanga.org.ve auto-retweet app]({static}/images/chavezcandanga-web.webp)
 *Figure: The official chavezcandanga.org.ve campaign app asks users to authenticate with Twitter to enable automatic retweets of Chávez's posts.*
 
 At the time of discovery, this site **did not contain malicious code**, but the potential for **credential harvesting** during peak election activity was substantial. The authentication flow mimicked Twitter's branding and prompted users to log in, creating a window for silent credential capture, token misuse, or targeted amplification based on follower behavior.
