@@ -41,6 +41,7 @@ jobs:
             --max-retries 2
             --max-concurrency 8
             --no-progress
+            --exclude-path content/_external
             'content/**/*.md' 'README.md'
           output: lychee-report.md
           fail: false
