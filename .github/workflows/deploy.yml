@@ -83,6 +83,9 @@ jobs:
           python3 scripts/csp_audit.py output
 
       - name: Check links in built site
+        # URL exclusions live in .lycheeignore (single source of truth, shared
+        # with the weekly link-rot workflow; lychee reads it automatically).
+        # Path exclusions stay inline: .lycheeignore holds URL patterns only.
         uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
         with:
           args: >-
@@ -93,10 +96,6 @@ jobs:
             --accept 200..=299,429
             --max-retries 5
             --retry-wait-time 2
-            --exclude "web\.archive\.org"
-            --exclude "linkedin\.com"
-            --exclude "hrw\.org"
-            --exclude "rivassec\.com/tools/iam-blast-radius"
             --exclude-path output/feeds
             --exclude-path output/tools
             './output/**/*.html'
