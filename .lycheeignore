@@ -7,7 +7,14 @@
 ^https?://host(:|$|/)
 ^https?://127\.0\.0\.1
 # Hosts that block automated checkers while working fine in browsers
-# (LinkedIn returns 999 to bots; X/Twitter gates aggressively).
+# (LinkedIn returns 999 to bots; X/Twitter gates aggressively; hrw.org and
+# web.archive.org rate-limit or gate scripted fetches).
 ^https?://(www\.)?linkedin\.com
 ^https?://(www\.)?x\.com
 ^https?://(www\.)?twitter\.com
+web\.archive\.org
+hrw\.org
+# The IAM Blast Radius tool page is a vendored SPA shipped as static files;
+# its internal anchors are not crawlable HTML (deploy also --exclude-path's
+# output/tools for the same reason).
+rivassec\.com/tools/iam-blast-radius
