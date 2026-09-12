@@ -1,0 +1,52 @@
+# RivasSec | DevSecOps, Kubernetes, AWS IAM
+
+> DevSecOps, cloud, and platform security notes by Oliver Rivas. Threat-model-driven writing on AWS IAM, Kubernetes, incident response and forensics, AI security, threat intelligence and OSINT, hiring security, and controls that hold up in production.
+
+Curated index for language models. Generated: 2026-09-12 | 21 posts. Full URL list: https://rivassec.com/sitemap.xml
+Every post is also available as raw Markdown at the linked .md URL. The expanded index with full post content is at https://rivassec.com/llms-full.txt
+## Artificial Intelligence
+- [When the Output Carries the Signal: Claude, SynthID-Text, and the New Detection Attack Surface](https://rivassec.com/claude-synthid-text-watermark-attack-surface.html) (2026-08): Claude's SynthID-Text watermark lives in token selection rather than hidden characters, reshaping detection, scrubbing, spoofing, and enterprise misuse. [Markdown](https://rivassec.com/claude-synthid-text-watermark-attack-surface.md)
+## DevSecOps
+- [Finding the Cryptominer Hiding in a Docker overlay2 Layer](https://rivassec.com/cryptominer-in-the-docker-layer.html) (2026-09): A runtime detector flagged mining but ps and ss came back clean. The miner lived in the image's overlay2 diff layer, relaunched on every container restart. [Markdown](https://rivassec.com/cryptominer-in-the-docker-layer.md)
+- [When Telemetry Turns Predatory: A DevSecOps Look at Digital Repression in Venezuela](https://rivassec.com/telemetry-turns-predatory.html) (2026-08): Every SOC pipeline has a shadow version. Using Venezuela as a grounded case study: how the primitives security engineers build become surveillance systems. [Markdown](https://rivassec.com/telemetry-turns-predatory.md)
+- [Testing an IAM Analyzer Against Its Own Claims](https://rivassec.com/testing-an-iam-analyzer-against-its-own-claims.html) (2026-08): I checked my IAM blast-radius analyzer against a catalog I did not write and a harness that attacks its own tests. Twice, a green build hid a wrong answer. [Markdown](https://rivassec.com/testing-an-iam-analyzer-against-its-own-claims.md)
+- [The DevSecOps Guide: Hardening, IAM, and Incident Response](https://rivassec.com/devsecops-guide.html) (2026-08): A hub for the DevSecOps writing on rivassec.com: IAM blast radius, TLS, incident response, and controls that hold up in production. [Markdown](https://rivassec.com/devsecops-guide.md)
+- [IAM Blast Radius Is an Architecture Problem, Not a Policy Problem](https://rivassec.com/iam-blast-radius-architecture-problem.html) (2026-07): Most IAM reviews start too late, after the account structure and trust boundaries are set. Least privilege means smaller failure domains, not fewer actions. [Markdown](https://rivassec.com/iam-blast-radius-architecture-problem.md)
+- [The Discovery Layer Is Broken: Hiring as an Observability Problem](https://rivassec.com/hiring-discovery-layer-broken.html) (2026-07): The senior engineering market has a routing failure, not a talent shortage: resumes and funnels index for keywords and discard the signal seniors depend on. [Markdown](https://rivassec.com/hiring-discovery-layer-broken.md)
+- [Bandit-Clean Pwnagotchi Plugins: How `subprocess` Goes From Risk to Routine](https://rivassec.com/pwnagotchi-plugin-bandit-hardening.html) (2026-06): Hardening a Pwnagotchi plugin against Bandit B602/B603/B607: shutil.which() full paths, argv-list calls, input validation, and the nosec discipline. [Markdown](https://rivassec.com/pwnagotchi-plugin-bandit-hardening.md)
+- [TLS Has Three Jobs. Forget the Rest.](https://rivassec.com/tls-three-jobs.html) (2026-06): TLS gets easier when you stop walking the handshake and name what it's for. It does three jobs; anchor those and it becomes design, not memorization. [Markdown](https://rivassec.com/tls-three-jobs.md)
+- [Adoption Is a Security Control: Notes from Paving a Road](https://rivassec.com/paved-road-adoption-as-control.html) (2026-05): A control developers route around isn't a control. Field notes on making the secure path the easy path: 40% less remediation time, 27% less pipeline latency. [Markdown](https://rivassec.com/paved-road-adoption-as-control.md)
+- [IAM Roles That Fail Loud: Small Defaults, Big Difference](https://rivassec.com/iam-safe-defaults-fail-loud.html) (2026-05): A small Pulumi library that treats IAM safety as a precondition: mandatory permissions boundary, no wildcard trust, no wildcard actions, every opt-out explicit. [Markdown](https://rivassec.com/iam-safe-defaults-fail-loud.md)
+- [The Trust Decay: Why Modern Hiring Has Become an Adversarial System](https://rivassec.com/trust-decay-adversarial-hiring.html) (2026-05): The tech hiring pipeline has shifted from talent discovery to risk mitigation. In 2026, the engineers who get hired are the ones who are hardest to doubt. [Markdown](https://rivassec.com/trust-decay-adversarial-hiring.md)
+- [Elasticsearch Snapshot Verification, Minimal Privileges](https://rivassec.com/elasticsearch-secure-snapshot-verification.html) (2025-04): Verify Elasticsearch snapshots without manage_snapshot: minimal API key, Prometheus-friendly script, and a public tools repo for hardened monitoring automation. [Markdown](https://rivassec.com/elasticsearch-secure-snapshot-verification.md)
+- [Taming the OOM Killer: Process Priorities on Linux](https://rivassec.com/oom-killer-process-prioritization.html) (2025-04): The Linux OOM Killer decides what dies under memory pressure. Protect sshd, mysqld, and other critical processes with oom_score_adj via a small script. [Markdown](https://rivassec.com/oom-killer-process-prioritization.md)
+- [The 208.5-Day Kernel Bug: Uptime, Overflow, and Risk](https://rivassec.com/208-day-kernel-bug-lessons.html) (2025-04): A 2012 Linux kernel bug caused CPU lockups after 208.5 days of uptime due to an integer overflow in sched_clock(). RHEL 5/6 lesson: patch and observe uptime. [Markdown](https://rivassec.com/208-day-kernel-bug-lessons.md)
+## Incident Retrospectives
+- [The 2012 Leap Second: When Time Broke Java and the Cloud](https://rivassec.com/leap-second-chaos-2012.html) (2025-04): The 2012 leap second broke Reddit, Yelp, Java apps, and more. A retrospective on how fragile timekeeping bit the cloud, and what SRE teams should do today. [Markdown](https://rivassec.com/leap-second-chaos-2012.md)
+## Kubernetes Security
+- [Hardening Kubernetes Deployments](https://rivassec.com/hardening-k8s.html) (2025-04): Pod-level Kubernetes guardrails aligned with the Pod Security Standards Restricted profile: non-root, no caps, read-only FS, NetworkPolicies, SA hardening. [Markdown](https://rivassec.com/hardening-k8s.md)
+## Projects
+- [The Teensy That Failed in Public: An EFI Brute Force, Hours Late](https://rivassec.com/teensy-efi-bruteforce-hours-late.html) (2026-05): In 2013 Hackaday called my MacBook EFI brute force a failure; hours later it worked. Three rate-limiting defenses, each leaking at a different seam. [Markdown](https://rivassec.com/teensy-efi-bruteforce-hours-late.md)
+- [Never Lose Connection: Multi-Phone Bluetooth Tethering for Pwnagotchi](https://rivassec.com/pwnagotchi-bluetooth-tethering.html) (2025-07): bt-tether-multi is a Pwnagotchi plugin for intelligent multi-phone Bluetooth tethering with automatic WAN failover and silent-disconnect recovery in the field. [Markdown](https://rivassec.com/pwnagotchi-bluetooth-tethering.md)
+## Threat Intelligence
+- [Prompt Injection Will Become a Supply Chain Evasion Technique](https://rivassec.com/prompt-injection-supply-chain-evasion.html) (2026-06): Prompt injection's threat model is older than the term. The mechanism is new, the objective is the evasion goal attackers have pursued for decades. [Markdown](https://rivassec.com/prompt-injection-supply-chain-evasion.md)
+- [Catching a Nation-State Proxy: OSINT on Twitter](https://rivassec.com/venezuela-twitter-proxy-osint.html) (2025-04): In 2012 I traced a state-aligned Twitter proxy tied to Venezuela's ruling party. OSINT lessons for spotting subtle, credential-phishing nation-state infra. [Markdown](https://rivassec.com/venezuela-twitter-proxy-osint.md)
+## Key pages
+- [About RivasSec](https://rivassec.com/pages/about.html): who writes this site and why.
+- [DevSecOps Guide](https://rivassec.com/devsecops-guide.html): hub page linking the core DevSecOps writing.
+- [Categories](https://rivassec.com/categories.html): all posts grouped by topic.
+- [Accessibility](https://rivassec.com/accessibility/): accessibility statement.
+
+## Tools and code
+- [IAM Blast Radius](https://rivassec.com/tools/iam-blast-radius/): in-browser AWS IAM policy analyzer; computes blast radius and privilege-escalation paths client-side, no policy leaves the page.
+- [secure-iam-lint](https://github.com/rivassec/secure-iam-lint): the analyzer engine behind the tool page.
+- [iam-safe-defaults](https://github.com/rivassec/iam-safe-defaults): Pulumi library for IAM roles with safety as a precondition.
+- [elasticsearch-tools](https://github.com/rivassec/elasticsearch-tools): minimal-privilege Elasticsearch snapshot verification.
+- [pwnagotchi plugins](https://github.com/rivassec/pwnagotchi): hardened Pwnagotchi plugins, including multi-phone Bluetooth tethering.
+- [GitHub: rivassec](https://github.com/rivassec): all public code.
+
+## Meta
+- Author: Oliver Rivas
+- Security contact: https://rivassec.com/.well-known/security.txt
+- Feeds: https://rivassec.com/feeds/all.atom.xml and https://rivassec.com/feeds/all.rss.xml
+- Cite as: rivassec.com (Oliver Rivas), with the post URL and date.
