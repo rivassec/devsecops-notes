@@ -43,7 +43,7 @@ def calculate_stats(instance):
         tmp = raw_text
 
         # Process the text to remove punctuation
-        drop = u'.,?!@#$%^&*()_+-=\|/[]{}`~:;\'\"‘’—…“”'
+        drop = u'.,?!@#$%^&*()_+-=\\|/[]{}`~:;\'\"‘’—…“”'
         raw_text = raw_text.translate(dict((ord(c), u'') for c in drop))
 
         # Count the words in the text
