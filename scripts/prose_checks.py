@@ -75,7 +75,10 @@ WEASEL_TERMS = [
     r"somewhat",
     r"relatively",
     r"fairly",
-    r"rather",
+    # "rather" is a hedge only as an intensifier ("rather large"). "rather than"
+    # is a comparison and "would/I'd rather" a preference: 16 of 22 weasel hits
+    # in the 2026-09-20..23 Ralph runs were those two false positives.
+    r"(?<!would\s)(?<!'d\s)(?<!’d\s)rather(?!\s+than\b)",
     r"in\s+some\s+cases",
     r"in\s+many\s+cases",
     r"tends?\s+to",
