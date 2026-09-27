@@ -1,55 +1,56 @@
 Title: Every Alert Is Your Alert: When IR Tooling Trips Your Own EDR
-Date: 2026-07-01
-Modified: 2026-07-01
+Date: 2026-09-18
+Modified: 2026-09-18
 Author: Oliver Rivas
 Category: DevSecOps
-Tags: incident-response, edr, mitre-attack, t1105, runbook, ai-tooling
+Tags: incident-response, edr, mitre-attack, runbook, ai
 Slug: every-alert-is-your-alert
+Series: Anatomy of a Container Incident
 Og_image: images/og/every-alert-is-your-alert.png
+Cover: images/covers/every-alert-is-your-alert.png
 Summary: My EDR fired a true-positive T1105 ingress-tool-transfer on my own analyst laptop mid-investigation. The runbook gap is older than the tool that tripped it.
-Status: draft
-Published_after: 2026-06-19
 
 [TOC]
 
-During a recent incident-response engagement, the EDR on my analyst laptop fired a true-positive against my own activity. The detection was a high-severity ingress-tool-transfer alert, MITRE T1105, against a process tree that started at my shell, descended through an LLM-driven coding assistant session running with elevated permissions, and ended at two `curl` calls fetching the attacker's dropper into `/tmp` for hash and content analysis.
+Mid-engagement on a live incident, the EDR on my analyst laptop fired a true-positive against my own activity. The detection was a high-severity ingress-tool-transfer alert, [MITRE T1105](https://attack.mitre.org/techniques/T1105/), against a process tree that started at my shell, descended through an LLM-driven coding assistant session running in a permissive execution mode, and ended at two `curl` calls fetching the attacker's artifacts into `/tmp` for hash and content analysis.
 
 The detection was correct. The traffic was, by every shape the sensor examines, an ingress tool transfer.
 
 It was also me, deliberately, doing my job.
 
-This post is not about defending myself to a SOC. The SOC was right and the EDR was right. This post is about the gap the detection exposes: most IR runbooks still assume the suspicious transfer came from the adversary or the user. Authorized analyst tooling that mirrors adversary behavior is a third category, and almost nobody's runbook handles it.
+This post is not about defending myself to a SOC. It is about the gap the detection exposes: every IR runbook I have written or worked from assumes the suspicious transfer came from the adversary or the user. Authorized analyst tooling that mirrors adversary behavior is a third category, and none of them handle it.
 
 ## The setup
 
-The parent investigation was a confirmed cryptominer running in a containerized workload. The cloud detector's correlation finding gave me the binary path, and I had it pulled out of the image's overlay2 layer within an hour. I covered the host-side investigation in a separate post: [How I Learned to Investigate Docker Image Layers During Incident Response]({filename}cryptominer-in-the-docker-layer.md). Read that first if you want the technical narrative; this post is the meta-incident that ran in parallel.
+The parent investigation was a confirmed cryptominer embedded in a containerized workload's image. The cloud detector's correlation finding gave me the binary path, and within an hour of reading that finding I had the binary pulled out of the image's overlay2 layer. I covered the host-side investigation in a separate post: [Finding the Cryptominer Hiding in a Docker overlay2 Layer]({filename}cryptominer-in-the-docker-layer.md). Read that first if you want the technical narrative; this post is the meta-incident that ran in parallel.
 
 While the host investigation was active, I needed two things off the attacker's infrastructure:
 
-1. The dropper script the binary was pulling from a content-delivery URL.
-2. A second-stage payload referenced in the dropper, hosted on a public paste service.
+1. The dropper script the binary referenced, hosted at a content-delivery URL.
+2. A second-stage payload the binary also referenced, hosted on a public paste service.
 
 I had two reasonable options. I could open both URLs in a browser on a sandbox VM, or I could `curl` them into `/tmp` from my laptop for hashing and side-by-side comparison with the on-disk artifacts I had already extracted.
 
-I chose the second. Faster. No VM context switch. The files were data, not executables; I had no intent to run them. The point was a hash comparison and a static read.
+I chose the second. Faster. No VM context switch. I was treating the files strictly as data - no execute bit, no interpreter invocation, no intent to run them. The point was a hash comparison and a static read.
 
-The agent session I was running already had shell permissions for the investigation. I told it to fetch both URLs into a per-incident evidence directory and SHA-256 them. It did. The EDR noticed.
+That choice deserves a rule rather than a vibe, and I did not have one written down. The version I would write now: direct fetch to a managed endpoint is defensible when the goal is hash-and-static-read and you accept that fetching from corporate egress can tip your hand to an adversary watching download telemetry. Execution, unfamiliar formats, or an engagement where OPSEC matters means isolation and anonymized egress, full stop. The rule also assumes your org permits handling malware-as-data on managed endpoints and that nothing on the box auto-parses or auto-quarantines `/tmp` content; where either fails, the isolation path stops being optional. And the artifacts have a lifecycle: once hashed and read, evidence moves out of `/tmp` into the case store with tightened permissions and comes off the endpoint.
+
+The agent session I was running already had shell permissions for the investigation. I told it to fetch both URLs into a per-incident evidence directory under `/tmp` and SHA-256 them. It did. The EDR noticed.
 
 ## What the EDR saw
 
 From the sensor's perspective the picture was unambiguous:
 
-- A user-space shell was running with elevated privileges
-- A child process was issuing outbound HTTPS to a content-delivery domain that had not been seen on this host before
-- The remote endpoints' content-types were not browsable HTML; they were script and text payloads
-- The destination paths were under `/tmp/`, written for later read or execute
-- The User-Agent was `curl/x.y.z`, not a browser
+- A process tree rooted at an interactive user shell, not a service
+- A child process issuing outbound HTTPS to a content-delivery domain that had not been seen on this host before
+- That child was `curl` with the URLs on its command line - no browser involved, and a `curl/x.y.z` User-Agent, both inferable from process telemetry without touching the TLS payload
+- Script and text payloads written under `/tmp/`, the classic staging location, visible to the sensor once on disk
 
-That is, line for line, the ATT&CK definition of T1105: `Adversaries may transfer tools or other files from an external system into a compromised environment.` The sensor doesn't get to know whether "the compromised environment" is "my laptop during a real IR engagement, used by the analyst conducting the IR." It gets the syscalls, and the syscalls were textbook.
+That is squarely the ATT&CK definition of T1105: "Adversaries may transfer tools or other files from an external system into a compromised environment." Nothing on this host told the sensor otherwise, and nothing should have: no one had pre-registered my laptop as an authorized-analysis endpoint. And I would not want it pre-registered into silence - suppression scoped to analyst endpoints is a standing blind spot on exactly the machines an attacker most wants, while fire-and-close keeps the sensor honest and the audit trail complete. The sensor got the syscalls, and the syscalls were textbook.
 
-The EDR fired. A ticket auto-generated in the issue tracker. Within the hour the detection-and-response team had escalated and closed it `true_positive`.
+The EDR fired. A ticket auto-generated in the issue tracker. I recognized the alert as mine and put the self-attribution comment on the ticket (the skeleton is in the runbook section below). Within the hour the SOC had escalated and closed it `true_positive`, with no containment fired and no call to me. That sequencing was luck, not process: nothing guaranteed my comment would land before a containment decision. Pre-declaration (runbook item 6, below) closes that race only for planned fetches; for reactive ones, the cheapest mitigation is a ping to the SOC channel at fetch time - fifteen seconds that turns luck back into process.
 
-That last word is the interesting one. By the platform's taxonomy, the disposition was correct. The sensor was not wrong. The behavior was real. The label, however, doesn't capture the structural fact: the source was an authorized analyst, the activity was sanctioned, and the resulting telemetry needs a different kind of close than a real intrusion.
+`true_positive` is the interesting label. By the platform's taxonomy it was correct. The label, however, doesn't capture the structural fact: the source was an authorized analyst, the activity was sanctioned, and the resulting telemetry needs a different kind of close than a real intrusion.
 
 ## The category most runbooks miss
 
@@ -66,23 +67,21 @@ What was missing for me on this incident is a fourth bucket:
 The fourth bucket is not the third with a different word. Analyst-attributed events have specific properties that user-attributed events don't:
 
 - The activity is **expected to look malicious** because the analyst is, by definition, interacting with adversary infrastructure
-- The activity is **logged with a specific ticket** that should be the disposition's parent
-- The audit trail should preserve **the link between the parent IR ticket and the EDR alert** so the same incident can be reconstructed end-to-end later
-- Closure should not require the SOC to investigate the analyst's activity from scratch; the closure note should reference the parent
+- The activity is **traceable to a parent IR ticket**: the ticket is the disposition's parent, the EDR alert links back to it, and the closure note references it - so the SOC never investigates the analyst from scratch, and the incident can be reconstructed end-to-end later
 
 I have never seen a runbook with that bucket spelled out.
 
 ## Why this matters more in 2026
 
-This incident would have happened in 2018 too. An analyst who decided to `curl` an attacker URL from a managed laptop has always been a possible source of true-positive EDR traffic. What changed is the volume.
+This incident would have happened in 2018 too. An analyst who decided to `curl` an attacker URL from a managed laptop has always been a possible source of true-positive EDR traffic. What I expect to change is the volume.
 
-In 2018, the analyst who reached for `curl` knew they were about to make their own laptop look briefly like a compromise. They paused. They opened a sandbox VM. They didn't, often.
+In 2018, reaching for `curl` on a managed laptop meant knowingly making it look briefly compromised. The friction was the sandbox VM. Sometimes the analyst paid it; often they didn't.
 
-In 2026, the analyst with an LLM coding-assistant session running has shell access already extended out via the assistant's permissive flag, and the easiest path from "I need to read that payload" to "the payload is on disk and hashed" is to type the request into the agent. The agent doesn't know that pulling the dropper looks identical to the malware pulling the dropper. The agent hasn't read the EDR's MITRE coverage matrix. It just executes.
+In 2026, an analyst whose assistant session runs in a permissive execution mode has shell access already extended out, and the easiest path from "I need to read that payload" to "the payload is on disk and hashed" is to type the request into the agent. The agent I was running didn't know that pulling the dropper looks identical to the malware pulling the dropper. It hadn't read the EDR's MITRE coverage matrix. It just executed.
 
-This is not a problem with the agent. The agent is doing exactly what an analyst would do without one. The agent makes the friction lower, which means the same path gets taken more often, which means the same EDR alerts get fired more often, by more analysts, on more endpoints.
+Most of this is not a problem with the agent. On the fetch itself, the agent did what I would have done by hand. The agent makes the friction lower, which means the same path gets taken more often, which means the same EDR alerts get fired more often, by more analysts, on more endpoints. One axis does break the equivalence, and it deserves its own sentence: an agent that fetches adversary content should not also read that content into its own context while it holds shell permissions. An analyst reading a script in a pager has no instruction-following channel to hijack; a shell-privileged agent parsing attacker-authored text does - the same evasion class I wrote about in [Prompt Injection Will Become a Supply Chain Evasion Technique]({filename}prompt-injection-supply-chain-evasion.md). Hash with non-LLM tooling, or read the payload in a session that has no execution rights.
 
-If your team has any LLM-driven shell access on managed laptops, your EDR is about to start logging a class of true positives that your runbook does not handle gracefully. Mine wasn't. I had to invent the closure procedure on the spot and write it down after.
+If your team has any LLM-driven shell access on managed laptops, expect your EDR to start logging a class of true positives that your runbook does not handle gracefully. Mine wasn't. I had to invent the closure procedure on the spot and write it down after.
 
 ## What I changed in my own runbook
 
@@ -105,13 +104,14 @@ If I were writing this into a team-level runbook (and I am, separately), the sec
 > 1. Link the alert to the parent IR ticket
 > 2. Name the specific tool, command, or agent session that originated the traffic
 > 3. Acknowledge that the underlying detection logic was correct
-> 4. Match the EDR platform's disposition (do not argue for a different one)
-> 5. Be reviewed by a second analyst within 24 hours so we are not relying on a single analyst's word
+> 4. Match the EDR platform's disposition taxonomy; where the platform offers an expected-activity label, use it, and do not argue for a different verdict
+> 5. Be reviewed by a second analyst within 24 hours so we are not relying on a single analyst's word. The reviewer verifies rather than reads: process telemetry confirms the named session originated the traffic, and the fetched URLs sit inside the parent ticket's scope. A solo shop substitutes a manager or on-call reviewer, or attaches the telemetry snapshot at close time so the verification can happen later
+> 6. Where the fetch is planned rather than reactive, declare the intent on the parent IR ticket before running it; a declaration that predates the alert is the fastest triage the SOC will ever do
 
-Step five is the one I want to flag. The fourth bucket has a real abuse vector: an attacker who compromises an analyst account can post a fake self-attribution comment on a real intrusion ticket and walk away. Two-analyst review is the cheapest control I can think of that closes that gap without slowing the analyst down on a real investigation.
+Step five is the one I want to flag. The fourth bucket has a real abuse vector: an attacker who compromises an analyst account can post a fake self-attribution comment on a real intrusion ticket and walk away. Two-analyst review is the cheapest control I can think of that narrows that gap without slowing the analyst down on a real investigation. Scope it honestly, though: the review defends against a compromised account. A compromised analyst endpoint is a different animal - there the attacker's traffic genuinely originates from the analyst's machine, so matching telemetry will corroborate a fake comment - and that is a full host-compromise IR, not a closure-procedure problem.
 
 ## Closing thought
 
-Every alert that fires on your endpoint is your alert. The phrase reads like a corporate poster, and the SOC version of it is fine: take ownership, don't punt, don't let alerts orphan. But the underneath of it, for analysts running modern tooling, is more specific. It means: the runbook for "your EDR pinged on you because you were doing IR" is your runbook to write, because nobody at the EDR vendor wrote it for you. The sensor was right. The disposition is yours.
+Every alert that fires on your endpoint is your alert. The phrase reads like a corporate poster, and the SOC version of it is fine: take ownership, don't punt, don't let alerts orphan. But the underneath of it, for analysts running modern tooling, is more specific. It means: the runbook for "your EDR pinged on you because you were doing IR" is your runbook to write. Some platforms now ship disposition labels that get close - [Microsoft Defender XDR](https://learn.microsoft.com/en-us/defender-xdr/investigate-alerts) classifies expected security-test and red-team activity as "Informational, expected activity", and Microsoft Sentinel ships a "Benign Positive - suspicious but expected" closure - but a label is not a closure procedure. The parent-link, the attribution wording, and the second-analyst check are still yours to define. The sensor was right. The disposition is yours.
 
-For the host-side detail of the parent incident, see [How I Learned to Investigate Docker Image Layers During Incident Response]({filename}cryptominer-in-the-docker-layer.md).
+For the host-side detail of the parent incident, see [Finding the Cryptominer Hiding in a Docker overlay2 Layer]({filename}cryptominer-in-the-docker-layer.md).

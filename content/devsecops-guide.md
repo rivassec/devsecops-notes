@@ -30,6 +30,7 @@ fires against your own tooling, or the 208th day of uptime.
 
 ## Operating Under Pressure
 
+- [Every Alert Is Your Alert: When IR Tooling Trips Your Own EDR](every-alert-is-your-alert.html)
 - [Finding the Cryptominer Hiding in a Docker overlay2 Layer](cryptominer-in-the-docker-layer.html)
 - [The 208.5-Day Kernel Bug: Uptime, Overflow, and Risk](208-day-kernel-bug-lessons.html)
 - [Taming the OOM Killer: Process Priorities on Linux](oom-killer-process-prioritization.html)
