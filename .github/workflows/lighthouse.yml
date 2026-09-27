@@ -101,7 +101,7 @@ jobs:
         # non-success outcome). Mirrors link-rot.yml's single-issue pattern so
         # we never spam. This does NOT fail the run.
         if: steps.lhci.outcome != 'success'
-        uses: peter-evans/create-issue-from-file@v5
+        uses: peter-evans/create-issue-from-file@v6
         with:
           title: 'Lighthouse CI report'
           content-filepath: lighthouse-report.md
