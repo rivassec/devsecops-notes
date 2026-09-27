@@ -84,7 +84,7 @@ The pattern I inferred (and want to flag as inferred, since I never finished rec
 
 This is why `ps` was empty.
 
-The binary was not self-contained, either: it referenced a dropper script on a content-delivery URL and a second-stage payload on a paste service. Retrieving those artifacts for hashing set off its own incident - a story I am writing up separately.
+The binary was not self-contained, either: it referenced a dropper script on a content-delivery URL and a second-stage payload on a paste service. Retrieving those artifacts for hashing set off its own incident, the subject of [Every Alert Is Your Alert]({filename}every-alert-is-your-alert.md).
 
 The pattern repeated on every restart. There had been an unusual amount of container churn for an unrelated stability issue. Each restart re-mounted the poisoned layer, and the sensor logged the execution and the DNS query each cycle; by the inference above, the miner came up briefly, lost the resource fight, and died. The host-level `ps` view, sampled later by a human, missed it every time.
 
@@ -134,4 +134,5 @@ The next incident I investigate will start with the image layers. The container 
 
 ## Related reading
 
+- [Every Alert Is Your Alert]({filename}every-alert-is-your-alert.md): the same engagement from the other side of the sensor, when the IR work itself trips a true-positive on the analyst's own laptop.
 - [Bandit-Clean Pwnagotchi Plugins]({filename}pwnagotchi-plugin-bandit-hardening.md): different threat model, same habit: trust resolved full paths and verified content, never what a file's name claims it is.
