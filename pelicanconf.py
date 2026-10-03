@@ -37,6 +37,8 @@ ASSET_VERSION = _asset_version()
 SITENAME = 'RivasSec | DevSecOps, Kubernetes, AWS IAM'
 SITETITLE = 'RivasSec'
 SITESUBTITLE = 'Infrastructure. Security. Insight.'
+# Feed title only (feed_polish plugin); SITENAME stays the page <title>.
+FEED_TITLE = 'RivasSec'
 SITEURL = 'https://rivassec.com'
 SITEDESCRIPTION = 'Field notes on infrastructure security, cloud hardening, Kubernetes, IAM, and OSINT by RivasSec.'
 OG_IMAGE = 'images/og-default.png'
@@ -90,6 +92,7 @@ PLUGINS = [
     'extract_toc',
     'img_hygiene',
     'md_mirror',
+    'feed_polish',
 ]
 
 # related_posts configuration

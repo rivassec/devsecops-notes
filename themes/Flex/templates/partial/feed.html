@@ -2,6 +2,5 @@
   <link href="{{ FEED_DOMAIN }}/{{ FEED_ALL_ATOM }}" type="application/atom+xml" rel="alternate" title="{{ SITETITLE|default(SITENAME) }} Atom Feed">
 {% endif %}
 
-{% if FEED_ALL_RSS %}
-  <link rel="alternate" type="application/rss+xml" title="{{ SITETITLE|default(SITENAME) }} RSS Feed" href="{{ SITEURL }}/feeds/all.rss.xml">
-{% endif %}
+{# Only the Atom feed is advertised in <head>: one feed per content avoids a confusing
+   choice for subscribers. The RSS file is still built and linked in the footer. #}
