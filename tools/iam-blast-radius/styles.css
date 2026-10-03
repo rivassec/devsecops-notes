@@ -1,0 +1,349 @@
+/* IAM Blast Radius - all styling here (no inline styles; CSP style-src 'self').
+   Fixed dark palette matched to the rivassec.com blog theme (body #1a1c20,
+   text #e6e8eb, Source Sans Pro). The blog ships a fixed dark theme and does
+   not switch on prefers-color-scheme, so neither do we. */
+:root {
+  --bg: #1a1c20;          /* blog body background */
+  --fg: #e6e8eb;          /* blog body text */
+  --heading: #ffffff;
+  --panel: #22252b;       /* slightly lifted surface for callouts/boxes */
+  --border: #33363d;
+  --muted: #9aa0a8;
+  --accent: #6ea8ff;
+  --warn: #e0a44a;
+  --crit: #ff6b81;
+  --ok: #57c98a;
+  /* Graph / SVG palette. SVG text and shapes default to fill:black, which is
+     invisible on the dark body, so every graph class is painted explicitly
+     below. Node fill/stroke and the certainty edge colors are chosen for >=3:1
+     non-text contrast against the body background (WCAG AA graphical objects);
+     each certainty also carries a distinct dash pattern so the five states stay
+     distinguishable without relying on color (T8: blocked must never look like
+     confirmed). */
+  --graph-node-fill: #22252b;
+  --graph-node-stroke: #565c66;
+  /* Passable-role pivot (IAM-107): unknown privileges. Dashed warn-tinted box,
+     distinct from the solid known-grant nodes. */
+  --graph-unknown-fill: #2b2620;
+  --graph-unknown-stroke: #e0a44a;
+  --graph-arrow: #c9ccd1;
+  --cert-confirmed: #ff6b81; /* confirmed-by-policy (grant literally in policy) */
+  --cert-policy-supported: #c98af0; /* policy-supported (needs out-of-scope precondition) */
+  --cert-context-required: #e0a44a; /* context-required (a Condition may gate it) */
+  --cert-potential: #6ea8ff; /* potentially reachable */
+  --cert-blocked: #57c98a; /* blocked by an explicit Deny (safe) */
+  --cert-unknown: #9aa0a8; /* unknown - incomplete context */
+  --edge-decrypt: #4fd6c9; /* can-decrypt (kms:Decrypt) label accent, distinct from can-read */
+  /* IAM-401 lane bands: a faint surface behind each semantic lane and a muted
+     uppercase heading. Both are chrome, not data - low contrast so the paths
+     inside stay dominant. */
+  --graph-lane-band: rgba(255, 255, 255, 0.03);
+  --graph-lane-stroke: #2c2f36;
+  --graph-lane-heading: #8b929c;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0 auto; max-width: 60rem; padding: 1.25rem;
+  font: 16px/1.55 "Source Sans Pro", -apple-system, system-ui, sans-serif;
+  color: var(--fg); background: var(--bg);
+}
+.site-nav { display: flex; flex-wrap: wrap; gap: 1.25rem; margin: 0 0 1rem; font-size: .9rem; }
+.site-nav a { color: var(--accent); text-decoration: none; }
+.site-nav a:hover, .site-nav a:focus-visible { text-decoration: underline; }
+h1 { margin: 0 0 .25rem; font-size: 1.6rem; color: var(--heading); }
+h2 { margin: 1.75rem 0 .5rem; font-size: 1.2rem; color: var(--heading); }
+.tagline, .hint, .status { color: var(--muted); }
+/* IAM-503: single-flight busy state. The findings region carries aria-busy while
+   an analysis job is in flight; dim it slightly so the running state is visible
+   as well as announced. The analyze button shows a wait cursor. */
+.findings[aria-busy="true"] { opacity: .6; }
+#analyze-btn[aria-busy="true"] { cursor: progress; }
+.disclaimer { border-left: 4px solid var(--warn); background: var(--panel);
+  padding: .75rem 1rem; border-radius: 4px; }
+.noscript { border-left: 4px solid var(--accent); background: var(--panel); padding: .75rem 1rem; }
+textarea { width: 100%; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: .9rem;
+  padding: .5rem; border: 1px solid var(--border); border-radius: 4px;
+  background: #14161a; color: var(--fg); }
+.controls { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; margin: .5rem 0; }
+button { font: inherit; padding: .45rem .9rem; border: 1px solid var(--accent);
+  background: var(--accent); color: #0d1117; border-radius: 4px; cursor: pointer; }
+button:hover { filter: brightness(1.08); }
+/* IAM-1001: the Analyze control is disabled until a policy family is selected.
+   Make the disabled state read as inert (not clickable) and suppress the hover
+   brightness so it never looks actionable while blocked. */
+button:disabled, button[disabled] { opacity: .5; cursor: not-allowed; filter: none; }
+button:disabled:hover, button[disabled]:hover { filter: none; }
+button:focus-visible, textarea:focus-visible, input:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+#clear-btn { background: transparent; color: var(--accent); }
+.family-label { color: var(--muted); }
+#policy-family { font: inherit; padding: .4rem .5rem; border: 1px solid var(--border);
+  border-radius: 4px; background: #14161a; color: var(--fg); }
+
+/* IAM-1201: the attached-resource context control, revealed (its `hidden`
+   attribute removed by app.js) only when the Resource-based family is selected.
+   The resource-policy context (attached resource type + ARN) is explicit and
+   required for a resource-based policy. No inline styles (CSP). */
+.resource-context,
+.identity-context { margin: .5rem 0; padding: .6rem .75rem; border: 1px solid var(--border);
+  border-left: 4px solid var(--accent); border-radius: 4px; background: var(--panel); }
+.resource-context .hint,
+.identity-context .hint { margin: 0 0 .35rem; }
+.rc-label { color: var(--muted); }
+#resource-type { font: inherit; padding: .4rem .5rem; border: 1px solid var(--border);
+  border-radius: 4px; background: #14161a; color: var(--fg); }
+.rc-arn { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: .9rem;
+  padding: .4rem .5rem; border: 1px solid var(--border); border-radius: 4px;
+  background: #14161a; color: var(--fg); min-width: min(28rem, 100%); flex: 1 1 18rem; }
+/* IAM-1204: optional owning-account id (S3 same-vs-cross-account). */
+.rc-account { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: .9rem;
+  padding: .4rem .5rem; border: 1px solid var(--border); border-radius: 4px;
+  background: #14161a; color: var(--fg); min-width: min(12rem, 100%); flex: 0 1 12rem; }
+
+/* IAM-505: built-in sample loaders. Fictional policies loadable with one
+   click/keypress; each button has a visible description associated via
+   aria-describedby. Escalation vs neutralized samples are tinted differently so
+   the "obvious escalation" vs "scary-but-neutralized" intent reads at a glance,
+   but the text/marker carries the meaning too (never color alone). No inline
+   styles (CSP). */
+.samples { margin: .9rem 0 .25rem; }
+.samples-h { margin: 0 0 .35rem; font-size: 1rem; color: var(--heading); }
+.samples-list { list-style: none; margin: .5rem 0 0; padding: 0;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: .6rem; }
+.sample-item { display: flex; flex-direction: column; gap: .25rem;
+  border: 1px solid var(--border); border-radius: 6px; padding: .6rem; background: var(--panel); }
+.sample-btn { text-align: left; width: 100%; }
+.sample-btn.sample-neutralized { background: transparent; color: var(--accent); }
+.sample-desc { color: var(--muted); font-size: .85rem; line-height: 1.35; }
+
+/* IAM-501: fail-closed coverage notice. Shown when the policy shape is one the
+   engine does not model (NotPrincipal / resource / role-trust / ambiguous /
+   unmodeled override); analysis stops before rule evaluation. Warning-styled so
+   an empty result is never mistaken for "safe". No inline styles (CSP). */
+.coverage-blocked { border-left: 4px solid var(--warn); background: var(--panel);
+  padding: .75rem 1rem; border-radius: 4px; margin: 0 0 .9rem; }
+.coverage-blocked h3 { margin: 0 0 .5rem; font-size: 1rem; color: var(--heading); }
+dl.coverage-meta { display: grid; grid-template-columns: auto 1fr; gap: .15rem .75rem;
+  margin: 0 0 .5rem; }
+dl.coverage-meta dt { color: var(--muted); }
+dl.coverage-meta dd { margin: 0; }
+ul.coverage-codes { margin: .5rem 0 0; padding-left: 1.1rem; }
+ul.coverage-codes li { margin: .25rem 0; }
+.coverage-code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-weight: 700;
+  color: var(--crit); }
+.coverage-path { font-family: ui-monospace, "SF Mono", Menlo, monospace; color: var(--muted); }
+
+/* IAM-1206: a Deny + NotPrincipal hazard still fails closed, but it is a
+   documented security TRAP, not a plain unsupported shape. Escalate the
+   left-border to the critical color so it reads as a hazard, never an ordinary
+   deny. Inherits every other .coverage-blocked rule. */
+.coverage-hazard { border-left-color: var(--crit); }
+
+/* IAM-502: compact "Analysis coverage" summary panel, rendered above the
+   findings in DOM + visual order. Names what the analysis did / did not cover.
+   Takes a prominent warning state (.coverage-incomplete) whenever unsupported
+   semantic input exists ("unsupported does NOT mean safe"). No inline styles. */
+.coverage-summary { background: var(--panel); border: 1px solid var(--border);
+  border-radius: 4px; padding: .6rem .9rem; margin: 0 0 .9rem; }
+.coverage-summary.coverage-incomplete { border-left: 4px solid var(--warn); }
+.coverage-summary h3 { margin: 0 0 .5rem; font-size: 1rem; color: var(--heading); }
+dl.coverage-summary-meta { display: grid; grid-template-columns: auto 1fr;
+  gap: .15rem .75rem; margin: 0; }
+dl.coverage-summary-meta dt { color: var(--muted); }
+dl.coverage-summary-meta dd { margin: 0; }
+.coverage-layers { margin: .5rem 0 0; font-size: .9rem; }
+.coverage-layers-label { color: var(--muted); }
+.coverage-warn { margin: .5rem 0 0; padding-top: .5rem; border-top: 1px solid var(--border);
+  color: var(--warn); font-weight: 600; }
+ul.coverage-unsupported { margin: .35rem 0 0; padding-left: 1.1rem; }
+ul.coverage-unsupported li { margin: .2rem 0; }
+ul.coverage-mismatches { margin: .35rem 0 0; padding-left: 1.1rem; }
+ul.coverage-mismatches li { margin: .3rem 0; }
+.coverage-mismatch-remediation { color: var(--muted); }
+.coverage-versions { margin: .6rem 0 0; padding-top: .5rem; border-top: 1px solid var(--border);
+  color: var(--muted); font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: .82rem; }
+
+/* IAM-106: risk-summary header above the findings table. Scannable counts +
+   the single highest-risk path in one line. No inline styles (CSP style-src). */
+.risk-summary { background: var(--panel); border: 1px solid var(--border);
+  border-radius: 4px; padding: .6rem .9rem; margin: 0 0 .9rem; }
+.risk-summary h3 { margin: 0 0 .5rem; font-size: 1rem; color: var(--heading); }
+dl.risk-summary-counts { display: grid; grid-template-columns: 1fr auto;
+  gap: .15rem .75rem; margin: 0; }
+dl.risk-summary-counts dt { color: var(--muted); }
+dl.risk-summary-counts dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; }
+dl.risk-summary-counts dd.rs-count-nonzero { color: var(--crit); font-weight: 700; }
+.risk-summary-top { margin: .6rem 0 0; padding-top: .5rem; border-top: 1px solid var(--border);
+  font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: .88rem; }
+.risk-summary-top .rs-top-label { font-family: "Source Sans Pro", sans-serif; color: var(--muted); }
+
+/* Findings table: compact rows (line-height and padding kept tight so rows
+   don't sprawl vertically). */
+.findings { overflow-x: auto; }
+.findings table { width: 100%; border-collapse: collapse; line-height: 1.35; font-size: .93rem; }
+.findings th, .findings td { text-align: left; padding: .3rem .6rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+.findings thead th { border-bottom: 2px solid var(--border); color: var(--muted); font-weight: 600; padding-top: 0; }
+.findings tbody tr:hover { background: var(--panel); }
+.sev-critical { color: var(--crit); font-weight: 700; }
+.sev-high { color: var(--crit); }
+.sev-medium { color: var(--warn); }
+.sev-low, .sev-info { color: var(--muted); }
+/* IAM-101: the Finding cell is a disclosure toggle that expands the per-row
+   detail. Styled as inline text (not the big accent button) so the table stays
+   scannable; the [+]/[-] marker keeps the state legible without color. */
+.findings .row-toggle {
+  font: inherit; text-align: left; padding: 0; margin: 0;
+  background: transparent; border: 0; color: var(--fg); cursor: pointer;
+}
+.findings .row-toggle:hover { color: var(--accent); }
+.findings .row-toggle[aria-expanded="true"] { color: var(--accent); font-weight: 600; }
+.findings .row-toggle-marker { font-family: ui-monospace, "SF Mono", Menlo, monospace; color: var(--muted); white-space: pre; }
+
+/* IAM-101 / IAM-105: per-finding detail row. Holds the why/limit/remediation
+   prose moved out of the table columns, plus (for compound paths) the
+   risk-factor checklist + subsumed findings. Collapsed via [hidden] by default
+   so rows stay compact. */
+.findings tr.finding-detail[hidden] { display: none; }
+.findings tr.finding-detail td { background: var(--panel); padding: .5rem .6rem .7rem; }
+dl.finding-detail-prose { margin: 0 0 .3rem; }
+dl.finding-detail-prose dt { color: var(--muted); font-size: .82rem; font-weight: 600; margin-top: .4rem; }
+dl.finding-detail-prose dt:first-child { margin-top: 0; }
+dl.finding-detail-prose dd { margin: .1rem 0 0; }
+.risk-factors-heading, .subsumed-heading { margin: .1rem 0 .25rem; color: var(--muted); font-size: .85rem; font-weight: 600; }
+.subsumed-heading { margin-top: .5rem; }
+ul.risk-factors, ul.subsumed-findings { margin: 0; padding-left: .5rem; list-style: none; }
+ul.risk-factors li, ul.subsumed-findings li { font-size: .88rem; }
+ul.risk-factors .rf-box { font-family: ui-monospace, "SF Mono", Menlo, monospace; white-space: pre; }
+ul.risk-factors li.rf-present .rf-box { color: var(--crit); }
+ul.risk-factors li.rf-absent .rf-box { color: var(--ok); }
+ul.subsumed-findings li { color: var(--muted); }
+
+/* IAM-506: condition classification list in the finding detail. Colour encodes
+   how the text READS (narrows/selects/broadens/context-required); a textual
+   [tag] carries the meaning without relying on colour. */
+.condition-class-heading { margin: .5rem 0 .25rem; color: var(--muted); font-size: .85rem; font-weight: 600; }
+ul.condition-classes { margin: 0; padding-left: .5rem; list-style: none; }
+ul.condition-classes li { font-size: .88rem; }
+ul.condition-classes .cc-tag { font-family: ui-monospace, "SF Mono", Menlo, monospace; white-space: pre; color: var(--muted); }
+ul.condition-classes li.cc-narrows .cc-tag { color: var(--ok); }
+ul.condition-classes li.cc-selects .cc-tag { color: var(--accent); }
+ul.condition-classes li.cc-broadens .cc-tag { color: var(--crit); }
+ul.condition-classes li.cc-context-required .cc-tag { color: var(--warn); }
+
+.graph { min-height: 8rem; border: 1px dashed var(--border); border-radius: 4px; padding: .5rem; overflow-x: auto; }
+.graph svg { max-width: 100%; height: auto; }
+.graph-summary { margin: 0 0 .5rem; color: var(--muted); font-size: .9rem; }
+
+/* IAM-008 attack-path SVG. The renderer (engine/render-graph.js) emits a fixed
+   vocabulary of classes; style every one explicitly because SVG text/shapes
+   otherwise fall back to fill:black (invisible on the dark theme). */
+svg.iam-graph { color: var(--fg); }
+svg.iam-graph text { fill: var(--fg); font-family: "Source Sans Pro", -apple-system, system-ui, sans-serif; }
+
+/* Nodes: a lifted box with a light border and light labels. */
+.iam-graph .node-box { fill: var(--graph-node-fill); stroke: var(--graph-node-stroke); stroke-width: 1.5; }
+.iam-graph .node-type { fill: var(--muted); font-size: 11px; font-weight: 600; letter-spacing: .02em; }
+.iam-graph .node-label { fill: var(--fg); font-size: 13px; }
+/* IAM-107 privilege-transition markers. The passable-role pivot has UNKNOWN
+   privileges - drawn with a dashed border + warn tint so it visibly differs
+   from the solid, KNOWN-grant nodes (the two edges into/out of it are what the
+   policy actually proves). The service-execution node is the potential
+   privilege-boundary crossing, flagged with an accent border. Non-text contrast
+   only; the label/type text already spells out the distinction. */
+.iam-graph .node-unknown-priv .node-box {
+  fill: var(--graph-unknown-fill); stroke: var(--graph-unknown-stroke);
+  stroke-width: 1.5; stroke-dasharray: 5 3;
+}
+.iam-graph .node-unknown-priv .node-type { fill: var(--warn); }
+.iam-graph .node-boundary .node-box { stroke: var(--accent); stroke-width: 2; }
+
+/* IAM-401 semantic lanes. Each non-empty lane is a labeled band grouping the
+   paths inside it (PRIVILEGE ESCALATION / IDENTITY EXPANSION / DATA ACCESS /
+   SCOPE / EXPLICIT DENY), stacked top-to-bottom, drawn behind the edges/nodes.
+   The band is deliberately faint (chrome), and the heading is an uppercase
+   muted label so it orients without competing with the path colors. */
+.iam-graph .lane-band { fill: var(--graph-lane-band); stroke: var(--graph-lane-stroke); stroke-width: 1; }
+.iam-graph .lane-heading {
+  fill: var(--graph-lane-heading); font-size: 11px; font-weight: 700;
+  letter-spacing: .08em; text-transform: uppercase;
+}
+
+/* Edges. The wide transparent hit path is for pointer/focus targeting only; the
+   visible edge-path carries the per-certainty stroke + dash. fill:none is
+   essential - a filled bezier renders as a black blob instead of a line. */
+.iam-graph .graph-edge { cursor: pointer; }
+.iam-graph .edge-hit { fill: none; stroke: transparent; stroke-width: 18; }
+.iam-graph .edge-path { fill: none; stroke: var(--cert-unknown); stroke-width: 2; }
+.iam-graph .edge-label {
+  fill: var(--fg); font-size: 12px;
+  /* Paint a background-colored halo behind the text so labels stay legible
+     where they cross an edge or node. */
+  stroke: var(--bg); stroke-width: 3px; paint-order: stroke; stroke-linejoin: round;
+}
+
+/* Per-certainty edge encoding: distinct COLOR and distinct DASH (non-color cue).
+   Applied to the visible edge-path within each certainty-tagged edge group. */
+.iam-graph .graph-edge.cert-confirmed .edge-path { stroke: var(--cert-confirmed); stroke-width: 2.6; }
+.iam-graph .graph-edge.cert-policy-supported .edge-path { stroke: var(--cert-policy-supported); stroke-width: 2.6; stroke-dasharray: 10 3; }
+.iam-graph .graph-edge.cert-context-required .edge-path { stroke: var(--cert-context-required); stroke-dasharray: 7 4; }
+.iam-graph .graph-edge.cert-potential .edge-path { stroke: var(--cert-potential); stroke-dasharray: 2 4; stroke-linecap: round; }
+.iam-graph .graph-edge.cert-blocked .edge-path { stroke: var(--cert-blocked); stroke-dasharray: 9 3 2 3; }
+.iam-graph .graph-edge.cert-unknown .edge-path { stroke: var(--cert-unknown); stroke-dasharray: 4 6; }
+
+/* IAM-202 edge-TYPE accent. Certainty owns the path stroke/dash; the edge-type
+   class rides the LABEL so kms:Decrypt (can-decrypt, "can decrypt ciphertext")
+   is visually distinct from a plain data read (can-read, "reads sensitive
+   data") regardless of certainty color. */
+.iam-graph .graph-edge.edge-type-can-decrypt .edge-label { fill: var(--edge-decrypt); font-style: italic; }
+
+/* IAM-1202 resource-access edge accent: an external/anonymous principal reaching
+   the ATTACHED resource reads distinctly from an identity capability edge. */
+.iam-graph .graph-edge.edge-type-can-access-resource .edge-label { fill: var(--cert-potential); font-style: italic; }
+
+/* Shared arrowhead marker. A neutral light fill guarantees it is visible on the
+   dark theme; where supported, context-stroke tints it to match the edge color
+   so the direction cue reads with the certainty color. */
+.iam-graph .iam-arrowhead { fill: var(--graph-arrow); stroke: none; }
+@supports (fill: context-stroke) {
+  .iam-graph .iam-arrowhead { fill: context-stroke; }
+}
+
+/* Keyboard/pointer affordance on an edge (role=button, tabindex=0). */
+.iam-graph .graph-edge:hover .edge-path { stroke-width: 3.4; }
+.iam-graph .graph-edge:focus { outline: none; }
+.iam-graph .graph-edge:focus-visible .edge-hit { stroke: var(--accent); stroke-opacity: .35; }
+.iam-graph .graph-edge:focus-visible .edge-path { stroke-width: 4; }
+.iam-graph .graph-edge:focus-visible .edge-label { fill: var(--accent); }
+
+/* Status text drawn inside the SVG when there is nothing / too much to show. */
+.iam-graph .edge-empty-note { fill: var(--muted); font-size: 13px; }
+.iam-graph .graph-truncated { fill: var(--warn); font-size: 12px; font-weight: 600; }
+
+/* Evidence inspect panel (HTML built by render-graph.js renderEvidence). */
+.evidence { margin-top: .6rem; }
+.evidence-empty { color: var(--muted); font-size: .9rem; margin: .25rem 0; }
+.evidence-title { margin: .2rem 0 .4rem; font-size: 1rem; color: var(--heading);
+  font-family: ui-monospace, "SF Mono", Menlo, monospace; word-break: break-word; }
+dl.evidence-summary, dl.evidence-item { margin: 0; display: grid;
+  grid-template-columns: max-content 1fr; gap: .1rem .6rem; }
+dl.evidence-summary dt, dl.evidence-item dt { color: var(--muted); font-size: .82rem; font-weight: 600; }
+dl.evidence-summary dd, dl.evidence-item dd { margin: 0; word-break: break-word; }
+ol.evidence-list { margin: .5rem 0 0; padding-left: 1.2rem; }
+ol.evidence-list li { margin-bottom: .5rem; }
+ol.evidence-list li dl.evidence-item { padding: .35rem .5rem; background: var(--panel);
+  border: 1px solid var(--border); border-radius: 4px; }
+.evidence-caveat { margin: .5rem 0 0; color: var(--warn); font-size: .82rem; }
+
+a { color: var(--accent); }
+
+/* IAM-509: crawlable "About this tool" docs section (staged launch content).
+   Plain prose, no inline styles (CSP). h3 sub-headings for each topic. */
+.docs { margin-top: 1.5rem; }
+.docs h3 { margin: 1.25rem 0 .35rem; font-size: 1.02rem; color: var(--heading); }
+.docs p, .docs li { color: var(--fg); }
+.docs ul { margin: .35rem 0; padding-left: 1.25rem; }
+.docs li { margin: .3rem 0; }
+.docs code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: .88em;
+  background: var(--panel); border: 1px solid var(--border); border-radius: 3px; padding: 0 .25rem; }
+
+.site-footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border); color: var(--muted); font-size: .85rem; }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
