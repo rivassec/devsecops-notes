@@ -1,6 +1,6 @@
 Title: IAM Blast Radius in CI: Designing a Gate That Fails Closed
 Date: 2026-10-09
-Modified: 2026-10-09
+Modified: 2026-10-10
 Author: Oliver Rivas
 Category: DevSecOps
 Tags: aws, iam, github-actions, ci-cd, devsecops, cloud-security
@@ -133,7 +133,7 @@ Turning on a blocking check across an estate on day one is how security tooling 
 
 This does not replace the architecture work. As I argued in [IAM Blast Radius Is an Architecture Problem, Not a Policy Problem](iam-blast-radius-architecture-problem.html), most of the risk is decided before anyone opens a JSON file: account boundaries, trust relationships, which pipeline can reach production. A policy gate cannot fix a flat account structure.
 
-What it can do is hold the line on drift, in the place where drift happens. It does not promise that every passing policy is safe, and it cannot guarantee that every risky change is detected. It promises something narrower and more useful: an enforceable, auditable check that names potential permission risk during review, and refuses to approve what it could not analyze.
+What it can do is hold the line on drift, in the place where drift happens. The promise is deliberately narrow: an enforceable, auditable check that names potential permission risk during review, and refuses to approve what it could not analyze. It does not certify that a passing policy is safe, or that every risky change gets caught.
 
 ## Try it
 
