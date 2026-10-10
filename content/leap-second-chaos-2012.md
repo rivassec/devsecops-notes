@@ -17,8 +17,6 @@ On June 30, 2012, a **leap second** was inserted into atomic time via NTP to kee
 
 What followed were 500 errors, high latency, and CPU usage spikes that crippled backend services.
 
----
-
 ## Why Did It Break?
 
 Though seemingly minor, the leap second broke systems in subtle and severe ways:
@@ -27,8 +25,6 @@ Though seemingly minor, the leap second broke systems in subtle and severe ways:
 - **Userland Misbehavior:** While many Linux kernels handled the leap second without panic, userland libraries and runtimes (especially Java) choked under non-monotonic time changes.
 - **Cloud Weakness Exposure:** An Amazon EC2 outage the day before had already left infrastructure strained. With fewer available instances, systems were more vulnerable when the leap second hit.
 - **Limited Real-World Testing:** Simulating leap seconds under actual load, in full-stack distributed systems, proved nearly impossible. Pre-patch validations missed edge behavior.
-
----
 
 ## Real-World Impact
 
@@ -39,8 +35,6 @@ This bug hit nearly every high-scale Java-based system:
 - **Behavior**: High CPU loops, 500 errors, frozen services, delayed recovery due to restart complexity
 
 In many cases, the kernel *didn't fail*. The chaos came from how services processed time at runtime.
-
----
 
 ## Mitigation & Takeaways
 
@@ -70,8 +64,6 @@ sudo /etc/init.d/ntp start
 - **Design for Temporal Anomalies**: Distributed systems should assume wall-clock time can regress, freeze, or desync, and gracefully degrade when it does.
 - **Simulated Testing Isn't Enough**: Always combine synthetic load with chaos testing under unusual real-world conditions (e.g., leap seconds, DNS failures, NTP skew).
 
----
-
 ## Epilogue
 
 The 2012 leap second chaos wasn't caused by incompetence. Many teams patched, prepared, and tested. But the leap second hit during degraded cloud capacity, exposed fragile JVM behavior, and stressed assumptions in time-sensitive code.
@@ -79,8 +71,6 @@ The 2012 leap second chaos wasn't caused by incompetence. Many teams patched, pr
 A single second exposed fault lines in the foundations of the modern internet.
 
 In 2022, the CGPM (General Conference on Weights and Measures) voted to abolish leap seconds by 2035, largely driven by incidents like this one. Until then, the mitigations above remain essential for any system that touches wall-clock time.
-
----
 
 **What other "just time" failures have caught you off guard in production? Let's share war stories.**
 

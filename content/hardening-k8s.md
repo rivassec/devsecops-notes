@@ -26,8 +26,6 @@ securityContext:
 
 This enforces that containers don't run as UID 0, reducing the blast radius of any compromise.
 
----
-
 ### 2. Drop All Linux Capabilities
 
 ```yaml
@@ -41,8 +39,6 @@ securityContext:
 
 Drop all capabilities by default, then add only what you need.
 
----
-
 ### 3. Disable Privilege Escalation
 
 ```yaml
@@ -52,8 +48,6 @@ securityContext:
 
 This prevents processes inside the container from gaining additional privileges, even if compromised.
 
----
-
 ### 4. Use Read-Only Filesystem
 
 ```yaml
@@ -62,8 +56,6 @@ securityContext:
 ```
 
 This blocks attackers from writing malicious files or installing tools inside the container.
-
----
 
 ### 5. Avoid Host Access
 
@@ -75,8 +67,6 @@ hostIPC: false
 
 Avoid `hostPath` volumes unless absolutely required. These settings ensure your workloads remain isolated from the host.
 
----
-
 ### 6. Use Trusted Images and Scan Them
 
 Use minimal base images (Alpine, Distroless) and trusted registries. Always scan them:
@@ -86,8 +76,6 @@ trivy image your-registry/app:tag
 ```
 
 This helps catch known CVEs before deployment.
-
----
 
 ### 7. Handle Secrets via Volumes (Not Env Vars)
 
@@ -107,8 +95,6 @@ containers:
 
 Mounting secrets as volumes avoids accidental exposure via logs or `/proc`.
 
----
-
 ### 8. Restrict Network Traffic with NetworkPolicies
 
 ```yaml
@@ -124,8 +110,6 @@ spec:
 
 Start with a default-deny policy per namespace, then explicitly allow only the traffic your services need. Without NetworkPolicies, any pod can communicate with any other pod in the cluster.
 
----
-
 ### 9. Harden ServiceAccount Usage
 
 ```yaml
@@ -133,8 +117,6 @@ automountServiceAccountToken: false
 ```
 
 Disable automatic token mounting for pods that don't need API server access. Create dedicated ServiceAccounts with minimal RBAC bindings rather than relying on the `default` account, which often accumulates unnecessary permissions.
-
----
 
 ## Final Thoughts
 

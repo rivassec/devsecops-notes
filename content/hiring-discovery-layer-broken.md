@@ -20,8 +20,6 @@ Many of those same engineers struggle to get past the first screen.
 
 That gap says something important about the hiring system. Hiring has a discovery problem. The industry has signal. The signal is poorly indexed, poorly routed, and poorly evaluated.
 
----
-
 ## Observability everywhere except the hiring funnel
 
 Modern engineering organizations spend enormous effort building observability into production systems. They trace requests, measure latency, monitor failure modes, and build dashboards so they can understand what is happening under pressure.
@@ -31,8 +29,6 @@ Then many of those same organizations rely on one of the least observable proces
 A resume is a lossy compression format for engineering judgment. It takes years of tradeoffs, incidents, architecture decisions, migrations, security reviews, compliance work, and production scars, then compresses them into titles, company names, tools, and bullet points.
 
 That format can find familiar labels. It struggles to find judgment.
-
----
 
 ## Senior signal lives in context
 
@@ -52,8 +48,6 @@ This creates a predictable failure mode. Candidates optimize resumes for search.
 
 The system then calls the result a talent shortage.
 
----
-
 ## Some shortages are real. This one is mostly routing.
 
 Some shortages are real. Security, infrastructure, identity, Kubernetes, cloud architecture, incident response, and compliance automation all require people who have made real decisions under constraint. Those people are hard to find.
@@ -70,8 +64,6 @@ If your hiring process cannot distinguish operational judgment from keyword opti
 
 A process that screens mostly for tool names will undervalue people who understand failure modes. A funnel that treats context as noise will discard the signal senior roles depend on.
 
----
-
 ## The fix starts with calibration
 
 Hiring managers need to give recruiters sharper signal than a list of tools. A good intake should include examples of real problems the person will solve, failure modes the team cares about, and evidence that would prove competence.
@@ -86,8 +78,6 @@ For example:
 
 Those questions produce better screens than a wall of product names.
 
----
-
 ## Better artifacts than resumes
 
 Candidates also need better artifacts.
@@ -99,8 +89,6 @@ We already produce better artifacts than resumes. Design reviews, postmortems, t
 Most hiring systems ignore them because they are not structured for automated parsing. That is the core indexing failure.
 
 The shape works both ways. My own writeup of a program that produced measurable outcomes plus the political stall I caused myself, [Adoption Is a Security Control]({filename}paved-road-adoption-as-control.md), is the kind of artifact I would rather be evaluated on than a bullet list. The complement to this post is [The Trust Decay]({filename}trust-decay-adversarial-hiring.md), which frames the same pipeline from the candidate side.
-
----
 
 ## What hiring teams should actually ask for
 
@@ -114,8 +102,6 @@ Teams should look for direct proof.
 - Ask how they knew a control was working in production.
 
 These questions surface judgment. Keyword filters surface vocabulary. The two are not the same signal.
-
----
 
 ## The routing failure has a name
 

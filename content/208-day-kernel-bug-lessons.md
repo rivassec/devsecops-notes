@@ -25,8 +25,6 @@ return ns;
 
 Once the computed value exceeded `0xffffffffffffffff`, it wrapped around, leading to undefined behavior in the scheduler and an unrecoverable state requiring a manual reboot.
 
----
-
 ## Why This Matters to DevSecOps
 
 This bug is more than a curiosity. It's a classic case study in:
@@ -37,16 +35,12 @@ This bug is more than a curiosity. It's a classic case study in:
 
 Affected systems included RHEL 5.0 through 5.5 and early RHEL 6 versions running kernels below `2.6.32-220.4.*`. Some Debian-based distributions were likely impacted, though documentation was less complete.
 
----
-
 ## Takeaways for Modern Systems
 
 - **Live patching tools** like Ksplice, KernelCare, and kpatch can reduce reboot pressure
 - **Observability stacks** should alert on uptime thresholds and kernel messages (`dmesg`, `uptime`, scheduler warnings)
 - **Compliance frameworks** often require timely OS patching, and this bug illustrates why
 - **CI/CD pipelines for OS-level components** should test for edge cases, including time-based and overflow scenarios
-
----
 
 Even today, this incident reminds us that uptime isn't always a badge of honor. In some cases, it's a quiet countdown to failure. For another time-math failure at cloud scale, see [The Chaos of the Leap Second (2012)]({filename}leap-second-chaos-2012.md).
 

@@ -23,6 +23,15 @@ repos:
         # so the script's "if argv: scan those" path takes over.
         # No additional args needed.
 
+      - id: no-section-dividers
+        name: no horizontal-rule section dividers in posts
+        entry: scripts/check_section_dividers.py
+        language: python
+        types: [markdown]
+        files: ^content/
+        # Pre-commit passes only the staged files, so the script scans
+        # those; the script itself skips vendored/generated content docs.
+
       - id: paradigm-shift-warn
         name: warn on antithesis / paradigm-shift sentences
         entry: scripts/check_paradigm_shift.py
