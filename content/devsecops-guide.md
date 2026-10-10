@@ -18,6 +18,7 @@ fires against your own tooling, or the 208th day of uptime.
 
 ## Identity and Access
 
+- [IAM Blast Radius in CI: Designing a Gate That Fails Closed](iam-blast-radius-github-action.html)
 - [IAM Blast Radius Is an Architecture Problem, Not a Policy Problem](iam-blast-radius-architecture-problem.html)
 - [IAM Roles That Fail Loud: Small Defaults, Big Difference](iam-safe-defaults-fail-loud.html)
 - Interactive: [IAM Blast Radius analyzer](/tools/iam-blast-radius/) - paste an IAM policy, see its potential blast radius in your browser
