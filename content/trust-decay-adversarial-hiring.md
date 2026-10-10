@@ -16,8 +16,6 @@ The tech job market is currently defined by a jarring paradox. On one side, elit
 
 The hiring pipeline has ceased to be a discovery engine designed to find talent. It has evolved into a defensive perimeter designed to mitigate risk in a low-trust environment.
 
----
-
 ## From Discovery to Defense: The Death of Honest Inputs
 
 Historically, recruitment operated on the assumption of "manageable honesty." You received a stack of resumes, assumed most were reasonably accurate, and searched for the best fit.
@@ -29,8 +27,6 @@ That model has collapsed. Today, hiring systems are bombarded by "strategically 
 - **Signal Dilution:** When every applicant looks like a 95% match on paper, the "match" itself becomes meaningless.
 
 From a systems engineering perspective, the pipeline is now facing adversarial inputs. When a system is flooded with high-volume, low-integrity data, it naturally shifts its posture from "open" to "fortified."
-
----
 
 ## How the System Defends Itself
 
@@ -48,15 +44,11 @@ As presentation becomes commoditized through AI, "looking the part" no longer se
 
 Because the public pipeline is compromised, hiring teams are retreating to "pre-validated" channels. This explains the heavy reliance on internal referrals and known networks. Less cronyism than architectural necessity: it is how teams find signal in a sea of noise.
 
----
-
 ## The Feedback Loop of Friction
 
 We are trapped in a recursive cycle. Candidates optimize harder to bypass filters; in response, filters become more draconian. This creates a "Degraded Trust Loop" where the system's own success at filtering further incentivizes candidates to game the system.
 
 Ultimately, the pipeline stops being a way to find people and becomes a way to manage risk.
-
----
 
 ## The New Strategy: Proof Over Presentation
 
@@ -69,8 +61,6 @@ To bypass the defensive perimeter, engineers must move beyond the resume. The go
 - **Architectural Transparency:** Don't just list technologies; publish (abstracted) system designs, trade-off analyses, and post-mortems of failure modes. A worked example of the shape: [Adoption Is a Security Control]({filename}paved-road-adoption-as-control.md) - the program that produced -40% remediation time and -27% pipeline latency, plus the four-month adoption stall I caused myself.
 - **Tangible Artifacts:** Real-world contributions - whether through open-source modules, infrastructure-as-code repos, or documented homelabs - serve as proof-of-work. The artifact that survives your attention is the one that names the failure modes inline, not just the success path; the longest case study I have of that is [The Teensy That Failed in Public]({filename}teensy-efi-bruteforce-hours-late.md).
 - **Impact-Oriented Signaling:** Shift from "tasks completed" to "business outcomes achieved." Hard numbers on risk reduction, latency improvements, or cost savings are much harder to hallucinate effectively.
-
----
 
 ## A DevSecOps View of the Career
 

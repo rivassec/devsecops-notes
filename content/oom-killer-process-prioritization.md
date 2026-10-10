@@ -15,8 +15,6 @@ In resource-constrained environments (especially virtual private servers, CI age
 
 The OOM Killer uses heuristics (like memory usage and the `oom_score_adj` value) to select processes it deems less essential. But you don't have to leave that critical decision entirely to the kernel's default logic.
 
----
-
 ## The Incident
 
 Years ago, I had to recover a VPS via remote console. A quick dive into `/var/log/messages` showed that the OOM Killer had struck, terminating critical services. The culprit? A perfect storm:
@@ -26,8 +24,6 @@ Years ago, I had to recover a VPS via remote console. A quick dive into `/var/lo
 - IRC flood attempts while `irssi` was connected
 
 This combination overwhelmed system memory. Without process priority tuning, the OOM Killer started targeting processes based on its heuristics, which felt indiscriminate from an operational view as it even took down `sshd`.
-
----
 
 ## The Mitigation Strategy
 
@@ -98,8 +94,6 @@ done < "$CONFIG"
 echo "OOM score adjustment complete."
 ```
 
----
-
 ## Running the Script
 
 You can run this periodically via cron or on boot with systemd. For example:
@@ -126,8 +120,6 @@ sudo systemctl daemon-reload
 sudo systemctl enable --now oom-adjuster.service
 ```
 
----
-
 ## Security Considerations
 
 From a [DevSecOps perspective](devsecops-guide.html), OOM prioritization is a security hardening technique as much as an uptime one:
@@ -139,15 +131,11 @@ From a [DevSecOps perspective](devsecops-guide.html), OOM prioritization is a se
 
 Misconfigured systems where critical daemons (like `iptables`, `auditd`, `sshd`, or VPN tunnels) are killed first expose themselves to avoidable downtime and security gaps.
 
----
-
 ## Modern Use Cases
 
 - **Kubernetes nodes**: Influence OOM behavior via Quality of Service (QoS) classes (set by defining resource requests/limits in pod specs), or apply node-level tuning using methods like the script above for critical node components (e.g., kubelet, container runtime). For the pod-side of the same problem, see [Hardening Kubernetes Deployments]({filename}hardening-k8s.md).
 - **CI/CD runners**: Protect build agents or essential runner services from being killed during resource-intensive test suites or concurrent builds.
 - **Shared hosting / VPS**: Prioritize core services (web server, database, SSH) over potentially less critical user processes or background tasks.
-
----
 
 ## Conclusion
 

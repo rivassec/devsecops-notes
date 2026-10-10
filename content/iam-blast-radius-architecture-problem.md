@@ -21,8 +21,6 @@ At that point, the policy review is often just cleanup. Useful cleanup, but stil
 
 The real IAM question is not only, "Does this policy look least privileged?" The real question is, "What happens when this identity is compromised?"
 
----
-
 ## Policies as documents vs identities as architecture
 
 A lot of IAM programs stay shallow because they focus on permissions as isolated documents instead of treating identities as part of the system architecture. A policy can avoid wildcards and still create an unacceptable failure domain. A role can look narrow in isolation and still become dangerous because of who can assume it, what it can mutate, or what other paths it unlocks.
@@ -35,8 +33,6 @@ Least privilege is not just fewer actions. Least privilege is smaller failure do
 - A Kubernetes service account that can patch workloads, mount secrets, or exec into pods is not just a cluster detail. It can become a lateral movement primitive.
 
 This is why reviewing IAM as JSON hygiene misses the point.
-
----
 
 ## Better questions than "does this policy contain `*`?"
 
@@ -58,8 +54,6 @@ Those questions move IAM reviews out of the policy document and back into the ar
 
 I turned those questions into a browser tool: [IAM Blast Radius analyzer](/tools/iam-blast-radius/) checks a pasted IAM policy for escalation paths, role-assumption reach, and data-access exposure locally, grading each finding by certainty - potential blast radius, not effective permissions.
 
----
-
 ## Attackers experience the environment as a graph
 
 Attackers do not experience your environment as a set of clean policy JSONs. They experience it as a graph. Trust relationships, deployment pipelines, secrets, buckets, queues, roles, runners, clusters, and logs all become edges in that graph.
@@ -74,8 +68,6 @@ A permission that looks harmless in one context can become serious in another:
 
 IAM design has to account for that graph.
 
----
-
 ## Where compliance checklists fall short
 
 Compliance checklists can tell you whether a policy contains obvious broad permissions. They can tell you whether MFA is required. They can tell you whether a role was unused for 90 days.
@@ -85,8 +77,6 @@ Those checks are useful. They are not enough.
 They do not always tell you whether a compromised CI runner can mutate production. They do not tell you whether a developer role can indirectly mutate identity through Terraform. They do not tell you whether an application can turn a read permission into credential exposure. They do not tell you whether logs would show the difference between normal automation and abuse.
 
 The checklist verifies the shape of the policy. It does not verify the shape of the blast radius.
-
----
 
 ## Good IAM architecture starts with containment
 
@@ -103,8 +93,6 @@ Containment is a design choice made before the policy review begins:
 This is slower than rubber-stamping a policy PR. It is also the work that actually matters.
 
 The safer default is easier to enforce when it is baked into the tooling. A small library like [iam-safe-defaults]({filename}iam-safe-defaults-fail-loud.md) can move the argument from "should this role have a permissions boundary" to "why is this role opting out of one," which is where you want the conversation to live.
-
----
 
 ## Trust made visible
 
