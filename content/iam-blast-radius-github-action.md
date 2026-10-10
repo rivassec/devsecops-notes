@@ -27,8 +27,6 @@ So this post is organized around three questions:
 
 Then, how I would roll it out.
 
----
-
 ## What the engine knows
 
 It reports potential blast radius, not effective permissions. It reasons about the policy in front of it, not your whole organization, so it cannot see the SCPs, permissions boundaries or session policies layered on top unless you scan those too. Findings are graded by how much the policy alone supports them. That limitation is stated rather than hidden, because a control that overclaims gets ignored the first time it is wrong.
@@ -36,8 +34,6 @@ It reports potential blast radius, not effective permissions. It reasons about t
 It recognizes 13 families of privilege escalation, from `iam:PassRole` into compute and policy version tricks to cross-account role assumption and data access through KMS. Version 1.1.0 added one I kept finding in real policies: taking over compute that already holds a role. `ssm:SendCommand`, `ssm:StartSession`, EC2 Instance Connect and presigned SageMaker notebook URLs give code execution on something that already has a role, and that role is now yours. No `iam:PassRole` required.
 
 What makes this usable is restraint. Every escalation family ships with "does not fire" fixtures: the conditioned grant, the explicit deny that really blocks, the read-only variant. A false positive in a gate costs more than a missed finding in a report, because it teaches engineers to route around the gate. I wrote about building that corpus in [Testing an IAM Analyzer Against Its Own Claims](testing-an-iam-analyzer-against-its-own-claims.html), including the two times a green build was hiding a wrong answer.
-
----
 
 ## What happens when it does not know
 
@@ -101,8 +97,6 @@ jobs:
 
 The workflow grants nothing at the top level and `contents: read` to the one job that needs it. Both actions are pinned to commit SHAs; `rivassec/secure-iam-lint@v1` is the moving major tag if you prefer to track releases.
 
----
-
 ## Can someone get past the gate without defeating the engine?
 
 ### The scanner assumes its input is hostile
@@ -126,8 +120,6 @@ Nobody needs to defeat the analysis engine to merge a risky policy. It is usuall
 
 None of these exploit the scanner. They exploit the pipeline around it. So the gate needs the same treatment as any other control: required in a branch ruleset, workflow file under CODEOWNERS review, an inventory of where every deployable policy comes from with a scan path for each, and alerting on skipped runs and configuration changes, not only on failures.
 
----
-
 ## Rolling it out as a control
 
 Turning on a blocking check across an estate on day one is how security tooling earns a bypass. The rollout I would use:
@@ -137,15 +129,11 @@ Turning on a blocking check across an estate on day one is how security tooling 
 3. **Ratchet the threshold.** Move to `fail-on: high` once the existing findings are triaged: fixed, or accepted by someone who owns the risk. Lower it later if the signal holds.
 4. **Route findings to owners.** The engineer who wrote the policy should see the finding in their pull request, and the person who can accept the risk should own the exception, not the security team by default.
 
----
-
 ## Where it fits
 
 This does not replace the architecture work. As I argued in [IAM Blast Radius Is an Architecture Problem, Not a Policy Problem](iam-blast-radius-architecture-problem.html), most of the risk is decided before anyone opens a JSON file: account boundaries, trust relationships, which pipeline can reach production. A policy gate cannot fix a flat account structure.
 
 What it can do is hold the line on drift, in the place where drift happens. It does not promise that every passing policy is safe, and it cannot guarantee that every risky change is detected. It promises something narrower and more useful: an enforceable, auditable check that names potential permission risk during review, and refuses to approve what it could not analyze.
-
----
 
 ## Try it
 
