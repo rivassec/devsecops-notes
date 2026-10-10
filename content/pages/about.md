@@ -3,79 +3,37 @@ Slug: about
 Author: RivasSec
 Summary: Security engineer profile - cloud-native infrastructure security, Kubernetes and AWS IAM hardening, compliance automation.
 
-## DevSecOps | Infrastructure Security | Automation
+## Staff Security Engineer - Cloud & Platform Security
 
-Cloud-native security engineer focused on designing hardened infrastructure, building scalable security pipelines, and implementing pragmatic compliance automation to support secure and efficient cloud operations.
+I build and ship security controls in public: an AWS IAM blast-radius
+analyzer with a live tool, a Pulumi IAM library with safe defaults, and
+a threat-model addendum for the case where the operator is the adversary.
 
----
-
-### Writing & Blog
-
-Insights on Kubernetes security, IAM hardening, incident retrospectives, and security automation:
- [**rivassec.com**](https://rivassec.com)
-
+Most of my day-job security work happens in private repositories, so this
+profile shows the side of it I can build in public.
 
 ---
 
-### GitHub Stats
+### Projects
 
-![Top Language](https://img.shields.io/github/languages/top/rivassec/secure-iam-lint?color=blue&label=Top%20Language)
-![Stars](https://img.shields.io/github/stars/rivassec/secure-iam-lint?style=social)
-![Last Commit](https://img.shields.io/github/last-commit/rivassec/secure-iam-lint)
-
----
-
-### Security-Focused Contributions
-
-* [`secure-iam-lint`](https://github.com/rivassec/secure-iam-lint) - CI-ready IAM policy linter to detect insecure patterns early in development
-* [`cf-token-links`](https://github.com/rivassec/cf-token-links) - Flask-based microservice for generating expiring access links
-* [`eks-rbac-audit`](https://github.com/rivassec/eks-rbac-audit) - RBAC role analyzer for Kubernetes focused on privilege escalation detection
-* [`elasticsearch-tools`](https://github.com/rivassec/elasticsearch-tools) - Hardened snapshot verification scripts with Prometheus observability
-* [`tw-disinfo-defense`](https://github.com/rivassec/tw-disinfo-defense) - Toolkit for investigating Twitter disinformation using OAuth automation
-* [`efi-bruteforce`](https://github.com/rivassec/efi-bruteforce) - Early research into USB-based EFI input automation (featured on Hackaday)
+* [`secure-iam-lint`](https://github.com/rivassec/secure-iam-lint) - Client-side AWS IAM policy blast-radius analyzer (fail-closed, zero-backend); powers the live tool at [rivassec.com/tools/iam-blast-radius](https://rivassec.com/tools/iam-blast-radius/). [Testing an IAM Analyzer Against Its Own Claims](https://rivassec.com/testing-an-iam-analyzer-against-its-own-claims.html)
+* [`iam-safe-defaults`](https://github.com/rivassec/iam-safe-defaults) - Pulumi component library for AWS IAM with safe defaults that fail loud: mandatory permissions boundary, no wildcard trust, every opt-out explicit. [IAM Roles That Fail Loud](https://rivassec.com/iam-safe-defaults-fail-loud.html)
+* [`weaponization-threat-model`](https://github.com/rivassec/weaponization-threat-model) - One-page addendum to STRIDE/LINDDUN/PASTA for modeling the legitimate operator as the adversary. Applied in [When Telemetry Turns Predatory](https://rivassec.com/telemetry-turns-predatory.html)
+* [`devsecops-notes`](https://github.com/rivassec/devsecops-notes) - Source for [rivassec.com](https://rivassec.com): Pelican with link-check, accessibility (pa11y), and gitleaks CI.
+* Smaller and archival: [`cf-token-links`](https://github.com/rivassec/cf-token-links) (token-scoped redirects), [`elasticsearch-tools`](https://github.com/rivassec/elasticsearch-tools) (least-privilege snapshot verification), [`efi-bruteforce`](https://github.com/rivassec/efi-bruteforce) (2013 Teensy EFI research, featured on Hackaday).
 
 ---
 
-### Professional Contributions
+### Writing - [rivassec.com](https://rivassec.com)
 
-Work under [@oliveratprimer](https://github.com/oliveratprimer) includes:
+Start here: [Testing an IAM Analyzer Against Its Own Claims](https://rivassec.com/testing-an-iam-analyzer-against-its-own-claims.html). Latest:
 
-* Designing FedRAMP-aligned security automation pipelines
-* Deploying Zero Trust and hardened Kubernetes environments
-* Building CI/CD workflows that support compliance and audit readiness
-
----
-
-### Toolbox
-
-* **Infrastructure:** AWS, EKS, Terraform, Pulumi, CloudFormation
-* **Security:** IAM, RBAC, CIS Benchmarks, FIPS, Zero Trust
-* **Tooling:** Trivy, Checkov, Vault, CrowdStrike, GitHub Actions
-* **Languages:** Python, Bash, YAML (daily use), Go (familiar)
+<!-- BLOG-POST-LIST:START -->
+- [Every Alert Is Your Alert: When IR Tooling Trips Your Own EDR](https://rivassec.com/every-alert-is-your-alert.html)
+- [Finding the Cryptominer Hiding in a Docker overlay2 Layer](https://rivassec.com/cryptominer-in-the-docker-layer.html)
+- [When Telemetry Turns Predatory: A DevSecOps Look at Digital Repression in Venezuela](https://rivassec.com/telemetry-turns-predatory.html)
+<!-- BLOG-POST-LIST:END -->
 
 ---
 
-### Areas of Focus
-
-* Scaling Kubernetes and AWS hardening efforts
-* Policy-as-code pipelines for audit-driven security automation
-* Tooling that bridges security assurance and developer velocity
-* Embedding compliance into infrastructure and CI/CD workflows
-* Reproducibility and observability in DevSecOps systems
-
----
-
-### Featured Projects
-
-* [`secure-iam-lint`](https://github.com/rivassec/secure-iam-lint) - Linter for AWS IAM policies, designed to prevent privilege escalation and misconfigurations in CI pipelines.
-* [`eks-rbac-audit`](https://github.com/rivassec/eks-rbac-audit) *(in progress)* - Kubernetes RBAC analyzer to surface overly permissive roles and privilege escalation vectors.
-* [`cf-token-links`](https://github.com/rivassec/cf-token-links) - Secure access link service with expiration controls, built for shareable profiles and recruiter access.
-* [`elasticsearch-tools`](https://github.com/rivassec/elasticsearch-tools) - Minimal-permission scripts for verifying Elasticsearch snapshots and exposing Prometheus-style metrics.
-* [`tw-disinfo-defense`](https://github.com/rivassec/tw-disinfo-defense) - OAuth-driven automation toolkit for analyzing disinformation patterns on Twitter.
-* [`efi-bruteforce`](https://github.com/rivassec/efi-bruteforce) - Archival project demonstrating low-level input automation on EFI screens, featured in 2013 by Hackaday.
-
----
-
-> Security is infrastructure, not a feature.
-
-All contributions are built for clarity, reproducibility, and operational reliability.
+> Controls that fail closed.
