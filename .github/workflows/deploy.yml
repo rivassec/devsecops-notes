@@ -89,6 +89,11 @@ jobs:
         # URL exclusions live in .lycheeignore (single source of truth, shared
         # with the weekly link-rot workflow; lychee reads it automatically).
         # Path exclusions stay inline: .lycheeignore holds URL patterns only.
+        # 503 is accepted because github.com throttles Actions runners on
+        # /blob/ pages for hours at a time (2026-10-10: every deploy blocked
+        # while the same URLs returned 200 elsewhere). A 503 says nothing
+        # about whether a link is broken, so it must not block a deploy;
+        # 404s still fail, and the weekly link-rot job still reports 503s.
         uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
         with:
           args: >-
@@ -96,7 +101,7 @@ jobs:
             --base https://rivassec.com
             --remap "https://rivassec.com/ file://${{ github.workspace }}/output/"
             --verbose
-            --accept 200..=299,429
+            --accept 200..=299,429,503
             --max-retries 5
             --retry-wait-time 2
             --exclude-path output/feeds
