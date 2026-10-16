@@ -1,5 +1,6 @@
 Title: Prompt Injection Will Become a Supply Chain Evasion Technique
 Date: 2026-06-12
+Modified: 2026-10-16
 Category: Threat Intelligence
 Tags: ai, supply-chain, prompt-injection, evasion, defensive-architecture
 Slug: prompt-injection-supply-chain-evasion
@@ -97,6 +98,6 @@ Treat LLM scanner output as evidence, the same way you would treat any other ana
 
 ## A new trust boundary
 
-Every time defenders add a new interpreter to a security workflow, they create a new trust boundary. Large language models are now part of that path.
+Every time defenders add a new interpreter to a security workflow, they create a new trust boundary. Large language models are now part of that path. Provenance signals are next: once enterprises automate decisions on a watermark detector, that detector becomes the same kind of boundary, which I examine in [When the Output Carries the Signal]({filename}claude-synthid-text-watermark-attack-surface.md).
 
 The reason this matters to me: I write security tooling for a living, and the tools I trust most are the ones that fail loud and route around themselves when they get confused. That is the property prompt injection takes away from your scanner. Get it back.

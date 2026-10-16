@@ -190,6 +190,7 @@ RELATIVE_URLS = True
 TAG_CLOUD_MAX_ITEMS = 10
 MENUITEMS = [
     ('About', 'https://rivassec.com/pages/about.html'),
+    ('Guide', 'https://rivassec.com/devsecops-guide.html'),
     ('Categories', 'https://rivassec.com/categories.html'),
     ('Search', 'https://rivassec.com/search/'),
     ('Tools', 'https://rivassec.com/tools/iam-blast-radius/'),
@@ -282,9 +283,12 @@ CATEGORY_INTROS = {
 
 # Homepage featured posts: hand-picked slugs, ordered. Surfaced at the
 # top of index.html as a "Start here" panel ahead of the chronological
-# feed.
+# feed. Rule: only feature posts that have aged off page 1 of the feed
+# (the newest DEFAULT_PAGINATION posts) — the template does not dedupe,
+# so a featured recent post would appear twice. Revisit every few posts
+# as strong pieces fall off page 1.
 FEATURED_POST_SLUGS = [
-    'paved-road-adoption-as-control',
     'iam-safe-defaults-fail-loud',
-    'teensy-efi-bruteforce-hours-late',
+    'paved-road-adoption-as-control',
+    'trust-decay-adversarial-hiring',
 ]
