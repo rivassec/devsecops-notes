@@ -1,6 +1,6 @@
 Title: Catching a Nation-State Proxy: OSINT on Twitter
 Date: 2025-04-17
-Modified: 2026-06-04
+Modified: 2026-10-16
 Tags: osint, threat-intelligence, phishing, devsecops, venezuela
 Category: Threat Intelligence
 Slug: venezuela-twitter-proxy-osint
@@ -87,7 +87,7 @@ At the time of discovery, this site **did not contain malicious code**, but the 
 
 The proxy remained active until at least December 2012, shortly before elections. To this day, the archived proxy content and WHOIS records serve as a warning about the ease with which social media can be co-opted in hostile environments.
 
-This investigation was one of the earliest times I realized how fragile trusted infrastructure becomes in the hands of a motivated actor, and how critical open-source techniques are in defending it.
+This investigation was one of the earliest times I realized how fragile trusted infrastructure becomes in the hands of a motivated actor, and how critical open-source techniques are in defending it. Fourteen years on, the same state has industrialized that playbook; I trace how a proxy on a login page grew into a national surveillance pipeline in [When Telemetry Turns Predatory]({filename}telemetry-turns-predatory.md).
 
 **Have you ever spotted unusual network redirections or infrastructure anomalies? What tools or tactics helped you confirm your suspicions?**
 
