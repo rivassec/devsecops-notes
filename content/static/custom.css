@@ -916,6 +916,21 @@ main footer a {
 /* Series navigation box (partial/series_nav.html): ordered part list shown
    when a post belongs to a Series: with 2+ published members. */
 .series-nav {
+  /* Reset the Flex theme's unscoped aside rules (base: inline-block 90px
+     high, 70% wide, #333 background; >=768px: position:fixed;left:0;
+     width:25vw;height:100vh), which otherwise pin this box as a fixed
+     full-height left sidebar over the article. Same bug and same reset as
+     aside.article-toc (fixed 2026-08-16); missed when series-nav shipped. */
+  position: static;
+  display: block;
+  width: auto;
+  height: auto;
+  top: auto;
+  left: auto;
+  right: auto;
+  bottom: auto;
+  z-index: auto;
+  text-align: left;
   max-width: 760px;
   margin: 20px auto;
   padding: 14px 22px;
