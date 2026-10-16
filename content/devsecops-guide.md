@@ -45,6 +45,7 @@ fires against your own tooling, or the 208th day of uptime.
 
 ## AI Security and Threat Intelligence
 
+- [The Laptop Is the Point of No Return: DPRK IT Worker Fraud](detecting-dprk-it-worker-hiring-fraud.html)
 - [When the Output Carries the Signal: Claude, SynthID-Text, and the New Detection Attack Surface](claude-synthid-text-watermark-attack-surface.html)
 - [Prompt Injection Will Become a Supply Chain Evasion Technique](prompt-injection-supply-chain-evasion.html)
 - [Catching a Nation-State Proxy: OSINT on Twitter](venezuela-twitter-proxy-osint.html)
