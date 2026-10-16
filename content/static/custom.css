@@ -921,7 +921,6 @@ main footer a {
   padding: 14px 22px;
   background: var(--bg-elev);
   border: 1px solid var(--border);
-  border-left: 3px solid var(--accent);
   border-radius: 8px;
 }
 .series-nav-title { margin: 0 0 6px; color: var(--fg); }
