@@ -13,7 +13,7 @@ Cover: images/covers/paved-road-adoption-as-control.png
 
 ## Adoption is a security control
 
-A security control developers can route around is a checkbox, not a control.
+If developers can route around a security control, it is a checkbox.
 
 In a previous life, I watched our cloud security model fail in a very specific way. Developers would hit a build break, file a ticket, and ship the workload through a side door. The controls all worked on paper. The audit report read fine. Adoption was the problem, and adoption is what determines whether a control exists in practice or only in slides.
 
@@ -35,7 +35,7 @@ I shipped Pulumi modules with the controls already inside them. Encryption at re
 
 The CI side mirrored this. We gated [Trivy](https://github.com/aquasecurity/trivy) and [Checkov](https://github.com/bridgecrewio/checkov) directly in the pipeline and surfaced their findings in pull request comments, not in a quarterly report. Findings showed up where the developer was already looking, before deploy, while the change was small and the context was fresh. By the time a workload reached production, the failure modes that used to dominate audit findings had been priced out at the PR level.
 
-The principle here is unsexy: the secure default has to be the *path of least resistance*, not the path of most virtue. If the developer has to type more, remember more, or wait more for the secure path, the side door wins. The same logic applies one layer up the stack: TLS misconfigurations stop being a security problem the moment the cert lifecycle is automated by default, which is the lens I take in [TLS Has Three Jobs]({filename}tls-three-jobs.md).
+The principle here is unsexy: the secure default has to be the *path of least resistance*. If the developer has to type more, remember more, or wait more for the secure path, the side door wins. The same logic applies one layer up the stack: TLS misconfigurations stop being a security problem the moment the cert lifecycle is automated by default, which is the lens I take in [TLS Has Three Jobs]({filename}tls-three-jobs.md).
 
 ## 2. The modules lived inside the security org
 
@@ -53,7 +53,7 @@ Adoption stalled for **four months**.
 
 What was happening in retrospect is obvious: as long as two paths existed, the new path was extra work for any team that already had a working pattern in the old one. The new path was easier for greenfield workloads, but most workloads were not greenfield, and the migration cost is what dominated.
 
-I retired the legacy patterns hard. Stopped accepting them in CI, marked them deprecated in code review, and gave teams a fixed window to migrate. Adoption climbed within a single sprint. The lesson - one I keep relearning in different forms - is that *paths in addition* are not adopted, paths in *replacement* are. Unless you are willing to break the side door, what you are building is a recommendation, not a paved road.
+I retired the legacy patterns hard. Stopped accepting them in CI, marked them deprecated in code review, and gave teams a fixed window to migrate. Adoption climbed within a single sprint. The lesson - one I keep relearning in different forms - is that teams adopt a path that *replaces* the old one and ignore a path *added* beside it. Unless you are willing to break the side door, what you are building is a recommendation.
 
 ## What I underestimated: the political cost
 
