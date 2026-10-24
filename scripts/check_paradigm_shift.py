@@ -72,6 +72,22 @@ PATTERNS: list[tuple[re.Pattern[str], str, str]] = [
         "high",
     ),
     (
+        # Restated subject across a period: "The goal is not a prettier policy.
+        # The goal is ..." / 'the transformation is not "X was added." The
+        # transformation is ...'. The rejected part may be a quotation that
+        # contains its own period. Requires the SAME noun after the/this/that
+        # in both sentences (backreference), which keeps ordinary follow-ups
+        # ("The key is not rotated. The vault is sealed.") out.
+        re.compile(
+            rf"(?i)\b(?:the|this|that)\s+(\w+)\s+(?:is|are|was|were)"
+            rf"(?:\s+not|n{_AP}?t)\s+"
+            rf"(?:\"[^\"\n]{{1,80}}\"|“[^”\n]{{1,80}}”|[^.;:\n\"“]{{1,80}})"
+            rf"\.?[\"”]?\s+(?:the|this|that)\s+\1\s+(?:is|are|was|were)\b"
+        ),
+        "antithesis-restated-subject",
+        "high",
+    ),
+    (
         re.compile(
             r"(?i)\bnot\s+[a-z]\w+(?:ing|ed|s|ly)?[,.\s]+but\s+[a-z]\w+"
         ),
