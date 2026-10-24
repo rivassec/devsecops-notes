@@ -135,6 +135,68 @@ class TestRestatedSubject(unittest.TestCase):
         self.assertNotIn("antithesis-restated-subject", labels_for(text))
 
 
+class TestRestatedNoun(unittest.TestCase):
+    """'<Noun> is not X. <Noun> is Y.' without the/this/that (2026-10-23 miss)."""
+
+    def test_bare_noun_not_just(self):
+        # iam-blast-radius-architecture-problem L28
+        text = "Least privilege is not just fewer actions. Least privilege is smaller failure domains."
+        self.assertIn("antithesis-restated-noun", labels_for(text))
+
+    def test_mid_paragraph_and_contraction(self):
+        text = "We tried. Defense in depth isn’t a product. Defense in depth is a habit."
+        self.assertIn("antithesis-restated-noun", labels_for(text))
+
+    def test_bullet(self):
+        text = "- Logging is not a control. Logging is evidence."
+        self.assertIn("antithesis-restated-noun", labels_for(text))
+
+    def test_determiner_form_reported_once(self):
+        text = "The goal is not a prettier IAM policy. The goal is a smaller blast radius."
+        self.assertEqual(labels_for(text), ["antithesis-restated-subject"])
+
+    def test_negative_different_subject(self):
+        text = "Logging is not enabled. Monitoring is on."
+        self.assertNotIn("antithesis-restated-noun", labels_for(text))
+
+    def test_negative_subject_mid_sentence(self):
+        # the repeated words do not open the first sentence
+        text = "We know least privilege is not free. Least privilege is still worth it."
+        self.assertNotIn("antithesis-restated-noun", labels_for(text))
+
+
+class TestPeriodSplitModal(unittest.TestCase):
+    """'... is not just X. It may be / can become Y.' (2026-10-23 miss)."""
+
+    def test_it_may_be(self):
+        # iam-blast-radius-architecture-problem L32
+        text = (
+            "A workload identity that can read secrets is not just an "
+            "application permission. It may be a persistence path."
+        )
+        self.assertIn("antithesis-period-split-modal", labels_for(text))
+
+    def test_it_can_become(self):
+        # iam-blast-radius-architecture-problem L33
+        text = (
+            "A service account that can exec into pods is not just a cluster "
+            "detail. It can become a lateral movement primitive."
+        )
+        self.assertIn("antithesis-period-split-modal", labels_for(text))
+
+    def test_it_becomes(self):
+        text = "The runner is not just a build box. It becomes a deploy credential."
+        self.assertIn("antithesis-period-split-modal", labels_for(text))
+
+    def test_negative_without_just(self):
+        text = "The build is not finished. It can be retried after the fix."
+        self.assertEqual(labels_for(text), [])
+
+    def test_negative_will_be(self):
+        text = "The report is not just late. It will be rewritten."
+        self.assertNotIn("antithesis-period-split-modal", labels_for(text))
+
+
 class TestExistingPatternsStillWork(unittest.TestCase):
     def test_pronoun_period_split_iam_blast(self):
         # iam-blast-radius-github-action L16 (2026-10-23): flagged here, but the

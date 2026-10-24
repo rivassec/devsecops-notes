@@ -28,6 +28,12 @@ Patterns scanned (most precise first):
        to a negated clause followed by an It/They/You + to-be sentence;
        looser period-split parallelism without negation stays LLM-only)
 
+  E — "<Noun> is not X. <Noun> is Y" (restated subject, with or without
+       the/this/that; the same words must open both sentences)
+
+  F — "is not just X. It may be / can become Y" (period-split with a
+       modal; lower precision, its own label so Ralph's LLM decides)
+
   D — "Not X but Y"               (Aristotelian inversion; informational)
 """
 from __future__ import annotations
@@ -85,6 +91,35 @@ PATTERNS: list[tuple[re.Pattern[str], str, str]] = [
             rf"\.?[\"”]?\s+(?:the|this|that)\s+\1\s+(?:is|are|was|were)\b"
         ),
         "antithesis-restated-subject",
+        "high",
+    ),
+    (
+        # Restated bare-noun subject at the start of a sentence: "Least
+        # privilege is not just fewer actions. Least privilege is smaller
+        # failure domains." Same backreference guard as above, for a subject
+        # of one to three words without the/this/that (2026-10-23 miss).
+        re.compile(
+            rf"(?im)(?:^|(?<=[.!?] ))(?:[-*]\s+)?"
+            rf"([a-z]\w*(?:\s+\w+){{0,2}})\s+(?:is|are|was|were)"
+            rf"(?:\s+not|n{_AP}?t)\s+[^.;:\n]{{1,80}}\.\s+"
+            rf"\1\s+(?:is|are|was|were)\b"
+        ),
+        "antithesis-restated-noun",
+        "high",
+    ),
+    (
+        # Period-split with a modal or "become" in the second sentence:
+        # "... is not just a cluster detail. It can become a lateral movement
+        # primitive." Requires "not just" ("The build is not finished. It can
+        # be retried." is ordinary prose). Lower precision than the forms
+        # above (a regex cannot tell whether "It" refers to the rejected
+        # subject), so the label is kept separate and Ralph's LLM pass decides.
+        re.compile(
+            rf"(?i)\b(?:is|are|was|were)(?:\s+not|n{_AP}?t)\s+just\s+"
+            rf"[^.;:\n]{{1,80}}\.\s+(?:It|They|This)\s+"
+            rf"(?:(?:may|might|can|could)\s+(?:also\s+)?(?:be|become)|becomes?)\b"
+        ),
+        "antithesis-period-split-modal",
         "high",
     ),
     (
