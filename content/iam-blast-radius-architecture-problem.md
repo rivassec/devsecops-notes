@@ -25,12 +25,12 @@ The real IAM question is not only, "Does this policy look least privileged?" The
 
 A lot of IAM programs stay shallow because they focus on permissions as isolated documents instead of treating identities as part of the system architecture. A policy can avoid wildcards and still create an unacceptable failure domain. A role can look narrow in isolation and still become dangerous because of who can assume it, what it can mutate, or what other paths it unlocks.
 
-Least privilege is not just fewer actions. Least privilege is smaller failure domains.
+Least privilege means smaller failure domains; trimming actions is one way to get there.
 
 - A CI role that can deploy to every environment is a production-wide failure domain, whatever its name says.
 - A Terraform role that can modify IAM, networking, logging, and state stores is a control plane for the company that happens to be labeled infrastructure automation.
-- A workload identity that can read secrets, write artifacts, or assume a runner role is not just an application permission. It may be a persistence path.
-- A Kubernetes service account that can patch workloads, mount secrets, or exec into pods is not just a cluster detail. It can become a lateral movement primitive.
+- A workload identity that can read secrets, write artifacts, or assume a runner role is also a potential persistence path.
+- A Kubernetes service account that can patch workloads, mount secrets, or exec into pods can become a lateral movement primitive.
 
 This is why reviewing IAM as JSON hygiene misses the point.
 
