@@ -943,3 +943,19 @@ main footer a {
 .series-nav li { margin: 2px 0; line-height: 1.5; }
 .series-nav a { color: var(--accent); }
 .series-nav [aria-current="page"] { font-weight: 600; color: var(--fg); }
+
+/* Links inside running text are underlined (WCAG 1.4.1, 2026-10-23): the
+   accent blue is only 1.78:1 against body text, so color alone does not
+   mark them. Navigation, cards and pills keep their own styles. */
+main p a,
+main li a,
+main td a,
+footer p a {
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+  text-decoration-thickness: 1px;
+}
+main p a:hover,
+main li a:hover,
+main td a:hover,
+footer p a:hover { text-decoration-thickness: 2px; }

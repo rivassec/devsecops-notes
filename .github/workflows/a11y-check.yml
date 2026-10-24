@@ -33,15 +33,20 @@ jobs:
         run: pip install --require-hashes --no-deps -r requirements.txt
 
       - name: Build site
-        run: pelican content -o output -s publishconf.py
+        # SITEURL points at the local server: publishconf's absolute
+        # https://rivassec.com URLs made pa11y load the LIVE stylesheet, so a
+        # PR's CSS change was never what got tested (found 2026-10-23).
+        run: pelican content -o output -s publishconf.py -e 'SITEURL="http://127.0.0.1:8000"'
 
       - name: Set up Node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: "20"
+          node-version: "22"
 
       - name: Install pa11y-ci
-        run: npm install --global pa11y-ci@3.1.0
+        # pa11y-ci 5 (pa11y 10, axe 4.13) for levelCapWhenNeedsReview: pa11y 6
+        # reported axe "incomplete" (needs review) results as errors.
+        run: npm install --global pa11y-ci@5.0.0
 
       - name: Serve built site
         run: |
@@ -57,13 +62,14 @@ jobs:
           done
 
       - name: Run pa11y-ci
-        # Non-blocking for now (2026-06-12). Pa11y is reporting contrast
-        # ratios that disagree with computed styles I can reproduce
-        # locally. Until I can attach a real Chrome devtools session to
-        # the live page and verify the actual computed colors on .c1
-        # spans and the hero h1, this workflow logs findings without
-        # blocking pushes. Flip to blocking once the residual findings
-        # are reproduced and either fixed or proven to be axe gradient
-        # false-positives.
+        # Still non-blocking. The 2026-06-12 contrast "errors" were axe
+        # needs-review results (the hero gradient overlay hides the
+        # background; measured worst case is 5.5:1, above AA), which pa11y 6
+        # reported as errors. levelCapWhenNeedsReview now keeps them as
+        # warnings. Every page in the sitemap is scanned. Flip to blocking
+        # in its own PR once the run is clean.
         continue-on-error: true
-        run: pa11y-ci --config .pa11yci.json
+        run: >-
+          pa11y-ci --config .pa11yci.json
+          --sitemap http://127.0.0.1:8000/sitemap.xml
+          --sitemap-exclude '\.(txt|md|xml)$'
