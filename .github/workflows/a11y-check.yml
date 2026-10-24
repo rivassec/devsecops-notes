@@ -62,13 +62,11 @@ jobs:
           done
 
       - name: Run pa11y-ci
-        # Still non-blocking. The 2026-06-12 contrast "errors" were axe
-        # needs-review results (the hero gradient overlay hides the
-        # background; measured worst case is 5.5:1, above AA), which pa11y 6
-        # reported as errors. levelCapWhenNeedsReview now keeps them as
-        # warnings. Every page in the sitemap is scanned. Flip to blocking
-        # in its own PR once the run is clean.
-        continue-on-error: true
+        # Blocking since 2026-10-23 (36/36 pages clean). The 2026-06-12
+        # contrast "errors" were axe needs-review results (the hero gradient
+        # overlay hides the background; measured worst case is 5.5:1, above
+        # AA), which pa11y 6 reported as errors. levelCapWhenNeedsReview keeps
+        # them as warnings. Every page in the sitemap is scanned.
         run: >-
           pa11y-ci --config .pa11yci.json
           --sitemap http://127.0.0.1:8000/sitemap.xml
