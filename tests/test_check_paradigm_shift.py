@@ -99,7 +99,53 @@ class TestSubjectContractionFormC(unittest.TestCase):
         self.assertIn("antithesis-subj-not-itis", labels_for(text))
 
 
+class TestRestatedSubject(unittest.TestCase):
+    """'The X is not A. The X is B.' - the subject is repeated instead of 'It is'.
+    Missed by every other pattern until 2026-10-23 (found in a full-sentence review)."""
+
+    def test_quoted_rejected_part(self):
+        # telemetry-turns-predatory L67 (2026-10-23): the quote has its own period
+        text = (
+            'From a threat-modeling perspective, the transformation is not '
+            '"surveillance was added." The transformation is that the response '
+            'stage was rewired.'
+        )
+        self.assertIn("antithesis-restated-subject", labels_for(text))
+
+    def test_unquoted(self):
+        # iam-blast-radius-architecture-problem L109
+        text = "The goal is not a prettier IAM policy. The goal is a smaller blast radius."
+        self.assertIn("antithesis-restated-subject", labels_for(text))
+
+    def test_adjective_and_case(self):
+        # telemetry-turns-predatory L57, with odd spacing and capitals
+        text = "THE difference is not architectural.  The Difference is who acts."
+        self.assertIn("antithesis-restated-subject", labels_for(text))
+
+    def test_curly_quotes(self):
+        text = "The fix was not “just a patch.” The fix was a redesign."
+        self.assertIn("antithesis-restated-subject", labels_for(text))
+
+    def test_negative_different_subject(self):
+        text = "The key is not rotated. The vault is sealed."
+        self.assertNotIn("antithesis-restated-subject", labels_for(text))
+
+    def test_negative_no_negation(self):
+        text = "The goal is a smaller policy. The goal is also cheaper to review."
+        self.assertNotIn("antithesis-restated-subject", labels_for(text))
+
+
 class TestExistingPatternsStillWork(unittest.TestCase):
+    def test_pronoun_period_split_iam_blast(self):
+        # iam-blast-radius-github-action L16 (2026-10-23): flagged here, but the
+        # Ralph review dropped this label (fixed in rivassec/research-feed).
+        text = (
+            "The problem is not that engineers cannot read JSON. It is that "
+            "reviewing individual permissions is not the same as reasoning "
+            "about their consequences."
+        )
+        self.assertIn("antithesis-period-split", labels_for(text))
+
     def test_classic_form_a(self):
         text = "It is not a bug, it is a feature."
         self.assertIn("antithesis-it-not-it-is", labels_for(text))
