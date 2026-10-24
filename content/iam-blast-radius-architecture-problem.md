@@ -106,6 +106,6 @@ A clean policy is good. A contained failure domain is better.
 
 The strongest IAM programs understand that distinction. They do not stop at removing wildcards. They design systems where one compromised principal cannot rewrite production, erase the evidence, and call it automation. Adoption of that shape is a control in its own right, which is a longer story told in [Adoption Is a Security Control]({filename}paved-road-adoption-as-control.md).
 
-The goal is not a prettier IAM policy. The goal is a system where one compromised principal cannot become a company-wide incident.
+The goal is a system where one compromised principal cannot become a company-wide incident.
 
 IAM blast radius is an architecture problem. The policy is only where the architecture becomes visible.

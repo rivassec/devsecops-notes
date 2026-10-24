@@ -13,13 +13,13 @@ Summary: A security gate has to say "I don't know" and block on it. The design d
 
 Most IAM risk does not arrive as one obviously dangerous policy. It accumulates: the wildcard added "temporarily", the `iam:PassRole` without an `iam:PassedToService` restriction, the trust policy that quietly gains another account. Each change looks reasonable on its own. Combined with the permissions and trust relationships already in place, it can substantially expand what a compromised identity could reach.
 
-The problem is not that engineers cannot read JSON. It is that reviewing individual permissions is not the same as reasoning about their consequences.
+Engineers can read JSON. The hard part is understanding the combined consequences of a permission set. Reviewing permissions one at a time does not reveal how they interact.
 
 The [IAM Blast Radius analyzer](/tools/iam-blast-radius/) does that reasoning in a browser tab, without sending the policy anywhere. That helps when someone already suspects a policy. It does nothing for the change nobody looked at twice. So the same engine now ships as a GitHub Action on the [GitHub Marketplace](https://github.com/marketplace/actions/iam-blast-radius), and the analysis moves into the pull request.
 
 Putting a scanner in CI does not make it a security control. A control needs a defined enforcement boundary, predictable failure behavior, and an explicit way to represent uncertainty. If the engine cannot analyze a policy, it must not report success. If a policy is never scanned, that gap must not be mistaken for a clean result.
 
-So this post is organized around three questions:
+So this post answers three questions:
 
 1. What does the engine know?
 2. What happens when it does not know?
@@ -29,7 +29,7 @@ Then, how I would roll it out.
 
 ## What the engine knows
 
-It reports potential blast radius, not effective permissions. It reasons about the policy in front of it, not your whole organization, so it cannot see the SCPs, permissions boundaries or session policies layered on top unless you scan those too. Findings are graded by how much the policy alone supports them. That limitation is stated rather than hidden, because a control that overclaims gets ignored the first time it is wrong.
+It reports the potential blast radius of the policy in front of it. SCPs, permissions boundaries, and session policies remain outside that analysis unless scanned separately. Calculating the principal's effective permissions requires evaluating all of those policy layers together. Findings are graded by how much the policy alone supports them. I state that limitation openly, because a control that overclaims gets ignored the first time it is wrong.
 
 It recognizes 13 families of privilege escalation, from `iam:PassRole` into compute and policy version tricks to cross-account role assumption and data access through KMS. Version 1.1.0 added one I kept finding in real policies: taking over compute that already holds a role. `ssm:SendCommand`, `ssm:StartSession`, EC2 Instance Connect and presigned SageMaker notebook URLs give code execution on something that already has a role, and that role is now yours. No `iam:PassRole` required.
 
@@ -63,7 +63,7 @@ Three inputs are designed to be inconvenient, because inference here would fail 
 - **`partition` has no default.** An account ID does not tell you whether a role lives in `aws`, `aws-us-gov` or `aws-cn`. Defaulting to `aws` would make cross-partition verdicts look certain when they are assumptions. Leave it unset and any verdict that depends on it fails closed.
 - **Resource policies need the resource.** Without the ARN of the resource the policy is attached to, the Action does not guess what "this bucket" means. It fails closed.
 
-The principle is the same in all three: when the engine would have to assume something to give an answer, it asks instead, and a missing answer is a failure, not a pass.
+The principle is the same in all three: when the engine would have to assume something to give an answer, it asks instead, and treats a missing answer as a failure.
 
 A workflow with that context stated:
 
@@ -105,8 +105,8 @@ A policy gate reads content from pull requests, including pull requests from peo
 
 - **It reads files and runs nothing.** No Terraform, no npm, no shell, no command from the repository. Policy content stays data.
 - **No runtime dependencies, no build step.** What is in the tagged commit is what executes. The npm package is published with build provenance through OIDC trusted publishing.
-- **Hard ceilings.** Time, file count and total size are bounded, and hitting a bound is a fail-closed exit, not a truncated pass. A pull request cannot make the gate slow, and it cannot make it give up quietly.
-- **SARIF is opt-in and separated.** The maintained pattern in [ACTION.md](https://github.com/rivassec/secure-iam-lint/blob/main/ACTION.md) keeps the scan job read-only, gives `security-events: write` only to a separate upload job, publishes the SARIF artifact even when the scan fails, skips uploads for fork pull requests, and never uses `pull_request_target` with an untrusted checkout. That is privilege separation, not a clean room: the SARIF the upload job handles was still derived from untrusted policy files, and it is treated as untrusted data too.
+- **Hard ceilings.** Time, file count and total size are bounded, and hitting a bound exits fail-closed, so a truncated scan can never pass. A pull request cannot make the gate slow, and it cannot make it give up quietly.
+- **SARIF is opt-in and separated.** The maintained pattern in [ACTION.md](https://github.com/rivassec/secure-iam-lint/blob/main/ACTION.md) keeps the scan job read-only, gives `security-events: write` only to a separate upload job, publishes the SARIF artifact even when the scan fails, skips uploads for fork pull requests, and never uses `pull_request_target` with an untrusted checkout. That is privilege separation with a limit: the SARIF the upload job handles was still derived from untrusted policy files, so it is treated as untrusted data too.
 
 ### The CI gate is part of the security boundary
 
@@ -118,7 +118,7 @@ Nobody needs to defeat the analysis engine to merge a risky policy. It is usuall
 - **Workflow edits.** A pull request lowers `fail-on`, narrows `paths`, or removes the job.
 - **Unprotected merges.** The check fails correctly and the pull request merges anyway, because nothing requires it to pass.
 
-None of these exploit the scanner. They exploit the pipeline around it. So the gate needs the same treatment as any other control: required in a branch ruleset, workflow file under CODEOWNERS review, an inventory of where every deployable policy comes from with a scan path for each, and alerting on skipped runs and configuration changes, not only on failures.
+None of these exploit the scanner. They exploit the pipeline around it. So the gate needs the same treatment as any other control: required in a branch ruleset, workflow file under CODEOWNERS review, an inventory of where every deployable policy comes from with a scan path for each, and alerting on failures, skipped runs, and configuration changes.
 
 ## Rolling it out as a control
 
@@ -127,11 +127,11 @@ Turning on a blocking check across an estate on day one is how security tooling 
 1. **Observe findings, enforce unknowns.** Start with `fail-on: none`. Findings are reported but do not block; fail-closed exits still do, because `none` never turns a `3` into a `0`. The first week tells you two things: how much existing risk you are carrying, and where the engine needs context it does not have yet.
 2. **Fix the unknowns first.** Every exit `3` is either missing context (`family`, `partition`, a resource ARN) or input the engine does not support. Resolve them before raising the threshold, or the gate's first impression will be noise.
 3. **Ratchet the threshold.** Move to `fail-on: high` once the existing findings are triaged: fixed, or accepted by someone who owns the risk. Lower it later if the signal holds.
-4. **Route findings to owners.** The engineer who wrote the policy should see the finding in their pull request, and the person who can accept the risk should own the exception, not the security team by default.
+4. **Route findings to owners.** The engineer who wrote the policy should see the finding in their pull request, and the person who can accept the risk should own the exception, even when the security team would be the easier default.
 
 ## Where it fits
 
-This does not replace the architecture work. As I argued in [IAM Blast Radius Is an Architecture Problem, Not a Policy Problem](iam-blast-radius-architecture-problem.html), most of the risk is decided before anyone opens a JSON file: account boundaries, trust relationships, which pipeline can reach production. A policy gate cannot fix a flat account structure.
+This does not replace the architecture work. As I argued in [IAM Blast Radius Is an Architecture Problem, Not a Policy Problem](iam-blast-radius-architecture-problem.html), architecture determines most of the risk before anyone opens a JSON file: account boundaries, trust relationships, and which pipeline can reach production. A policy gate cannot fix a flat account structure.
 
 What it can do is hold the line on drift, in the place where drift happens. The promise is deliberately narrow: an enforceable, auditable check that names potential permission risk during review, and refuses to approve what it could not analyze. It does not certify that a passing policy is safe, or that every risky change gets caught.
 
