@@ -4,7 +4,7 @@ Author: Oliver Rivas
 Category: Artificial Intelligence
 Tags: AI Security, Anthropic, Claude, SynthID, Watermarking, EU AI Act, Adversarial ML
 Slug: claude-synthid-text-watermark-attack-surface
-Description: Claude's SynthID-Text watermark lives in token selection rather than hidden characters, reshaping detection, scrubbing, spoofing, and enterprise misuse.
+Description: Anthropic plans to use SynthID-Text during token selection for future Claude models, reshaping detection, scrubbing, spoofing, and misuse.
 Og_image: images/og/claude-synthid-text-watermark-attack-surface.png
 Summary: Claude's planned text watermark is embedded through token selection rather than hidden characters. Once enterprises automate on its detector, that provenance feature becomes a security control plane with spoofing, evasion, oracle, key-management, supply-chain, and policy-abuse requirements.
 
@@ -115,7 +115,7 @@ Granular confidence scores reduce the query cost because every response reveals 
 
 This section is a threat model for Anthropic's forthcoming API. It describes how such an interface could be attacked, and the actual risk will depend on response granularity, threshold stability, authentication, rate limits, similarity clustering, abuse monitoring, and key segmentation.
 
-Calibration poisoning targets any part of the detection pipeline that adapts from prior inputs rather than the query interface itself. The exposure lives in the adaptive layers. A static vendor detector faces little direct risk, while provider-side threshold tuning, an abuse model, or an enterprise allow-and-block policy that learns from a stream of submissions can be steered. An adversary who seeds crafted text over time can shift the decision boundary, suppress a target class of positives, or manufacture false positives against a chosen source. Any feedback loop that tunes on unauthenticated input becomes part of the attack surface and should be trained only on curated, provenance-bound data.
+Calibration poisoning targets any part of the detection pipeline that adapts from prior inputs rather than the query interface itself. The exposure lives in the adaptive layers. A static vendor detector faces little direct risk. Adaptive components remain susceptible to poisoning, including provider-side threshold tuning, abuse models, and enterprise allow-and-block policies that learn from streams of submissions. An adversary who seeds crafted text over time can shift the decision boundary, suppress a target class of positives, or manufacture false positives against a chosen source. Any feedback loop that tunes on unauthenticated input becomes part of the attack surface and should be trained only on curated, provenance-bound data.
 
 ## Spoofing and Watermark Stealing
 

@@ -18,7 +18,7 @@ The detection was correct. The traffic was, by every shape the sensor examines, 
 
 It was also me, deliberately, doing my job.
 
-This post is not about defending myself to a SOC. It is about the gap the detection exposes: every IR runbook I have written or worked from assumes the suspicious transfer came from the adversary or the user. Authorized analyst tooling that mirrors adversary behavior is a third category, and none of them handle it.
+In this post I look at the gap the detection exposes: every IR runbook I have written or worked from assumes the suspicious transfer came from the adversary or the user. Authorized analyst tooling that mirrors adversary behavior is a third category, and none of them handle it.
 
 ## The setup
 

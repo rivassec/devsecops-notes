@@ -19,7 +19,7 @@ This is the hardening pass that took [`bt-tether-multi`](https://github.com/riva
 
 The patterns generalize. If your Python ever calls a binary, the same checklist applies.
 
-## The threat model is local, not remote
+## A local threat model
 
 The plugin reads phones from `config.toml` on the same disk Pwnagotchi is running from. There is no network input that becomes a shell argument. So why bother?
 
@@ -37,7 +37,7 @@ Bandit is `pip install bandit` and it ships with rules numbered B602, B603, B607
 - **B603**: `subprocess` without an explicit shell, but the binary path comes from a variable rather than a literal. Bandit can't tell whether that variable is trusted.
 - **B607**: starting a process with a partial executable path. `subprocess.run(["nmcli", "..."])` triggers this because `nmcli` is resolved through `$PATH`, and `$PATH` is something you should not trust on a device whose disk has been out of your sight.
 
-Pyflakes, Ruff, mypy will not flag any of these, because these are policy findings, not type or syntax errors.
+Pyflakes, Ruff, mypy will not flag any of these, because these are policy findings, outside what type checkers and linters look for.
 
 A clean Bandit run on a hardened plugin looks like this:
 
@@ -146,7 +146,7 @@ def _sanitize_name(self, name):
 
 The MAC regex is restrictive on purpose: six pairs of hex separated by colons, nothing else. The name regex allows word characters, spaces, and hyphens, capped at 32 characters. Both of these reject inputs at config-load time so that the rest of the plugin can assume its values are already clean. The validation lives in `_validate_phones()`, which runs from `on_loaded` and `on_config_changed`. Phones that fail validation are dropped, logged, and never reach a subprocess call.
 
-The pattern is "validate at the trust boundary, trust everything past it." The trust boundary in this plugin is the config-load handler. Past that, the rest of the code is allowed to assume `phone["mac"]` matches `^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$`. That assumption is enforced by the validator, not by hope.
+The pattern is "validate at the trust boundary, trust everything past it." The trust boundary in this plugin is the config-load handler. Past that, the rest of the code is allowed to assume `phone["mac"]` matches `^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$`. The validator enforces that assumption.
 
 ## The `# nosec` discipline
 
@@ -171,7 +171,7 @@ The plugin's repo runs Bandit on push. The relevant fragment of GitHub Actions:
 
 `--severity-level low --confidence-level low` is the strictest setting. Anything less and you are filtering out the exact class of finding you want to see. The plugin is small enough that this runs in seconds. The GitHub Actions workflow fails the PR if Bandit returns non-zero, which happens on any unsuppressed finding at any severity.
 
-Pin the Bandit version. Bandit's rule set evolves; an unpinned `bandit` in CI means a future point release can fail your PR for reasons you have not seen before. Bump deliberately, not on every install.
+Pin the Bandit version. Bandit's rule set evolves; an unpinned `bandit` in CI means a future point release can fail your PR for reasons you have not seen before. Bump it deliberately, as its own reviewed change.
 
 ## The pattern generalizes
 
