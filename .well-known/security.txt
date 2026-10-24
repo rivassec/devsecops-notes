@@ -1,0 +1,5 @@
+# Security contact for rivassec.com (RFC 9116)
+Contact: https://rivassec.com/pages/about.html
+Expires: 2027-08-16T00:00:00Z
+Preferred-Languages: en, es
+Canonical: https://rivassec.com/.well-known/security.txt

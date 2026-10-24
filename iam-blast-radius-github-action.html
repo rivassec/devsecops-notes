@@ -1,0 +1,418 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+
+  <link rel="stylesheet" type="text/css" href="https://rivassec.com/theme/stylesheet/style.min.css?v=eca23836">
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="https://rivassec.com/theme/pygments/monokai.min.css">
+
+
+  <link rel="stylesheet" type="text/css" href="https://rivassec.com/static/custom.css?v=eca23836">
+
+  <link rel="icon" href="https://rivassec.com/favicon.ico" sizes="any">
+  <link rel="icon" href="https://rivassec.com/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="https://rivassec.com/favicon-16.png" type="image/png" sizes="16x16">
+  <link rel="apple-touch-icon" href="https://rivassec.com/apple-touch-icon.png" sizes="180x180">
+
+  <!-- Chrome, Firefox OS and Opera -->
+  <meta name="theme-color" content="#222222">
+  <!-- Windows Phone -->
+  <meta name="msapplication-navbutton-color" content="#222222">
+  <!-- iOS Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!-- Microsoft EDGE -->
+  <meta name="msapplication-TileColor" content="#222222">
+
+  <link href="https://rivassec.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="RivasSec Atom Feed">
+
+
+
+
+
+<link rel="canonical" href="https://rivassec.com/iam-blast-radius-github-action.html" />
+
+
+<meta name="author" content="Oliver Rivas" />
+<meta name="description" content="A security gate has to say &#34;I don&#39;t know&#34; and block on it. The design decisions behind the IAM Blast Radius GitHub Action, and how to run it as a control." />
+<meta name="keywords" content="aws, iam, github-actions, ci-cd, devsecops, cloud-security">
+
+
+  <meta property="og:site_name" content="RivasSec | DevSecOps, Kubernetes, AWS IAM"/>
+  <meta property="og:title" content="IAM Blast Radius in CI: Designing a Gate That Fails Closed"/>
+  <meta property="og:description" content="A security gate has to say &#34;I don&#39;t know&#34; and block on it. The design decisions behind the IAM Blast Radius GitHub Action, and how to run it as a control."/>
+  <meta property="og:locale" content="en_US"/>
+  <meta property="og:url" content="https://rivassec.com/iam-blast-radius-github-action.html"/>
+  <meta property="og:type" content="article"/>
+  <meta property="article:published_time" content="2026-10-09T00:00:00-07:00"/>
+  <meta property="article:modified_time" content="2026-10-10T00:00:00-07:00"/>
+  <meta property="article:author" content="Oliver Rivas"/>
+<meta property="article:section" content="DevSecOps"/><meta property="article:tag" content="aws"/><meta property="article:tag" content="iam"/><meta property="article:tag" content="github-actions"/><meta property="article:tag" content="ci-cd"/><meta property="article:tag" content="devsecops"/><meta property="article:tag" content="cloud-security"/>  <meta property="og:image" content="https://rivassec.com/images/og-default.png">
+  <meta property="og:image:alt" content="RivasSec | DevSecOps, Kubernetes, AWS IAM">
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="630"/>
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="IAM Blast Radius in CI: Designing a Gate That Fails Closed"/>
+  <meta name="twitter:description" content="A security gate has to say &#34;I don&#39;t know&#34; and block on it. The design decisions behind the IAM Blast Radius GitHub Action, and how to run it as a control."/>
+  <meta name="twitter:site" content="@rivassec"/>
+  <meta name="twitter:creator" content="@rivassec"/>
+  <meta name="twitter:image" content="https://rivassec.com/images/og-default.png"/>
+  <meta name="twitter:image:alt" content="RivasSec | DevSecOps, Kubernetes, AWS IAM"/>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "name": "IAM Blast Radius in CI: Designing a Gate That Fails Closed",
+    "headline": "IAM Blast Radius in CI: Designing a Gate That Fails Closed",
+    "datePublished": "2026-10-09T00:00:00-07:00",
+    "dateModified": "2026-10-10T00:00:00-07:00",
+    "author": {
+      "@type": "Person",
+      "@id": "https://rivassec.com/#person",
+      "name": "Oliver Rivas",
+      "url": "https://rivassec.com/author/oliver-rivas.html",
+      "sameAs": ["https://github.com/rivassec", "https://www.linkedin.com/in/oliverrivas/"]
+    },
+    "publisher": {"@id": "https://rivassec.com/#organization"},
+    "inLanguage": "en-US",
+    "isPartOf": {"@id": "https://rivassec.com/#website"},
+    "image": {"@type":"ImageObject","url":"https://rivassec.com/images/og-default.png","width":1200,"height":630},
+    "wordCount": 1748,
+    "isAccessibleForFree": true,
+    "url": "https://rivassec.com/iam-blast-radius-github-action.html",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https://rivassec.com/iam-blast-radius-github-action.html"
+    },
+    "description": "A security gate has to say "I don't know" and block on it. The design decisions behind the IAM Blast Radius GitHub Action, and how to run it as a control."
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type":"ListItem","position":1,"name":"Home","item":"https://rivassec.com/"},
+      {"@type":"ListItem","position":2,"name":"DevSecOps","item":"https://rivassec.com/category/devsecops.html"},
+      {"@type":"ListItem","position":3,"name":"IAM Blast Radius in CI: Designing a Gate That Fails Closed","item":"https://rivassec.com/iam-blast-radius-github-action.html"}    ]
+  }
+  </script>
+
+  <title>IAM Blast Radius in CI: Designing a Gate That Fails Closed</title>
+</head>
+<body class="light-theme">
+<aside>
+  <div>
+    <a href="https://rivassec.com/">
+      <img src="https://rivassec.com/images/avatar.png" alt="RivasSec" title="RivasSec">
+    </a>
+
+    <p class="site-title">
+      <a href="https://rivassec.com/">RivasSec</a>
+    </p>
+
+    <p>Infrastructure. Security. Insight.</p>
+
+
+
+    <ul class="social">
+      <li>
+        <a class="sc-github"
+           aria-label="GitHub"
+           href="https://github.com/rivassec"
+           target="_blank">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512" aria-hidden="true" focusable="false"><path fill="currentColor" d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3 .3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5 .3-6.2 2.3zm44.2-1.7c-2.9 .7-4.9 2.6-4.6 4.9 .3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3 .7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3 .3 2.9 2.3 3.9 1.6 1 3.6 .7 4.3-.7 .7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3 .7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3 .7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>        </a>
+      </li>
+    </ul>
+  </div>
+
+</aside>
+  <main>
+<nav>
+  <a href="https://rivassec.com/">Home</a>
+
+  <a href="https://rivassec.com/pages/about.html">About</a>
+  <a href="https://rivassec.com/devsecops-guide.html">Guide</a>
+  <a href="https://rivassec.com/categories.html">Categories</a>
+  <a href="https://rivassec.com/search/">Search</a>
+  <a href="https://rivassec.com/tools/iam-blast-radius/">Tools</a>
+  <a href="https://github.com/rivassec">GitHub</a>
+</nav>
+
+<article class="single" itemscope itemtype="https://schema.org/BlogPosting">
+  <header>
+      
+    <h1 id="iam-blast-radius-github-action" itemprop="headline">IAM Blast Radius in CI: Designing a Gate That Fails Closed</h1>
+    <p>
+      Posted on <time datetime="2026-10-09T00:00:00-07:00">Fri 09 October 2026</time> in <a href="https://rivassec.com/category/devsecops.html">DevSecOps</a>
+
+        &#8226; Updated <time datetime="2026-10-10T00:00:00-07:00">October 10, 2026</time>
+
+        &#8226; 7 min read
+
+        &#8226; By <a href="https://rivassec.com/author/oliver-rivas.html">Oliver Rivas</a>
+    </p>
+  </header>
+
+
+  <aside class="article-toc" aria-label="Table of contents">
+    <details open>
+      <summary class="aside-heading">Contents</summary>
+      <div class="toc">
+<ul>
+<li><a href="#scanners-optimize-for-signal-controls-must-optimize-for-not-lying">Scanners optimize for signal. Controls must optimize for not lying.</a></li>
+<li><a href="#what-the-engine-knows">What the engine knows</a></li>
+<li><a href="#what-happens-when-it-does-not-know">What happens when it does not know</a><ul>
+<li><a href="#unknown-is-a-result-and-it-blocks">Unknown is a result, and it blocks</a></li>
+<li><a href="#explicit-context-beats-inference">Explicit context beats inference</a></li>
+</ul>
+</li>
+<li><a href="#can-someone-get-past-the-gate-without-defeating-the-engine">Can someone get past the gate without defeating the engine?</a><ul>
+<li><a href="#the-scanner-assumes-its-input-is-hostile">The scanner assumes its input is hostile</a></li>
+<li><a href="#the-ci-gate-is-part-of-the-security-boundary">The CI gate is part of the security boundary</a></li>
+</ul>
+</li>
+<li><a href="#rolling-it-out-as-a-control">Rolling it out as a control</a></li>
+<li><a href="#where-it-fits">Where it fits</a></li>
+<li><a href="#try-it">Try it</a></li>
+</ul>
+</div>
+    </details>
+  </aside>
+
+  <div itemprop="articleBody" data-pagefind-body>
+    
+<h2 id="scanners-optimize-for-signal-controls-must-optimize-for-not-lying">Scanners optimize for signal. Controls must optimize for not lying.</h2>
+<p>Most IAM risk does not arrive as one obviously dangerous policy. It accumulates: the wildcard added "temporarily", the <code>iam:PassRole</code> without an <code>iam:PassedToService</code> restriction, the trust policy that quietly gains another account. Each change looks reasonable on its own. Combined with the permissions and trust relationships already in place, it can substantially expand what a compromised identity could reach.</p>
+<p>Engineers can read JSON. The hard part is understanding the combined consequences of a permission set. Reviewing permissions one at a time does not reveal how they interact.</p>
+<p>The <a href="/tools/iam-blast-radius/">IAM Blast Radius analyzer</a> does that reasoning in a browser tab, without sending the policy anywhere. That helps when someone already suspects a policy. It does nothing for the change nobody looked at twice. So the same engine now ships as a GitHub Action on the <a href="https://github.com/marketplace/actions/iam-blast-radius">GitHub Marketplace</a>, and the analysis moves into the pull request.</p>
+<p>Putting a scanner in CI does not make it a security control. A control needs a defined enforcement boundary, predictable failure behavior, and an explicit way to represent uncertainty. If the engine cannot analyze a policy, it must not report success. If a policy is never scanned, that gap must not be mistaken for a clean result.</p>
+<p>So this post answers three questions:</p>
+<ol>
+<li>What does the engine know?</li>
+<li>What happens when it does not know?</li>
+<li>Can someone get past the gate without defeating the engine?</li>
+</ol>
+<p>Then, how I would roll it out.</p>
+<h2 id="what-the-engine-knows">What the engine knows</h2>
+<p>It reports the potential blast radius of the policy in front of it. SCPs, permissions boundaries, and session policies remain outside that analysis unless scanned separately. Calculating the principal's effective permissions requires evaluating all of those policy layers together. Findings are graded by how much the policy alone supports them. I state that limitation openly, because a control that overclaims gets ignored the first time it is wrong.</p>
+<p>It recognizes 13 families of privilege escalation, from <code>iam:PassRole</code> into compute and policy version tricks to cross-account role assumption and data access through KMS. Version 1.1.0 added one I kept finding in real policies: taking over compute that already holds a role. <code>ssm:SendCommand</code>, <code>ssm:StartSession</code>, EC2 Instance Connect and presigned SageMaker notebook URLs give code execution on something that already has a role, and that role is now yours. No <code>iam:PassRole</code> required.</p>
+<p>What makes this usable is restraint. Every escalation family ships with "does not fire" fixtures: the conditioned grant, the explicit deny that really blocks, the read-only variant. A false positive in a gate costs more than a missed finding in a report, because it teaches engineers to route around the gate. I wrote about building that corpus in <a href="testing-an-iam-analyzer-against-its-own-claims.html">Testing an IAM Analyzer Against Its Own Claims</a>, including the two times a green build was hiding a wrong answer.</p>
+<h2 id="what-happens-when-it-does-not-know">What happens when it does not know</h2>
+<h3 id="unknown-is-a-result-and-it-blocks">Unknown is a result, and it blocks</h3>
+<p>Most linters return two answers: problems found, or none found. A gate needs a third. If the engine cannot parse a file, meets a condition it does not model, or runs out of time, the honest output is "unknown", and an unknown that merges is indistinguishable from an approval.</p>
+<p>So the Action has an explicit exit code for it:</p>
+<table>
+<thead>
+<tr>
+<th>Exit</th>
+<th>Meaning</th>
+<th>Check</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>0</code></td>
+<td>Analyzed; nothing at or above <code>fail-on</code></td>
+<td>pass</td>
+</tr>
+<tr>
+<td><code>1</code></td>
+<td>Analyzed; findings at or above <code>fail-on</code></td>
+<td>fail</td>
+</tr>
+<tr>
+<td><code>2</code></td>
+<td>Usage or configuration error</td>
+<td>fail</td>
+</tr>
+<tr>
+<td><code>3</code></td>
+<td>Could not analyze: fail closed</td>
+<td>fail</td>
+</tr>
+<tr>
+<td><code>4</code></td>
+<td>Internal error</td>
+<td>fail</td>
+</tr>
+</tbody>
+</table>
+<p>Exit <code>3</code> covers malformed or unsupported input, incomplete coverage, and every resource ceiling: time per policy, number of files, total bytes. A multi-file run reports its worst result, so one file the engine could not read fails the run even when the rest are clean. A partial scan is never reported as a pass, and no configuration turns a <code>3</code> into a <code>0</code>.</p>
+<p>The cost is friction. Some pull requests will fail on input the engine does not understand yet. I accept that trade deliberately: a gate that quietly passes what it cannot read is worse than no gate, because it manufactures confidence.</p>
+<h3 id="explicit-context-beats-inference">Explicit context beats inference</h3>
+<p>Three inputs are designed to be inconvenient, because inference here would fail open.</p>
+<ul>
+<li><strong><code>family</code> is required and never detected.</strong> An identity policy, a role trust policy, a resource policy, a permissions boundary, a session policy, an SCP and an RCP are evaluated by different rules. Guessing wrong produces confident nonsense, so you say which one you are scanning, and a repository with several kinds runs the Action once per kind.</li>
+<li><strong><code>partition</code> has no default.</strong> An account ID does not tell you whether a role lives in <code>aws</code>, <code>aws-us-gov</code> or <code>aws-cn</code>. Defaulting to <code>aws</code> would make cross-partition verdicts look certain when they are assumptions. Leave it unset and any verdict that depends on it fails closed.</li>
+<li><strong>Resource policies need the resource.</strong> Without the ARN of the resource the policy is attached to, the Action does not guess what "this bucket" means. It fails closed.</li>
+</ul>
+<p>The principle is the same in all three: when the engine would have to assume something to give an answer, it asks instead, and treats a missing answer as a failure.</p>
+<p>A workflow with that context stated:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">IAM Blast Radius</span>
+
+<span class="nt">on</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">pull_request</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">push</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">branches</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">main</span><span class="p p-Indicator">]</span>
+
+<span class="nt">permissions</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">iam-scan</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+<span class="w">    </span><span class="nt">timeout-minutes</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span>
+<span class="w">    </span><span class="nt">permissions</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">read</span>
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1</span><span class="w"> </span><span class="c1"># v7.0.1</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">persist-credentials</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rivassec/secure-iam-lint@c39edcd7adb383df7c1f7598f0fb72e80be36562</span><span class="w"> </span><span class="c1"># v1.1.0</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">paths</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">policies/**/*.json</span>
+<span class="w">          </span><span class="nt">family</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">identity</span>
+<span class="w">          </span><span class="nt">partition</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws</span>
+<span class="w">          </span><span class="nt">fail-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">high</span>
+</code></pre></div>
+<p>The workflow grants nothing at the top level and <code>contents: read</code> to the one job that needs it. Both actions are pinned to commit SHAs; <code>rivassec/secure-iam-lint@v1</code> is the moving major tag if you prefer to track releases.</p>
+<h2 id="can-someone-get-past-the-gate-without-defeating-the-engine">Can someone get past the gate without defeating the engine?</h2>
+<h3 id="the-scanner-assumes-its-input-is-hostile">The scanner assumes its input is hostile</h3>
+<p>A policy gate reads content from pull requests, including pull requests from people you have never met. That makes the scanner part of your attack surface, so it is deliberately boring:</p>
+<ul>
+<li><strong>It reads files and runs nothing.</strong> No Terraform, no npm, no shell, no command from the repository. Policy content stays data.</li>
+<li><strong>No runtime dependencies, no build step.</strong> What is in the tagged commit is what executes. The npm package is published with build provenance through OIDC trusted publishing.</li>
+<li><strong>Hard ceilings.</strong> Time, file count and total size are bounded, and hitting a bound exits fail-closed, so a truncated scan can never pass. A pull request cannot make the gate slow, and it cannot make it give up quietly.</li>
+<li><strong>SARIF is opt-in and separated.</strong> The maintained pattern in <a href="https://github.com/rivassec/secure-iam-lint/blob/main/ACTION.md">ACTION.md</a> keeps the scan job read-only, gives <code>security-events: write</code> only to a separate upload job, publishes the SARIF artifact even when the scan fails, skips uploads for fork pull requests, and never uses <code>pull_request_target</code> with an untrusted checkout. That is privilege separation with a limit: the SARIF the upload job handles was still derived from untrusted policy files, so it is treated as untrusted data too.</li>
+</ul>
+<h3 id="the-ci-gate-is-part-of-the-security-boundary">The CI gate is part of the security boundary</h3>
+<p>Fail closed handles one failure mode: the scan runs and cannot reach a verdict. The other is invisible to the Action: the scan never runs against the policy that gets deployed.</p>
+<p>Nobody needs to defeat the analysis engine to merge a risky policy. It is usually easier to route around it:</p>
+<ul>
+<li><strong>Coverage gaps.</strong> The scan watches <code>policies/**/*.json</code>, but trust policies live elsewhere, or the deployed JSON is generated from templates the scan never sees.</li>
+<li><strong>Workflow edits.</strong> A pull request lowers <code>fail-on</code>, narrows <code>paths</code>, or removes the job.</li>
+<li><strong>Unprotected merges.</strong> The check fails correctly and the pull request merges anyway, because nothing requires it to pass.</li>
+</ul>
+<p>None of these exploit the scanner. They exploit the pipeline around it. So the gate needs the same treatment as any other control: required in a branch ruleset, workflow file under CODEOWNERS review, an inventory of where every deployable policy comes from with a scan path for each, and alerting on failures, skipped runs, and configuration changes.</p>
+<h2 id="rolling-it-out-as-a-control">Rolling it out as a control</h2>
+<p>Turning on a blocking check across an estate on day one is how security tooling earns a bypass. The rollout I would use:</p>
+<ol>
+<li><strong>Observe findings, enforce unknowns.</strong> Start with <code>fail-on: none</code>. Findings are reported but do not block; fail-closed exits still do, because <code>none</code> never turns a <code>3</code> into a <code>0</code>. The first week tells you two things: how much existing risk you are carrying, and where the engine needs context it does not have yet.</li>
+<li><strong>Fix the unknowns first.</strong> Every exit <code>3</code> is either missing context (<code>family</code>, <code>partition</code>, a resource ARN) or input the engine does not support. Resolve them before raising the threshold, or the gate's first impression will be noise.</li>
+<li><strong>Ratchet the threshold.</strong> Move to <code>fail-on: high</code> once the existing findings are triaged: fixed, or accepted by someone who owns the risk. Lower it later if the signal holds.</li>
+<li><strong>Route findings to owners.</strong> The engineer who wrote the policy should see the finding in their pull request, and the person who can accept the risk should own the exception, even when the security team would be the easier default.</li>
+</ol>
+<h2 id="where-it-fits">Where it fits</h2>
+<p>This does not replace the architecture work. As I argued in <a href="iam-blast-radius-architecture-problem.html">IAM Blast Radius Is an Architecture Problem, Not a Policy Problem</a>, architecture determines most of the risk before anyone opens a JSON file: account boundaries, trust relationships, and which pipeline can reach production. A policy gate cannot fix a flat account structure.</p>
+<p>What it can do is hold the line on drift, in the place where drift happens. The promise is deliberately narrow: an enforceable, auditable check that names potential permission risk during review, and refuses to approve what it could not analyze. It does not certify that a passing policy is safe, or that every risky change gets caught.</p>
+<h2 id="try-it">Try it</h2>
+<ul>
+<li>GitHub Marketplace: <a href="https://github.com/marketplace/actions/iam-blast-radius">IAM Blast Radius</a></li>
+<li>Source, issues and the full input reference: <a href="https://github.com/rivassec/secure-iam-lint">rivassec/secure-iam-lint</a></li>
+<li>No CI handy? Paste a policy into the <a href="/tools/iam-blast-radius/">browser version</a>. Same engine, nothing leaves your machine.</li>
+</ul>
+<p>If it flags something it should not, or misses something it should catch, open an issue with a redacted policy and what you expected. Those reports become fixtures.</p>
+  </div>
+</article>
+
+<div class="tag-cloud">
+  <p>
+    <a href="https://rivassec.com/tag/aws.html">aws</a>
+    <a href="https://rivassec.com/tag/iam.html">iam</a>
+    <a href="https://rivassec.com/tag/github-actions.html">github-actions</a>
+    <a href="https://rivassec.com/tag/ci-cd.html">ci-cd</a>
+    <a href="https://rivassec.com/tag/devsecops.html">devsecops</a>
+    <a href="https://rivassec.com/tag/cloud-security.html">cloud-security</a>
+  </p>
+</div>
+
+<section class="author-bio" aria-label="About Oliver Rivas">
+  <img src="https://rivassec.com/images/avatar.png" alt="Oliver Rivas" width="72" height="72" class="author-bio-avatar" loading="lazy" />
+  <p><strong>Oliver Rivas</strong> is a security engineer focused on cloud and platform security: DevSecOps, Kubernetes hardening, AWS IAM, AI security, and OSINT, with 20+ years across operations, infrastructure, and security engineering. Find him on <a href="https://github.com/rivassec" rel="me">GitHub</a> and <a href="https://www.linkedin.com/in/oliverrivas/" rel="me">LinkedIn</a>, or follow the <a href="https://rivassec.com/feeds/all.atom.xml">Atom feed</a>.</p>
+</section>
+
+  <div class="neighbors">
+    <a class="btn float-left" href="https://rivassec.com/every-alert-is-your-alert.html" title="Every Alert Is Your Alert: When IR Tooling Trips Your Own EDR">
+      <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512" aria-hidden="true" focusable="false"><path fill="currentColor" d="M192 448c-8.188 0-16.38-3.125-22.62-9.375l-160-160c-12.5-12.5-12.5-32.75 0-45.25l160-160c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25L77.25 256l137.4 137.4c12.5 12.5 12.5 32.75 0 45.25C208.4 444.9 200.2 448 192 448z"/></svg>
+      Previous Post
+    </a>
+    <a class="btn float-right" href="https://rivassec.com/detecting-dprk-it-worker-hiring-fraud.html" title="The Laptop Is the Point of No Return: DPRK IT Worker Fraud">
+      Next Post
+      <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512" aria-hidden="true" focusable="false"><path fill="currentColor" d="M64 448c-8.188 0-16.38-3.125-22.62-9.375c-12.5-12.5-12.5-32.75 0-45.25L178.8 256L41.38 118.6c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0l160 160c12.5 12.5 12.5 32.75 0 45.25l-160 160C80.38 444.9 72.19 448 64 448z"/></svg>
+    </a>
+  </div>
+
+<div class="related-posts">
+  <h2 class="related-heading">You might enjoy</h2>
+  <ul class="related-posts">
+    <li><a href="https://rivassec.com/secure-iam-lint-v1-2-0.html">secure-iam-lint v1.2.0: Catching Guardrails That Never Fire</a></li>
+    <li><a href="https://rivassec.com/iam-blast-radius-architecture-problem.html">IAM Blast Radius Is an Architecture Problem, Not a Policy Problem</a></li>
+    <li><a href="https://rivassec.com/testing-an-iam-analyzer-against-its-own-claims.html">Testing an IAM Analyzer Against Its Own Claims</a></li>
+    <li><a href="https://rivassec.com/iam-safe-defaults-fail-loud.html">IAM Roles That Fail Loud: Small Defaults, Big Difference</a></li>
+    <li><a href="https://rivassec.com/paved-road-adoption-as-control.html">Adoption Is a Security Control: Notes from Paving a Road</a></li>
+  </ul>
+</div>
+
+
+<footer>
+    <p class="footer-feeds">
+      Subscribe:
+      <a href="https://rivassec.com/feeds/all.atom.xml" rel="alternate" type="application/atom+xml">Atom</a>
+        &middot; <a href="https://rivassec.com/feeds/all.rss.xml" rel="alternate" type="application/rss+xml">RSS</a>
+    </p>
+<p>&copy;  RivasSec</p>
+<p class="footer-meta">
+  <a href="https://rivassec.com/accessibility/">Accessibility</a>
+</p>
+<p>
+Built with <a href="https://getpelican.com" target="_blank" rel="noopener">Pelican</a> using <a href="https://github.com/alexandrevicenzi/Flex" target="_blank" rel="noopener">Flex</a> theme
+</p></footer>  </main>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://rivassec.com/#website",
+      "name": "RivasSec | DevSecOps, Kubernetes, AWS IAM",
+      "url": "https://rivassec.com",
+      "inLanguage": "en-US",
+      "description": "Field notes on infrastructure security, cloud hardening, Kubernetes, IAM, and OSINT by RivasSec.",
+      "image": "https://rivassec.com/images/og-default.png",
+      "publisher": {"@id": "https://rivassec.com/#organization"},
+      "author": {
+        "@type": "Person",
+        "@id": "https://rivassec.com/#person",
+        "name": "Oliver Rivas",
+        "url": "https://rivassec.com",
+        "sameAs": ["https://github.com/rivassec"],
+        "jobTitle": "Security Engineer",
+        "knowsAbout": ["DevSecOps", "Kubernetes security", "AWS IAM", "AI security", "OSINT"]
+      }
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://rivassec.com/#organization",
+      "name": "RivasSec | DevSecOps, Kubernetes, AWS IAM",
+      "url": "https://rivassec.com",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://rivassec.com/images/avatar.png"
+      }
+    }
+  ]
+}
+</script>
+  <script defer src="https://rivassec.com/static/copy-code.js?v=eca23836"></script>
+
+</body>
+</html>

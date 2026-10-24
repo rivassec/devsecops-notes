@@ -1,0 +1,398 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+
+  <link rel="stylesheet" type="text/css" href="https://rivassec.com/theme/stylesheet/style.min.css?v=eca23836">
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="https://rivassec.com/theme/pygments/monokai.min.css">
+
+
+  <link rel="stylesheet" type="text/css" href="https://rivassec.com/static/custom.css?v=eca23836">
+
+  <link rel="icon" href="https://rivassec.com/favicon.ico" sizes="any">
+  <link rel="icon" href="https://rivassec.com/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="https://rivassec.com/favicon-16.png" type="image/png" sizes="16x16">
+  <link rel="apple-touch-icon" href="https://rivassec.com/apple-touch-icon.png" sizes="180x180">
+
+  <!-- Chrome, Firefox OS and Opera -->
+  <meta name="theme-color" content="#222222">
+  <!-- Windows Phone -->
+  <meta name="msapplication-navbutton-color" content="#222222">
+  <!-- iOS Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!-- Microsoft EDGE -->
+  <meta name="msapplication-TileColor" content="#222222">
+
+  <link href="https://rivassec.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="RivasSec Atom Feed">
+
+
+
+
+
+<link rel="canonical" href="https://rivassec.com/secure-iam-lint-v1-2-0.html" />
+
+
+<meta name="author" content="Oliver Rivas" />
+<meta name="description" content="secure-iam-lint v1.2.0 flags SCP and RCP guardrails that never fire, adds baseline mode for noise-free PRs, and stabilizes SARIF fingerprints." />
+<meta name="keywords" content="aws, iam, scp, github-actions, ci-cd, devsecops, cloud-security">
+
+
+  <meta property="og:site_name" content="RivasSec | DevSecOps, Kubernetes, AWS IAM"/>
+  <meta property="og:title" content="secure-iam-lint v1.2.0: Catching Guardrails That Never Fire"/>
+  <meta property="og:description" content="secure-iam-lint v1.2.0 flags SCP and RCP guardrails that never fire, adds baseline mode for noise-free PRs, and stabilizes SARIF fingerprints."/>
+  <meta property="og:locale" content="en_US"/>
+  <meta property="og:url" content="https://rivassec.com/secure-iam-lint-v1-2-0.html"/>
+  <meta property="og:type" content="article"/>
+  <meta property="article:published_time" content="2026-10-21T00:00:00-07:00"/>
+  <meta property="article:modified_time" content="2026-10-21T00:00:00-07:00"/>
+  <meta property="article:author" content="Oliver Rivas"/>
+<meta property="article:section" content="DevSecOps"/><meta property="article:tag" content="aws"/><meta property="article:tag" content="iam"/><meta property="article:tag" content="scp"/><meta property="article:tag" content="github-actions"/><meta property="article:tag" content="ci-cd"/><meta property="article:tag" content="devsecops"/><meta property="article:tag" content="cloud-security"/>  <meta property="og:image" content="https://rivassec.com/images/og-default.png">
+  <meta property="og:image:alt" content="RivasSec | DevSecOps, Kubernetes, AWS IAM">
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="630"/>
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="secure-iam-lint v1.2.0: Catching Guardrails That Never Fire"/>
+  <meta name="twitter:description" content="secure-iam-lint v1.2.0 flags SCP and RCP guardrails that never fire, adds baseline mode for noise-free PRs, and stabilizes SARIF fingerprints."/>
+  <meta name="twitter:site" content="@rivassec"/>
+  <meta name="twitter:creator" content="@rivassec"/>
+  <meta name="twitter:image" content="https://rivassec.com/images/og-default.png"/>
+  <meta name="twitter:image:alt" content="RivasSec | DevSecOps, Kubernetes, AWS IAM"/>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "name": "secure-iam-lint v1.2.0: Catching Guardrails That Never Fire",
+    "headline": "secure-iam-lint v1.2.0: Catching Guardrails That Never Fire",
+    "datePublished": "2026-10-21T00:00:00-07:00",
+    "dateModified": "2026-10-21T00:00:00-07:00",
+    "author": {
+      "@type": "Person",
+      "@id": "https://rivassec.com/#person",
+      "name": "Oliver Rivas",
+      "url": "https://rivassec.com/author/oliver-rivas.html",
+      "sameAs": ["https://github.com/rivassec", "https://www.linkedin.com/in/oliverrivas/"]
+    },
+    "publisher": {"@id": "https://rivassec.com/#organization"},
+    "inLanguage": "en-US",
+    "isPartOf": {"@id": "https://rivassec.com/#website"},
+    "image": {"@type":"ImageObject","url":"https://rivassec.com/images/og-default.png","width":1200,"height":630},
+    "wordCount": 2189,
+    "isAccessibleForFree": true,
+    "url": "https://rivassec.com/secure-iam-lint-v1-2-0.html",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https://rivassec.com/secure-iam-lint-v1-2-0.html"
+    },
+    "description": "secure-iam-lint v1.2.0 flags SCP and RCP guardrails that never fire, adds baseline mode for noise-free PRs, and stabilizes SARIF fingerprints."
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type":"ListItem","position":1,"name":"Home","item":"https://rivassec.com/"},
+      {"@type":"ListItem","position":2,"name":"DevSecOps","item":"https://rivassec.com/category/devsecops.html"},
+      {"@type":"ListItem","position":3,"name":"secure-iam-lint v1.2.0: Catching Guardrails That Never Fire","item":"https://rivassec.com/secure-iam-lint-v1-2-0.html"}    ]
+  }
+  </script>
+
+  <title>secure-iam-lint v1.2.0: Catching Guardrails That Never Fire</title>
+</head>
+<body class="light-theme">
+<aside>
+  <div>
+    <a href="https://rivassec.com/">
+      <img src="https://rivassec.com/images/avatar.png" alt="RivasSec" title="RivasSec">
+    </a>
+
+    <p class="site-title">
+      <a href="https://rivassec.com/">RivasSec</a>
+    </p>
+
+    <p>Infrastructure. Security. Insight.</p>
+
+
+
+    <ul class="social">
+      <li>
+        <a class="sc-github"
+           aria-label="GitHub"
+           href="https://github.com/rivassec"
+           target="_blank">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512" aria-hidden="true" focusable="false"><path fill="currentColor" d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3 .3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5 .3-6.2 2.3zm44.2-1.7c-2.9 .7-4.9 2.6-4.6 4.9 .3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3 .7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3 .3 2.9 2.3 3.9 1.6 1 3.6 .7 4.3-.7 .7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3 .7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3 .7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>        </a>
+      </li>
+    </ul>
+  </div>
+
+</aside>
+  <main>
+<nav>
+  <a href="https://rivassec.com/">Home</a>
+
+  <a href="https://rivassec.com/pages/about.html">About</a>
+  <a href="https://rivassec.com/devsecops-guide.html">Guide</a>
+  <a href="https://rivassec.com/categories.html">Categories</a>
+  <a href="https://rivassec.com/search/">Search</a>
+  <a href="https://rivassec.com/tools/iam-blast-radius/">Tools</a>
+  <a href="https://github.com/rivassec">GitHub</a>
+</nav>
+
+<article class="single" itemscope itemtype="https://schema.org/BlogPosting">
+  <header>
+      
+    <h1 id="secure-iam-lint-v1-2-0" itemprop="headline">secure-iam-lint v1.2.0: Catching Guardrails That Never Fire</h1>
+    <p>
+      Posted on <time datetime="2026-10-21T00:00:00-07:00">Wed 21 October 2026</time> in <a href="https://rivassec.com/category/devsecops.html">DevSecOps</a>
+
+
+        &#8226; 9 min read
+
+        &#8226; By <a href="https://rivassec.com/author/oliver-rivas.html">Oliver Rivas</a>
+    </p>
+  </header>
+
+
+  <aside class="article-toc" aria-label="Table of contents">
+    <details open>
+      <summary class="aside-heading">Contents</summary>
+      <div class="toc">
+<ul>
+<li><a href="#a-region-fence-that-fences-nothing">A region fence that fences nothing</a></li>
+<li><a href="#guardrails-get-judged-too">Guardrails get judged too</a></li>
+<li><a href="#baseline-mode-fails-only-on-new-risk">Baseline mode fails only on new risk</a></li>
+<li><a href="#resource-policies-can-now-pass">Resource policies can now pass</a></li>
+<li><a href="#new-detections">New detections</a></li>
+<li><a href="#finding-identities-that-survive-edits">Finding identities that survive edits</a></li>
+<li><a href="#upgrading-from-v110">Upgrading from v1.1.0</a></li>
+<li><a href="#nothing-passes-on-a-guess">Nothing passes on a guess</a></li>
+<li><a href="#get-it">Get it</a></li>
+</ul>
+</div>
+    </details>
+  </aside>
+
+  <div itemprop="articleBody" data-pagefind-body>
+    
+<h2 id="a-region-fence-that-fences-nothing">A region fence that fences nothing</h2>
+<p>This service control policy is meant to keep an account inside two approved regions:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"Version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2012-10-17"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Statement"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span>
+<span class="w">    </span><span class="nt">"Sid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DenyOutsideApprovedRegions"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"Effect"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Deny"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"NotAction"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"iam:*"</span><span class="p">,</span><span class="w"> </span><span class="s2">"sts:*"</span><span class="p">],</span>
+<span class="w">    </span><span class="nt">"Resource"</span><span class="p">:</span><span class="w"> </span><span class="s2">"*"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"Condition"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"StringNotLike"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"aws:RequestedRegion"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"us-east-1"</span><span class="p">,</span><span class="w"> </span><span class="s2">"us-west-2"</span><span class="p">,</span><span class="w"> </span><span class="s2">"*-*-?"</span><span class="p">]</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}]</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>The third value looks like a harmless pattern added for a future region. It matches every current AWS region name. <code>StringNotLike</code> is true only when the requested region matches none of the values, so whenever a request carries a region, this condition is false and the Deny never fires. The fence is decorative. Nothing in this policy keeps requests out of other regions, while it still reads like a control during code review.</p>
+<p>The rest of the policy is the usual shape for a region fence. The <code>NotAction</code> carve-out is there for global services: IAM, for example, is served from a single endpoint in us-east-1, so without the exemption its calls would be denied whenever us-east-1 sits outside the fence. AWS's own example exempts a longer list of services; the snippet keeps two to stay short, so copy AWS's list into real policies.</p>
+<p>Version 1.1.0 of <a href="https://github.com/rivassec/secure-iam-lint">secure-iam-lint</a> called this policy CLEAN with exit <code>0</code>. Version 1.2.0 reports it as High and fails the check at the default <code>fail-on: high</code>:</p>
+<div class="highlight"><pre><span></span><code>$ iam-br --family scp --partition aws policy.json | jq '.findings[0] | {id, severity, title, why}'
+iam-br: status=complete exit=1 reason=FINDINGS_AT_OR_ABOVE_THRESHOLD findings=1 blocking=1
+{
+  "id": "SCP-GUARDRAIL",
+  "severity": "high",
+  "title": "SCP guardrail that never fires (no-op Deny)",
+  "why": "This Deny is gated by a negated operator on aws:RequestedRegion whose values together match every region, so the condition is never true when the key is present. The guardrail is a no-op: it looks protective but removes nothing from the ceiling."
+}
+</code></pre></div>
+<p>The first line is the status summary on stderr; the CLI writes its full result as JSON on stdout, trimmed here with <code>jq</code>. Remove the <code>"*-*-?"</code> entry and the same policy returns to CLEAN.</p>
+<p>For readers new to the tool, secure-iam-lint is an open-source CLI and GitHub Action that reads AWS IAM policies in pull requests and reports their <em>potential</em> blast radius before they merge. That includes the privilege escalation, data exposure and cross-account reach they open up. The npm package is <code>secure-iam-lint</code>, its CLI is <code>iam-br</code>, and the Action is listed on the GitHub Marketplace as IAM Blast Radius. I introduced the analyzer, and why blast radius is an architecture problem, in <a href="https://rivassec.com/iam-blast-radius-architecture-problem.html">IAM Blast Radius Is an Architecture Problem</a>. This post covers the changes in v1.2.0.</p>
+<h2 id="guardrails-get-judged-too">Guardrails get judged too</h2>
+<p>In my experience, service control policies (SCPs) and resource control policies (RCPs) are the controls teams assume work: they sit above every member account and are rarely re-read until an incident. The failure that worries me most produces no error at all: a Deny whose condition can never be true.</p>
+<p>v1.2.0 treats a guardrail that never fires as a High finding. It now catches:</p>
+<ul>
+<li>a negated region list (<code>StringNotLike</code> and its variants) whose values together match every region, as in the example above;</li>
+<li>a conditioned Deny whose <code>NotAction</code> matches every action, leaving nothing to deny (an unconditioned one already failed closed);</li>
+<li>an RCP organization perimeter that admits any AWS organization, or a positive org comparator that inverts the perimeter;</li>
+<li>conditions that are always or never true, including <code>Null "true"</code> on keys that are always present, contradictory <code>Bool</code> values and a <code>Resource</code> scope that cannot match;</li>
+<li>a Deny pinned to principal values no request ever carries, such as a literal <code>*</code> under <code>StringEquals</code> on <code>aws:PrincipalArn</code>.</li>
+</ul>
+<p>Inverted region and org fences now report High. So do bypassable MFA gates in an SCP, such as plain <code>Bool aws:MultiFactorAuthPresent "false"</code>, which misses requests where the key is absent. In v1.1.0 some of these reported only medium and others passed as CLEAN, including that bypassable MFA gate on a region fence. A correctly written MFA gate that lists its actions (<code>BoolIfExists</code>) now reads CLEAN, where v1.1.0 failed closed on it with exit <code>3</code>; one written with <code>NotAction</code> still exits <code>3</code>. SecureTransport conditions aren't modeled yet: an inverted one in an SCP reports High, and any SecureTransport-gated Deny, correct or not, still exits <code>3</code>. In an RCP, these MFA and SecureTransport gates exit <code>3</code> without a High finding.</p>
+<p>A guardrail Deny receives credit only for behavior the evaluator models. If it combines a modeled condition with an unknown condition key, an unknown operator or a negated set-qualified operator, the scan exits <code>3</code> instead of guessing that the Deny probably works. Guessing fails open when a Deny only appears to narrow a grant.</p>
+<h2 id="baseline-mode-fails-only-on-new-risk">Baseline mode fails only on new risk</h2>
+<p>Enabling a gate in a repository with existing policies usually produces a wall of findings on day one. A common response is <code>continue-on-error</code>, which leaves the gate unable to block anything.</p>
+<p>v1.2.0 adds baselines. Generate one, review it, commit it, and new findings fail the check while the accepted ones don't:</p>
+<div class="highlight"><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rivassec/secure-iam-lint@v1</span>
+<span class="w">  </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">paths</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">policies/**/*.json</span>
+<span class="w">    </span><span class="nt">family</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">identity</span>
+<span class="w">    </span><span class="nt">baseline</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.iam-baseline.json</span>
+</code></pre></div>
+<ol>
+<li><strong>Generate it</strong> by running once with <code>baseline-output: .iam-baseline.json</code> in the Action. Locally, run <code>iam-br --family &lt;family&gt; --format baseline --artifact-uri &lt;repo-relative path&gt; &lt;file&gt;</code> per file; the <code>--artifact-uri</code> matters, because baseline keys are bound to the path.</li>
+<li><strong>Review it</strong> before committing. Committing a baseline accepts every result it contains, Critical ones included; <code>baseline-output</code> warns on stderr when it writes a Critical entry, so read those first.</li>
+<li><strong>Commit it</strong> and pass it as <code>baseline:</code>.</li>
+</ol>
+<p>Each acceptance is bound to the finding's identity, including file, rule, rule version, severity, actions, resources, trusted principals and condition values. Changing any of them makes the finding fire again. Widen a trust policy to a second account and the old acceptance no longer covers it. An acceptance covers that exact finding and nothing that later grows out of it.</p>
+<p>A baseline can also accept two of the fail-closed states: an <code>UNKNOWN_ACTION</code> or an <code>UNSUPPORTED_CONDITION</code>, each bound to its exact sorted list of actions or condition keys. An accepted one no longer counts toward exit <code>3</code>; if nothing else blocks, the run exits <code>0</code>, reported as partial (<code>CLEAN_WITH_BASELINE</code>). A different unknown action still fails closed. Everything else is never accepted: usage errors, internal errors, malformed input, a blocked family and a blown time budget still fail the run. The Action also reports <code>baseline-stale-count</code>: entries for findings that were fixed or deleted and no longer match anything. Remove those entries from the file by hand. Regenerating the baseline would also accept any new findings, so if you regenerate, review the diff before committing.</p>
+<p>The baseline is repository content, so a pull request can add an entry for its own new finding, the same way it can edit the workflow. Keep the file inside your review boundary: a CODEOWNERS entry only helps if branch protection requires code-owner review, and you should read added entries before merging. Until a human reviews it, a pull request's own check is not trustworthy, because the pull request can also change the workflow that runs it. The Action's documentation says not to pass a baseline from pull-request-controlled content if the check must hold before review, and not to use <code>pull_request_target</code> for untrusted pull requests. I haven't built a pre-review setup like that myself.</p>
+<h2 id="resource-policies-can-now-pass">Resource policies can now pass</h2>
+<p>Earlier versions failed closed on nearly every resource policy. That was safe and rarely useful. v1.2.0 lets a resource policy exit <code>0</code> when every part is modeled, including KMS key-owner delegation, same-account grants, service grants bound to your own account and deny-only policies. That still requires telling the scan which resource the policy is attached to (<code>resource-arn</code>, plus <code>resource-type</code> and <code>resource-account</code> where relevant); without it, the scan exits <code>3</code> as before. The verdict is only as good as that context, and the Action applies one context to every file its <code>paths</code> match, so scan each resource policy in its own step.</p>
+<p>Anything the engine does not model still exits <code>3</code>, with the JSON path of the statement it stopped on. Examples include <code>NotPrincipal</code>, Allow with <code>NotAction</code> or <code>NotResource</code>, unknown condition operators, <code>CanonicalUser</code> or <code>Federated</code> principals and actions from another service. Reviewers get a specific statement to inspect instead of a generic failure.</p>
+<h2 id="new-detections">New detections</h2>
+<ul>
+<li><strong>DB-AUTH</strong>: <code>rds-db:connect</code> is IAM database authentication, which is credential-equivalent. High unless every resource pins a concrete <code>dbuser:&lt;resource-id&gt;/&lt;user&gt;</code> (the ARN uses the database or cluster resource ID; a name in that position matches nothing).</li>
+<li><strong>PASSROLE-UNSCOPED</strong>: <code>iam:PassRole</code> on <code>*</code> or any all-roles pattern now reports without a companion launch action. It combines with whatever compute permission the holder has elsewhere, and the engine cannot see that from one policy.</li>
+<li><strong>OBJECT-ACL-WRITE</strong>: <code>s3:PutObjectAcl</code> and <code>s3:PutObjectVersionAcl</code> can make objects public or share them cross-account, unless Object Ownership is <code>BucketOwnerEnforced</code> (the default for new buckets, which rejects ACL changes); S3 Block Public Access also stops the public case. Both are bucket or account settings a policy cannot show. High on <code>bucket/*</code> or broader, medium on one named object.</li>
+<li><strong>Open federated trusts are Critical.</strong> A GitHub OIDC trust with a missing or wildcard <code>sub</code> (<code>*</code>, <code>repo:*</code>) lets any repository's workflow assume the role. <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-idp_oidc.html#idp_oidc_Create_GitHub">IAM now refuses</a> to save one whose <code>sub</code> is missing or only a wildcard, so the shapes you will still meet are prefixes like <code>repo:*</code> and policies IAM hasn't seen yet, such as infrastructure code before it is applied. A Cognito trust whose <code>aud</code> is not pinned to a literal identity pool id, a wildcard for example, admits identity pools in any account through the basic (classic) authentication flow, including one an attacker creates in their own. A Cognito trust with no <code>aud</code> at all can no longer be saved, but <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/role-trust-and-permissions.html">per AWS</a> an older one still admits any identity pool in the role's own account, and the tool rates it Critical as well. These now fail even at <code>fail-on: critical</code> (<code>--threshold critical</code> in the CLI).</li>
+<li><strong>Admin-equivalent self-targeting grants are Critical</strong>: attaching, putting or versioning a policy on <code>*</code> or on the caller's own identity.</li>
+</ul>
+<p><code>DATA-EXFIL</code> severity now scales with breadth. One named secret or parameter is medium, while <code>*</code>, account-wide or ambiguous resources remain high.</p>
+<h2 id="finding-identities-that-survive-edits">Finding identities that survive edits</h2>
+<p>Every finding carries a stable identity, written into the SARIF <code>partialFingerprints</code> and used for baseline entries. In v1.1.0 that identity included the statement's position, so inserting a statement above a finding gave it a new identity even though nothing about the risk had changed.</p>
+<p>v1.2.0 identities describe <em>what</em> the finding is: rule, actions, resources, principals and the affected condition blocks. Position is in neither of the two hashes built from that identity:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>SARIF fingerprint</th>
+<th>Baseline key</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Hash</td>
+<td>SHA-256 truncated to 128 bits (<code>iamBlastRadius/semanticIdentity/v2</code>)</td>
+<td>full SHA-256</td>
+</tr>
+<tr>
+<td>Also binds</td>
+<td>occurrence ordinal</td>
+<td>file path, severity, rule version, occurrence ordinal</td>
+</tr>
+<tr>
+<td>File</td>
+<td>not hashed; comes from the SARIF result's location</td>
+<td>hashed, so an acceptance never covers another file</td>
+</tr>
+</tbody>
+</table>
+<h2 id="upgrading-from-v110">Upgrading from v1.1.0</h2>
+<p>If you use <code>@v1</code>, your next run is already on v1.2.0 and may fail on findings that are new or now more severe. Pin the full commit SHA of v1.1.0 or v1.2.0 if you want to choose when that happens.</p>
+<p>Then plan one pass:</p>
+<ol>
+<li><strong>Triage severity changes.</strong> Self-targeting admin-equivalent grants moved to Critical, for example, and several guardrail findings moved to High.</li>
+<li><strong>Re-dismiss code-scanning alerts.</strong> The fingerprint key changed, so per the Action's documentation, dismissed alerts reopen once under the new key and need dismissing again. I haven't checked this on a live repository myself.</li>
+<li><strong>Start baselines after the upgrade.</strong> Baselines are new in v1.2.0, so generate yours once the triage is done.</li>
+</ol>
+<p>Once you use baselines, the same applies to future upgrades: severity is part of a baseline entry, so an accepted finding whose severity rises fires again.</p>
+<h2 id="nothing-passes-on-a-guess">Nothing passes on a guess</h2>
+<p>The rule from v1.0 holds, with one deliberate exception. When the engine encounters a structure it cannot fully analyze, it exits <code>3</code>, says why (with the JSON path where it can point to one), and fails the check. No threshold or <code>fail-on</code> setting turns that result into a green check. The one exception is the baseline described above: a reviewed <code>UNKNOWN_ACTION</code> or <code>UNSUPPORTED_CONDITION</code> can be accepted, which narrows the promise from my earlier post on the CI gate that no configuration turns a <code>3</code> into a <code>0</code>.</p>
+<p>Many of the security fixes in this release came from my adversarial review rounds that tried to make the analyzer mark a risky policy CLEAN, and the bypasses they found became regression tests. Some of those bypasses were regressions introduced and caught during v1.2.0 development, before anything shipped. One example: a Deny covering only the catalogued <code>ssm:GetParameter*</code> actions briefly suppressed the wildcard grant. Now a partial Deny narrows the finding and suppresses it only when it covers the whole grant. I described the testing approach in <a href="https://rivassec.com/testing-an-iam-analyzer-against-its-own-claims.html">Testing an IAM Analyzer Against Its Own Claims</a>.</p>
+<h2 id="get-it">Get it</h2>
+<ul>
+<li><strong>GitHub Action:</strong> <code>uses: rivassec/secure-iam-lint@v1</code> (the <code>v1</code> tag points at v1.2.0), or pin the full commit SHA from the <a href="https://github.com/rivassec/secure-iam-lint/releases/tag/v1.2.0">v1.2.0 release</a>. Listed on the <a href="https://github.com/marketplace/actions/iam-blast-radius">GitHub Marketplace</a>.</li>
+<li><strong>npm:</strong> <code>npm i -g secure-iam-lint</code>, published with npm provenance.</li>
+<li><strong>Source and full changelog:</strong> <a href="https://github.com/rivassec/secure-iam-lint/blob/main/CHANGELOG.md">github.com/rivassec/secure-iam-lint</a>.</li>
+</ul>
+<p>What I plan next: wider action-catalog coverage and Pulumi support in v1.3.0, then more Deny shapes (<code>aws:ResourceTag/*</code>, <code>aws:TagKeys</code>, NotAction-only Denies).</p>
+  </div>
+</article>
+
+<div class="tag-cloud">
+  <p>
+    <a href="https://rivassec.com/tag/aws.html">aws</a>
+    <a href="https://rivassec.com/tag/iam.html">iam</a>
+    <a href="https://rivassec.com/tag/scp.html">scp</a>
+    <a href="https://rivassec.com/tag/github-actions.html">github-actions</a>
+    <a href="https://rivassec.com/tag/ci-cd.html">ci-cd</a>
+    <a href="https://rivassec.com/tag/devsecops.html">devsecops</a>
+    <a href="https://rivassec.com/tag/cloud-security.html">cloud-security</a>
+  </p>
+</div>
+
+<section class="author-bio" aria-label="About Oliver Rivas">
+  <img src="https://rivassec.com/images/avatar.png" alt="Oliver Rivas" width="72" height="72" class="author-bio-avatar" loading="lazy" />
+  <p><strong>Oliver Rivas</strong> is a security engineer focused on cloud and platform security: DevSecOps, Kubernetes hardening, AWS IAM, AI security, and OSINT, with 20+ years across operations, infrastructure, and security engineering. Find him on <a href="https://github.com/rivassec" rel="me">GitHub</a> and <a href="https://www.linkedin.com/in/oliverrivas/" rel="me">LinkedIn</a>, or follow the <a href="https://rivassec.com/feeds/all.atom.xml">Atom feed</a>.</p>
+</section>
+
+  <div class="neighbors">
+    <a class="btn float-left" href="https://rivassec.com/detecting-dprk-it-worker-hiring-fraud.html" title="The Laptop Is the Point of No Return: DPRK IT Worker Fraud">
+      <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512" aria-hidden="true" focusable="false"><path fill="currentColor" d="M192 448c-8.188 0-16.38-3.125-22.62-9.375l-160-160c-12.5-12.5-12.5-32.75 0-45.25l160-160c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25L77.25 256l137.4 137.4c12.5 12.5 12.5 32.75 0 45.25C208.4 444.9 200.2 448 192 448z"/></svg>
+      Previous Post
+    </a>
+  </div>
+
+<div class="related-posts">
+  <h2 class="related-heading">You might enjoy</h2>
+  <ul class="related-posts">
+    <li><a href="https://rivassec.com/iam-blast-radius-github-action.html">IAM Blast Radius in CI: Designing a Gate That Fails Closed</a></li>
+    <li><a href="https://rivassec.com/iam-blast-radius-architecture-problem.html">IAM Blast Radius Is an Architecture Problem, Not a Policy Problem</a></li>
+    <li><a href="https://rivassec.com/testing-an-iam-analyzer-against-its-own-claims.html">Testing an IAM Analyzer Against Its Own Claims</a></li>
+    <li><a href="https://rivassec.com/iam-safe-defaults-fail-loud.html">IAM Roles That Fail Loud: Small Defaults, Big Difference</a></li>
+    <li><a href="https://rivassec.com/paved-road-adoption-as-control.html">Adoption Is a Security Control: Notes from Paving a Road</a></li>
+  </ul>
+</div>
+
+
+<footer>
+    <p class="footer-feeds">
+      Subscribe:
+      <a href="https://rivassec.com/feeds/all.atom.xml" rel="alternate" type="application/atom+xml">Atom</a>
+        &middot; <a href="https://rivassec.com/feeds/all.rss.xml" rel="alternate" type="application/rss+xml">RSS</a>
+    </p>
+<p>&copy;  RivasSec</p>
+<p class="footer-meta">
+  <a href="https://rivassec.com/accessibility/">Accessibility</a>
+</p>
+<p>
+Built with <a href="https://getpelican.com" target="_blank" rel="noopener">Pelican</a> using <a href="https://github.com/alexandrevicenzi/Flex" target="_blank" rel="noopener">Flex</a> theme
+</p></footer>  </main>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://rivassec.com/#website",
+      "name": "RivasSec | DevSecOps, Kubernetes, AWS IAM",
+      "url": "https://rivassec.com",
+      "inLanguage": "en-US",
+      "description": "Field notes on infrastructure security, cloud hardening, Kubernetes, IAM, and OSINT by RivasSec.",
+      "image": "https://rivassec.com/images/og-default.png",
+      "publisher": {"@id": "https://rivassec.com/#organization"},
+      "author": {
+        "@type": "Person",
+        "@id": "https://rivassec.com/#person",
+        "name": "Oliver Rivas",
+        "url": "https://rivassec.com",
+        "sameAs": ["https://github.com/rivassec"],
+        "jobTitle": "Security Engineer",
+        "knowsAbout": ["DevSecOps", "Kubernetes security", "AWS IAM", "AI security", "OSINT"]
+      }
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://rivassec.com/#organization",
+      "name": "RivasSec | DevSecOps, Kubernetes, AWS IAM",
+      "url": "https://rivassec.com",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://rivassec.com/images/avatar.png"
+      }
+    }
+  ]
+}
+</script>
+  <script defer src="https://rivassec.com/static/copy-code.js?v=eca23836"></script>
+
+</body>
+</html>
