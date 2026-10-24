@@ -45,6 +45,9 @@
     for (var i = 0; i < blocks.length; i++) {
       var pre = blocks[i];
       if (pre.querySelector('.copy-btn')) continue;
+      // A <pre> inside role="img" is a drawn diagram, not code: a button
+      // there is a nested interactive control (axe nested-interactive).
+      if (pre.closest('[role="img"]')) continue;
       pre.classList.add('has-copy');
       var btn = document.createElement('button');
       btn.className = 'copy-btn';
