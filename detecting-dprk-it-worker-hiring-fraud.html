@@ -1,0 +1,353 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+
+  <link rel="stylesheet" type="text/css" href="https://rivassec.com/theme/stylesheet/style.min.css?v=88e2942b">
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="https://rivassec.com/theme/pygments/monokai.min.css">
+
+
+  <link rel="stylesheet" type="text/css" href="https://rivassec.com/static/custom.css?v=88e2942b">
+
+  <link rel="icon" href="https://rivassec.com/favicon.ico" sizes="any">
+  <link rel="icon" href="https://rivassec.com/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="https://rivassec.com/favicon-16.png" type="image/png" sizes="16x16">
+  <link rel="apple-touch-icon" href="https://rivassec.com/apple-touch-icon.png" sizes="180x180">
+
+  <!-- Chrome, Firefox OS and Opera -->
+  <meta name="theme-color" content="#222222">
+  <!-- Windows Phone -->
+  <meta name="msapplication-navbutton-color" content="#222222">
+  <!-- iOS Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!-- Microsoft EDGE -->
+  <meta name="msapplication-TileColor" content="#222222">
+
+  <link href="https://rivassec.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="RivasSec Atom Feed">
+
+
+
+
+
+<link rel="canonical" href="https://rivassec.com/detecting-dprk-it-worker-hiring-fraud.html" />
+
+
+<meta name="author" content="Oliver Rivas" />
+<meta name="description" content="The DPRK IT worker problem is usually told as an EDR story. By the time the alert fires, you have already lost. Move detection left of the laptop." />
+<meta name="keywords" content="insider-threat, north-korea, hiring-fraud, hiring, detection-engineering, edr">
+
+
+  <meta property="og:site_name" content="RivasSec | DevSecOps, Kubernetes, AWS IAM"/>
+  <meta property="og:title" content="The Laptop Is the Point of No Return: DPRK IT Worker Fraud"/>
+  <meta property="og:description" content="The DPRK IT worker problem is usually told as an EDR story. By the time the alert fires, you have already lost. Move detection left of the laptop."/>
+  <meta property="og:locale" content="en_US"/>
+  <meta property="og:url" content="https://rivassec.com/detecting-dprk-it-worker-hiring-fraud.html"/>
+  <meta property="og:type" content="article"/>
+  <meta property="article:published_time" content="2026-10-15T00:00:00-07:00"/>
+  <meta property="article:modified_time" content="2026-10-15T00:00:00-07:00"/>
+  <meta property="article:author" content="Oliver Rivas"/>
+<meta property="article:section" content="Threat Intelligence"/><meta property="article:tag" content="insider-threat"/><meta property="article:tag" content="north-korea"/><meta property="article:tag" content="hiring-fraud"/><meta property="article:tag" content="hiring"/><meta property="article:tag" content="detection-engineering"/><meta property="article:tag" content="edr"/>  <meta property="og:image" content="https://rivassec.com/images/og/detecting-dprk-it-worker-hiring-fraud.png">
+  <meta property="og:image:alt" content="The Laptop Is the Point of No Return: DPRK IT Worker Fraud">
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="630"/>
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="The Laptop Is the Point of No Return: DPRK IT Worker Fraud"/>
+  <meta name="twitter:description" content="The DPRK IT worker problem is usually told as an EDR story. By the time the alert fires, you have already lost. Move detection left of the laptop."/>
+  <meta name="twitter:site" content="@rivassec"/>
+  <meta name="twitter:creator" content="@rivassec"/>
+  <meta name="twitter:image" content="https://rivassec.com/images/og/detecting-dprk-it-worker-hiring-fraud.png"/>
+  <meta name="twitter:image:alt" content="The Laptop Is the Point of No Return: DPRK IT Worker Fraud"/>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "name": "The Laptop Is the Point of No Return: DPRK IT Worker Fraud",
+    "headline": "The Laptop Is the Point of No Return: DPRK IT Worker Fraud",
+    "datePublished": "2026-10-15T00:00:00-07:00",
+    "dateModified": "2026-10-15T00:00:00-07:00",
+    "author": {
+      "@type": "Person",
+      "@id": "https://rivassec.com/#person",
+      "name": "Oliver Rivas",
+      "url": "https://rivassec.com/author/oliver-rivas.html",
+      "sameAs": ["https://github.com/rivassec", "https://www.linkedin.com/in/oliverrivas/"]
+    },
+    "publisher": {"@id": "https://rivassec.com/#organization"},
+    "inLanguage": "en-US",
+    "isPartOf": {"@id": "https://rivassec.com/#website"},
+    "image": {"@type":"ImageObject","url":"https://rivassec.com/images/og/detecting-dprk-it-worker-hiring-fraud.png","width":1200,"height":630},
+    "wordCount": 2316,
+    "isAccessibleForFree": true,
+    "url": "https://rivassec.com/detecting-dprk-it-worker-hiring-fraud.html",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https://rivassec.com/detecting-dprk-it-worker-hiring-fraud.html"
+    },
+    "description": "The DPRK IT worker problem is usually told as an EDR story. By the time the alert fires, you have already lost. Move detection left of the laptop."
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type":"ListItem","position":1,"name":"Home","item":"https://rivassec.com/"},
+      {"@type":"ListItem","position":2,"name":"Threat Intelligence","item":"https://rivassec.com/category/threat-intelligence.html"},
+      {"@type":"ListItem","position":3,"name":"The Laptop Is the Point of No Return: DPRK IT Worker Fraud","item":"https://rivassec.com/detecting-dprk-it-worker-hiring-fraud.html"}    ]
+  }
+  </script>
+
+  <title>The Laptop Is the Point of No Return: DPRK IT Worker Fraud</title>
+</head>
+<body class="light-theme">
+<aside>
+  <div>
+    <a href="https://rivassec.com/">
+      <img src="https://rivassec.com/images/avatar.png" alt="RivasSec" title="RivasSec">
+    </a>
+
+    <p class="site-title">
+      <a href="https://rivassec.com/">RivasSec</a>
+    </p>
+
+    <p>Infrastructure. Security. Insight.</p>
+
+
+
+    <ul class="social">
+      <li>
+        <a class="sc-github"
+           aria-label="GitHub"
+           href="https://github.com/rivassec"
+           target="_blank">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512" aria-hidden="true" focusable="false"><path fill="currentColor" d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3 .3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5 .3-6.2 2.3zm44.2-1.7c-2.9 .7-4.9 2.6-4.6 4.9 .3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3 .7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3 .3 2.9 2.3 3.9 1.6 1 3.6 .7 4.3-.7 .7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3 .7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3 .7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>        </a>
+      </li>
+    </ul>
+  </div>
+
+</aside>
+  <main>
+<nav>
+  <a href="https://rivassec.com/">Home</a>
+
+  <a href="https://rivassec.com/pages/about.html">About</a>
+  <a href="https://rivassec.com/devsecops-guide.html">Guide</a>
+  <a href="https://rivassec.com/categories.html">Categories</a>
+  <a href="https://rivassec.com/search/">Search</a>
+  <a href="https://rivassec.com/tools/iam-blast-radius/">Tools</a>
+  <a href="https://github.com/rivassec">GitHub</a>
+</nav>
+
+<article class="single" itemscope itemtype="https://schema.org/BlogPosting">
+  <header>
+      
+    <h1 id="detecting-dprk-it-worker-hiring-fraud" itemprop="headline">The Laptop Is the Point of No Return: DPRK IT Worker Fraud</h1>
+    <p>
+      Posted on <time datetime="2026-10-15T00:00:00-07:00">Thu 15 October 2026</time> in <a href="https://rivassec.com/category/threat-intelligence.html">Threat Intelligence</a>
+
+
+        &#8226; 10 min read
+
+        &#8226; By <a href="https://rivassec.com/author/oliver-rivas.html">Oliver Rivas</a>
+    </p>
+  </header>
+
+<aside class="series-nav" aria-label="Series: Hiring as an Adversarial System">
+  <p class="series-nav-title">Series: <strong>Hiring as an Adversarial System</strong></p>
+  <ol>
+    <li>
+      <a href="https://rivassec.com/trust-decay-adversarial-hiring.html">The Trust Decay: Why Modern Hiring Has Become an Adversarial System</a>
+    </li>
+    <li>
+      <a href="https://rivassec.com/hiring-discovery-layer-broken.html">The Discovery Layer Is Broken: Hiring as an Observability Problem</a>
+    </li>
+    <li>
+      <span aria-current="page">The Laptop Is the Point of No Return: DPRK IT Worker Fraud</span>
+    </li>
+  </ol>
+</aside>
+
+  <aside class="article-toc" aria-label="Table of contents">
+    <details open>
+      <summary class="aside-heading">Contents</summary>
+      <div class="toc">
+<ul>
+<li><a href="#why-your-background-check-is-lying-to-you">Why your background check is lying to you</a></li>
+<li><a href="#how-the-operation-works">How the operation works</a></li>
+<li><a href="#the-laptop-is-a-one-way-door">The laptop is a one-way door</a></li>
+<li><a href="#the-program-gates-and-owners">The program: gates and owners</a></li>
+<li><a href="#what-actually-happened-and-what-it-proves">What actually happened, and what it proves</a></li>
+<li><a href="#the-runtime-backstop-for-the-ones-who-get-through">The runtime backstop, for the ones who get through</a></li>
+<li><a href="#do-not-make-the-laptop-the-last-gate">Do not make the laptop the last gate</a></li>
+<li><a href="#do-not-build-a-discrimination-engine">Do not build a discrimination engine</a></li>
+<li><a href="#if-you-do-only-three-things">If you do only three things</a></li>
+</ul>
+</div>
+    </details>
+  </aside>
+
+  <div itemprop="articleBody" data-pagefind-body>
+    
+<p>The North Korean IT worker problem is usually told as an endpoint story. Someone installs a remote-access tool, the SIEM lights up, and you pull the machine. That story is real, and I have lived it. It is also a description of a failure. By the time the alert fires, a hostile operator has held a corporate laptop, VPN credentials, and source-code access - for hours in the lucky cases, for weeks or months in the reported ones. The detection worked. The program did not.</p>
+<p>The uncomfortable part is that the cheapest, highest-yield controls against the common operator belong to recruiting and HR rather than security, and in my experience most teams are not running them. They will not stop everyone. A disciplined operator gets through, and I will come back to that. But they raise the attacker's cost and catch the high-volume, low-effort operators that scalable controls are best positioned to stop. This post is about moving that detection left of the laptop, and about why the work belongs to a program that spans recruiting, HR, and security rather than any single product you can buy. It is the defender's side of a shift I have written about from the candidate's side in The Trust Decay: hiring has quietly become an adversarial system.</p>
+<h2 id="why-your-background-check-is-lying-to-you">Why your background check is lying to you</h2>
+<p>A background check verifies that an identity is real and unblemished. It does not verify that the person doing the work is that identity. Those are two different claims, and the space between them is the entire business model.</p>
+<p>These operations run on real US identities, either stolen or rented from a willing American. The SSN traces. County records are clean. Employment history, where it was ever real, holds up. Every field on the screening report goes green because the paperwork describes a real, law-abiding person. That person is simply not the one on the video call, and frequently not the one at the keyboard.</p>
+<p>So the first rule: a clean background check proves the identity is clean, and nothing more about the person using it.</p>
+<h2 id="how-the-operation-works">How the operation works</h2>
+<p>DPRK IT workers pose as US-based remote engineers to route hard currency to a sanctioned regime. Three mechanics matter for defense:</p>
+<ul>
+<li>A US-based facilitator runs a <a href="https://www.justice.gov/opa/pr/two-north-korean-nationals-and-three-facilitators-indicted-multi-year-fraudulent-remote">"laptop farm"</a>. Your laptop ships to a real American address, someone installs remote access, and the operator drives it from overseas while the traffic looks domestic.</li>
+<li>One identity is often reused across several employers, sometimes simultaneously. That reuse is a weakness you can exploit: a bust or a burned persona at one employer can surface the same worker at the others, which is sometimes how a company learns it was hit at all.</li>
+<li>The person who interviews may not be the person who works, and neither has to be the name on the I-9.</li>
+</ul>
+<p>You do not need to be a defense contractor to be a target. The <a href="https://www.ic3.gov/PSA/2025/PSA250123">FBI has warned</a> that these workers have hit US businesses broadly, so if you hire remote engineers, assume you are in scope.</p>
+<h2 id="the-laptop-is-a-one-way-door">The laptop is a one-way door</h2>
+<p>Before you ship hardware, you hold cheap, high-leverage controls. You decide who to talk to, how to verify them, and where to send equipment. After you ship, you have handed an unknown party a trusted endpoint and moved the whole problem onto EDR, SIEM, and the hope that the operator slips. The door is not literally irreversible: you can still contain the machine, reimage it, and revoke its sessions and secrets. What flips is the economics. Before shipment you prevent cheaply. After it you pay to contain.</p>
+<p>Reframe shipping the laptop as a gate, and give it the seriousness you would give to granting production access. Nothing crosses that line until identity is established to a standard you would be willing to defend in an incident review. Everything below is about earning the right to ship.</p>
+<h2 id="the-program-gates-and-owners">The program: gates and owners</h2>
+<p>The failures happen across recruiting, HR, IT, and security, so no single team can close them. Give each gate an owner and a written standard.</p>
+<p>One thing to set before the gates: no single signal is a verdict. A VOIP number, an odd address, a fumbled local-knowledge question, or a VPN ASN each has an innocent explanation. What matters is the combination of independent inconsistencies. The program's job is to define when those inconsistencies trigger additional verification, who is allowed to make that call, and what evidence gets retained. Treat everything below as an input to that process, not a judgment about a person. This is hiring treated as an observability problem, which I argue more broadly in The Discovery Layer Is Broken.</p>
+<p><strong>Recruiting gate.</strong> Owned by recruiting, running a security-provided checklist.</p>
+<ul>
+<li>Camera on for every round. Treat "broken camera" and audio-only as signals worth pausing on.</li>
+<li>Force live, unscripted action. Hold the ID next to the face, turn to profile, put a hand in front of the face, run a live coding exercise instead of a take-home. As of 2026, real-time face swaps still commonly break on occlusion and profile turns, but treat that as a filter for low-effort operators, not a dependable break: higher-end tools increasingly pass the hand-across-face test. The durable value is forcing live variation the operator cannot pre-render, not the occlusion itself.</li>
+<li>Probe local knowledge casually: the weather right now, the nearest major airport, something a resident would know without thinking. Answers that fight the claimed time zone are a tell.</li>
+<li>Check persona hygiene: VOIP-only numbers, a two-week-old LinkedIn with forty connections, a headshot that surfaces on reverse image search, and near-duplicate resumes across separate candidates.</li>
+</ul>
+<p><strong>Verification gate.</strong> Owned by HR and recruiting.</p>
+<p>Independent employment verification through published main lines, never a number the candidate hands you. In my experience this is the control most teams quietly skip, and it is the one that catches fabricated histories and "references" that ring a co-conspirator. One honest caveat belongs here: verification usually reaches only the previous employer, since candidates withhold consent to contact where they work now.</p>
+<p><strong>Identity-assurance gate.</strong> Owned jointly by security and HR.</p>
+<p>Tie the same live human to the same government ID at three separate points: the interview, the I-9, and day one. Use an authorized representative or a notary for in-person document inspection, and make sure that inspector is employer-designated and independent, not chosen by the candidate, because a candidate-selected notary defeats the whole point. Even a clean inspection only proves a live person held a valid ID, not that that person is the one who will do the work. Run E-Verify, and remember it passes valid stolen SSN and name combinations, so treat it as a floor.</p>
+<p><strong>Logistics gate.</strong> Owned by IT. This is the last checkpoint before the one-way door.</p>
+<p>Ship only to the identity's verified residential address, signature required, cross-checked against the address on file. Be clear-eyed about what that does and does not buy you. A clean address match proves nothing against the facilitator model, because the facilitator's real home is the address on file, and the laptop ships straight into the farm. What the gate catches is the reroute. A request to send the laptop to a different address, a freight forwarder, or a mail drop is one of the strongest single tells in the funnel. Refuse "I will use my own device" and "let me start before the laptop arrives."</p>
+<h2 id="what-actually-happened-and-what-it-proves">What actually happened, and what it proves</h2>
+<p>At one organization I worked with, a hire cleared the interview loop, the identity checks, and onboarding without a single flag. The catch came on day one, for the least sophisticated reason imaginable. He started a remote-access tool as root, and his sessions egressed through a rotating set of commercial VPNs in Western Europe, with the occasional US residential IP mixed in. EDR did its job, and the machine came off the network within hours. But containment is not prevention. The same day proved the endpoint controls worked and that identity assurance had let an untrusted operator reach a managed endpoint in the first place. None of those indicators are DPRK-specific; they are generic untrusted-operator markers, and foreign commercial-VPN egress is the opposite of the domestic-looking traffic a mature laptop farm produces. Treat the story as illustrative of the access pattern, not as attribution.</p>
+<p>I share it as a warning rather than a win. Every front-door control in place was defeated, because a real US facilitator can appear on camera, pass the I-9, and receive the laptop at a genuine address before handing remote control to an operator overseas. One <a href="https://www.justice.gov/usao-dc/pr/arizona-woman-sentenced-17m-it-worker-fraud-scheme-illegally-generated-revenue-north">convicted facilitator</a> ran a home laptop farm at the center of a scheme that placed workers at more than three hundred companies, with some of the hardware shipped onward overseas. When a live person fronts the identity, your pre-laptop program passes cleanly, the laptop ships, and you are left betting on the operator being careless.</p>
+<p>He was careless. The next one will not be. A disciplined operator runs a KVM-over-IP appliance that presents to the operating system as a keyboard and a monitor, so there is no remote-access process to detect, and routes traffic through a US residential proxy that geolocates cleanly. None of the signals that made this catch would fire.</p>
+<h2 id="the-runtime-backstop-for-the-ones-who-get-through">The runtime backstop, for the ones who get through</h2>
+<p>Assume some will clear the front door, and build the net accordingly. The net cannot depend on the local network: a disciplined operator sanitizes the segment, so a subnet scan pushed through your EDR may see an empty, curated view. The inverse is worth knowing too - a residential LAN noisy with corporate devices from several different companies is exactly the farm signature the careless tier leaves lying around. Either way, point the sensors at what you actually own:</p>
+<ul>
+<li>Remote-access tooling on the endpoint (TeamViewer, AnyDesk, RustDesk, and the rest), at higher severity when it runs elevated or lands in a new hire's first weeks.</li>
+<li>USB and HID telemetry for unexpected device changes and unusual hardware profiles. The KVM appliance described above presents as an ordinary keyboard, mouse, or display and can spoof standard vendor IDs, so treat this as supporting telemetry, not a reliable KVM detector. It gives you a lead, not proof.</li>
+<li>Egress anomalies: non-US geolocation or VPN and hosting ASNs from a device that should leave the internet through a US home connection.</li>
+<li>Interaction latency, measured at the endpoint (research-grade). A remote-desktop or KVM channel inserts a round trip that surfaces as delayed reaction to on-screen events, and adds network jitter that shows up as variance in keystroke timing on the device itself. Two caveats keep it honest: it is endpoint-side only, not network RTT to your services (a US-local laptop or residential proxy tells your servers nothing), and it is far too noisy to stand alone, so it can corroborate other signals but never drive a decision.</li>
+</ul>
+<p>Expect some of these alerts to be your own people. <a href="https://rivassec.com/every-alert-is-your-alert.html">Every Alert Is Your Alert</a> covers closing the true positives your own IR tooling generates, after I watched it trip the very EDR it was working alongside.</p>
+<p>Wrap all of it in a heightened-monitoring window for the first thirty days of any remote hire. That is when these signals clustered, in the case I worked and in the public reporting, and it is the cheapest place to spend the attention.</p>
+<h2 id="do-not-make-the-laptop-the-last-gate">Do not make the laptop the last gate</h2>
+<p>The case above proves some operators clear every pre-shipment control, so the laptop should not be the final trust decision. Treat the first thirty days as a trust-establishment period, not just a monitoring window. A new remote engineer starts constrained: no standing production access, step-up approval for sensitive repositories and secrets, tighter SaaS entitlements, risk-based re-authentication, heightened logging. Access expands as the role actually requires it, earned rather than granted at onboarding. This assumes IdP and entitlement tooling mature enough to express it; the minimum viable version is manual - no standing production access, and a human approving sensitive grants for the first thirty days. This is blast-radius thinking applied to the identity layer, the same argument I make for <a href="https://rivassec.com/iam-blast-radius-architecture-problem.html">IAM permissions</a>. You cannot prove a hire is legitimate before they start. What you can do is avoid making one irreversible trust decision, and increase trust only as the signals you control keep checking out.</p>
+<h2 id="do-not-build-a-discrimination-engine">Do not build a discrimination engine</h2>
+<p>This is where a program keeps or loses its legitimacy. Screen the fraud, not the person. Detect on behavior and fraud markers, never on accent, name, national origin, or a vague sense that someone "seems foreign." That line is an ethical and legal requirement, and it also happens to be better security. Nationality is a terrible feature. It buries you in false positives, it is trivial to spoof, and it trains your team to wave through the domestic-sounding facilitator, which is precisely the profile that clears every gate in the case above. Write the criteria down, make them reviewable, and keep a human in the loop on every adverse decision.</p>
+<h2 id="if-you-do-only-three-things">If you do only three things</h2>
+<ul>
+<li>Independent employment verification on published lines. In my experience the highest-yield cheap control against low-effort operators.</li>
+<li>Verified-address-only shipping with a required signature. Make the laptop a gate.</li>
+<li>A thirty-day heightened-monitoring window on new remote hires. Your backstop for the ones who clear the door.</li>
+</ul>
+<p>The alert in your SIEM is the sound of a control that fired too late. Move the decision to the day before the laptop ships, make it someone's job, and design everything after it on the assumption that a good operator gets through anyway.</p>
+  </div>
+</article>
+
+<div class="tag-cloud">
+  <p>
+    <a href="https://rivassec.com/tag/insider-threat.html">insider-threat</a>
+    <a href="https://rivassec.com/tag/north-korea.html">north-korea</a>
+    <a href="https://rivassec.com/tag/hiring-fraud.html">hiring-fraud</a>
+    <a href="https://rivassec.com/tag/hiring.html">hiring</a>
+    <a href="https://rivassec.com/tag/detection-engineering.html">detection-engineering</a>
+    <a href="https://rivassec.com/tag/edr.html">edr</a>
+  </p>
+</div>
+
+<section class="author-bio" aria-label="About Oliver Rivas">
+  <img src="https://rivassec.com/images/avatar.png" alt="Oliver Rivas" width="72" height="72" class="author-bio-avatar" loading="lazy" />
+  <p><strong>Oliver Rivas</strong> is a security engineer focused on cloud and platform security: DevSecOps, Kubernetes hardening, AWS IAM, AI security, and OSINT, with 20+ years across operations, infrastructure, and security engineering. Find him on <a href="https://github.com/rivassec" rel="me">GitHub</a> and <a href="https://www.linkedin.com/in/oliverrivas/" rel="me">LinkedIn</a>, or follow the <a href="https://rivassec.com/feeds/all.atom.xml">Atom feed</a>.</p>
+</section>
+
+  <div class="neighbors">
+    <a class="btn float-left" href="https://rivassec.com/iam-blast-radius-github-action.html" title="IAM Blast Radius in CI: Designing a Gate That Fails Closed">
+      <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512" aria-hidden="true" focusable="false"><path fill="currentColor" d="M192 448c-8.188 0-16.38-3.125-22.62-9.375l-160-160c-12.5-12.5-12.5-32.75 0-45.25l160-160c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25L77.25 256l137.4 137.4c12.5 12.5 12.5 32.75 0 45.25C208.4 444.9 200.2 448 192 448z"/></svg>
+      Previous Post
+    </a>
+    <a class="btn float-right" href="https://rivassec.com/secure-iam-lint-v1-2-0.html" title="secure-iam-lint v1.2.0: Catching Guardrails That Never Fire">
+      Next Post
+      <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512" aria-hidden="true" focusable="false"><path fill="currentColor" d="M64 448c-8.188 0-16.38-3.125-22.62-9.375c-12.5-12.5-12.5-32.75 0-45.25L178.8 256L41.38 118.6c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0l160 160c12.5 12.5 12.5 32.75 0 45.25l-160 160C80.38 444.9 72.19 448 64 448z"/></svg>
+    </a>
+  </div>
+
+<div class="related-posts">
+  <h2 class="related-heading">You might enjoy</h2>
+  <ul class="related-posts">
+    <li><a href="https://rivassec.com/hiring-discovery-layer-broken.html">The Discovery Layer Is Broken: Hiring as an Observability Problem</a></li>
+    <li><a href="https://rivassec.com/every-alert-is-your-alert.html">Every Alert Is Your Alert: When IR Tooling Trips Your Own EDR</a></li>
+  </ul>
+</div>
+
+<div class="related-posts">
+  <h2 class="series-heading">Part <built-in method index of str object at 0x7fa2572b0080> of the  series</h2>
+</div>
+
+<footer>
+    <p class="footer-feeds">
+      Subscribe:
+      <a href="https://rivassec.com/feeds/all.atom.xml" rel="alternate" type="application/atom+xml">Atom</a>
+        &middot; <a href="https://rivassec.com/feeds/all.rss.xml" rel="alternate" type="application/rss+xml">RSS</a>
+    </p>
+<p>&copy;  RivasSec</p>
+<p class="footer-meta">
+  <a href="https://rivassec.com/accessibility/">Accessibility</a>
+</p>
+<p>
+Built with <a href="https://getpelican.com" target="_blank" rel="noopener">Pelican</a> using <a href="https://github.com/alexandrevicenzi/Flex" target="_blank" rel="noopener">Flex</a> theme
+</p></footer>  </main>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://rivassec.com/#website",
+      "name": "RivasSec | DevSecOps, Kubernetes, AWS IAM",
+      "url": "https://rivassec.com",
+      "inLanguage": "en-US",
+      "description": "Field notes on infrastructure security, cloud hardening, Kubernetes, IAM, and OSINT by RivasSec.",
+      "image": "https://rivassec.com/images/og-default.png",
+      "publisher": {"@id": "https://rivassec.com/#organization"},
+      "author": {
+        "@type": "Person",
+        "@id": "https://rivassec.com/#person",
+        "name": "Oliver Rivas",
+        "url": "https://rivassec.com",
+        "sameAs": ["https://github.com/rivassec"],
+        "jobTitle": "Security Engineer",
+        "knowsAbout": ["DevSecOps", "Kubernetes security", "AWS IAM", "AI security", "OSINT"]
+      }
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://rivassec.com/#organization",
+      "name": "RivasSec | DevSecOps, Kubernetes, AWS IAM",
+      "url": "https://rivassec.com",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://rivassec.com/images/avatar.png"
+      }
+    }
+  ]
+}
+</script>
+  <script defer src="https://rivassec.com/static/copy-code.js?v=88e2942b"></script>
+
+</body>
+</html>
