@@ -24,11 +24,11 @@ fires against your own tooling, or the 208th day of uptime.
 - [IAM Roles That Fail Loud: Small Defaults, Big Difference](iam-safe-defaults-fail-loud.html)
 - Interactive: [IAM Blast Radius analyzer](/tools/iam-blast-radius/) - paste an IAM policy, see its potential blast radius in your browser
 - [Testing an IAM Analyzer Against Its Own Claims](testing-an-iam-analyzer-against-its-own-claims.html)
+- [Elasticsearch Snapshot Verification, Minimal Privileges](elasticsearch-secure-snapshot-verification.html)
 
 ## Cryptography and Transport
 
 - [TLS Has Three Jobs. Forget the Rest.](tls-three-jobs.html)
-- [Elasticsearch Snapshot Verification, Minimal Privileges](elasticsearch-secure-snapshot-verification.html)
 
 ## Operating Under Pressure
 
@@ -37,6 +37,10 @@ fires against your own tooling, or the 208th day of uptime.
 - [The 208.5-Day Kernel Bug: Uptime, Overflow, and Risk](208-day-kernel-bug-lessons.html)
 - [Taming the OOM Killer: Process Priorities on Linux](oom-killer-process-prioritization.html)
 - [Bandit-Clean Pwnagotchi Plugins: How subprocess Goes From Risk to Routine](pwnagotchi-plugin-bandit-hardening.html)
+- [Never Lose Connection: Multi-Phone Bluetooth Tethering for Pwnagotchi](pwnagotchi-bluetooth-tethering.html)
+- [Hardening Kubernetes Deployments](hardening-k8s.html)
+- [The 2012 Leap Second: When Time Broke Java and the Cloud](leap-second-chaos-2012.html)
+- [The Teensy That Failed in Public: An EFI Brute Force, Hours Late](teensy-efi-bruteforce-hours-late.html)
 
 ## Program and Adoption
 
