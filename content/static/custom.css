@@ -310,8 +310,7 @@ main > .related-posts {
   padding: 18px 20px;
   font-size: 14px;
 }
-main > .related-posts h2.related-heading,
-main > .related-posts h2.series-heading {
+main > .related-posts h2.related-heading {
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 1.5px;
@@ -853,8 +852,7 @@ figure figcaption {
    Preserve the smaller visual size with these class overrides so the
    semantic change does not blow up the layout. */
 .aside-heading,
-.related-heading,
-.series-heading {
+.related-heading {
   font-size: 1.36em;
   margin: 20px 0 10px;
 }
